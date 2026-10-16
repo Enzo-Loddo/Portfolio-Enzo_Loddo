@@ -1,0 +1,102 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { nav } from '@/data/site';
+
+interface Props {
+  /** `home` : tableau « DEPARTURES » (non cliquable). `inner` : « ARRIVALS » = retour accueil. */
+  variant?: 'home' | 'inner';
+}
+const { variant = 'inner' } = Astro.props;
+const current = Astro.url.pathname.replace(/\/$/, '');
+---
+
+<header class="px-4 md:px-8">
+  <div class="flex items-center justify-between py-4 md:justify-center md:py-6">
+    {
+      variant === 'home' ? (
+        <p class="flex items-center gap-3 font-display text-3xl font-semibold uppercase tracking-[0.1em] text-accent md:gap-4 md:text-6xl">
+          <Icon name="plane" size={56} class="size-8 md:size-14" />
+          DEPARTURES
+        </p>
+      ) : (
+        <a
+          href="/"
+          class="group flex flex-col items-start md:items-center"
+          aria-label="Retour à l’accueil"
+        >
+          <span class="flex items-center gap-3 font-display text-3xl font-semibold uppercase tracking-[0.1em] text-accent md:gap-4 md:text-6xl">
+            <Icon name="plane" size={56} class="size-8 md:size-14" />
+            <span class="grid">
+              <span class="col-start-1 row-start-1 transition-opacity duration-150 group-hover:opacity-0 group-focus-visible:opacity-0">
+                ARRIVALS
+              </span>
+              <span
+                class="col-start-1 row-start-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+                aria-hidden="true"
+              >
+                ACCUEIL
+              </span>
+            </span>
+          </span>
+          <span
+            class="hidden font-display text-label uppercase tracking-widest text-fg-muted opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 md:block"
+            aria-hidden="true"
+          >
+            [ RETOUR ACCUEIL ]
+          </span>
+        </a>
+      )
+    }
+
+    {
+      variant === 'inner' && (
+        <button
+          type="button"
+          class="rounded-lg border-2 border-accent p-3 text-accent md:hidden"
+          aria-label="Ouvrir le menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          data-menu-toggle
+        >
+          <Icon name="menu" />
+        </button>
+      )
+    }
+  </div>
+
+  {
+    variant === 'inner' && (
+      <nav
+        id="mobile-menu"
+        class="hidden border-t border-line py-4 md:hidden"
+        aria-label="Menu principal"
+        data-menu
+      >
+        <ul>
+          {nav.map((item) => (
+            <li class="border-b border-line">
+              <a
+                href={item.href}
+                aria-current={current === item.href ? 'page' : undefined}
+                class="block py-5 font-display text-4xl uppercase text-accent"
+              >
+                {item.label}
+                <span class="block font-sans text-body-m normal-case text-fg-muted">{item.subtitle}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  toggle?.addEventListener('click', () => {
+    const open = menu?.classList.toggle('hidden') === false;
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Fermer le menu' : 'Ouvrir le menu');
+  });
+</script>

@@ -1,0 +1,32 @@
+---
+import { site } from '@/data/site';
+import Icon from './Icon.astro';
+
+interface Props {
+  /** `bare` = icônes seules (footer), `boxed` = icônes encadrées (contact). */
+  variant?: 'bare' | 'boxed';
+  size?: number;
+}
+const { variant = 'bare', size = 40 } = Astro.props;
+---
+
+<ul class="flex items-center gap-4">
+  {
+    site.socials.map((s) => (
+      <li>
+        <a
+          href={s.href}
+          aria-label={s.label}
+          target={s.href.startsWith('http') ? '_blank' : undefined}
+          rel={s.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+          class:list={[
+            'flex text-accent transition-transform hover:-translate-y-0.5',
+            variant === 'boxed' && 'rounded-lg border-2 border-accent p-3.5',
+          ]}
+        >
+          <Icon name={s.id} size={size} />
+        </a>
+      </li>
+    ))
+  }
+</ul>

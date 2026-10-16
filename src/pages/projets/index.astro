@@ -1,0 +1,22 @@
+---
+import ProjectCard from '@/components/projects/ProjectCard.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getProjects } from '@/lib/projects';
+
+const projects = await getProjects();
+---
+
+<BaseLayout
+  title="Mes projets — Enzo Loddo"
+  description="Affiches, posts et stories pour les réseaux sociaux : toutes mes créations en design et direction artistique."
+>
+  <div class="px-4 pb-16 pt-4 md:px-8 md:pb-24">
+    <h1 class="text-[2.75rem] leading-[1.1] uppercase text-accent md:text-h1">MES PROJETS</h1>
+    <p class="mb-10 mt-4 max-w-2xl text-body-m text-fg md:text-body-l">
+      Retrouve ici toutes mes créations en tout genre : affiches, posts et stories pour les réseaux sociaux.
+    </p>
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+      {projects.map((project) => <li><ProjectCard project={project} /></li>)}
+    </ul>
+  </div>
+</BaseLayout>

@@ -1,0 +1,28 @@
+---
+import SectionBar from '@/components/ui/SectionBar.astro';
+
+interface Props {
+  terminal: string;
+  title: string;
+  /** Libellé de la 2ᵉ colonne : DESTINATION (menu) ou PROJET. */
+  destinationLabel?: string;
+  id?: string;
+}
+const { terminal, title, destinationLabel = 'DESTINATION', id } = Astro.props;
+---
+
+<section id={id} aria-label={`${terminal} — ${title}`} class="flex flex-col gap-4">
+  <SectionBar terminal={terminal} title={title} />
+  <div
+    class="hidden grid-cols-[200px_1fr_200px_300px] gap-x-6 px-3 font-display text-label uppercase tracking-widest text-fg-muted md:grid"
+    aria-hidden="true"
+  >
+    <span>TIME</span>
+    <span>{destinationLabel}</span>
+    <span>FLIGHT</span>
+    <span>STATUS</span>
+  </div>
+  <div class="flex flex-col">
+    <slot />
+  </div>
+</section>

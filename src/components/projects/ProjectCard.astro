@@ -1,0 +1,28 @@
+---
+import ImageOrPlaceholder from '@/components/ui/ImageOrPlaceholder.astro';
+import type { Project } from '@/types/project';
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+const Tag = project.publie ? 'a' : 'div';
+---
+
+<Tag
+  href={project.publie ? `/projets/${project.slug}` : undefined}
+  class:list={[
+    'group flex flex-col border border-line bg-surface transition-colors',
+    project.publie && 'hover:border-accent hover:outline hover:outline-2 hover:-outline-offset-2 hover:outline-accent',
+  ]}
+>
+  <div class="aspect-4/5 overflow-hidden">
+    <ImageOrPlaceholder src={project.visuel} alt={project.visuelAlt ?? project.titre} label="VISUEL DU PROJET" />
+  </div>
+  <div class="flex flex-col gap-1 p-4">
+    <p class="font-display text-label uppercase tracking-widest text-accent">{project.itemId}</p>
+    <p class="text-body-m text-fg">Sujet : {project.sujet}</p>
+    <p class="text-caption text-fg-muted">Catégorie : {project.categorie}</p>
+    {!project.publie && <p class="text-caption text-fg-muted">Dossier en cours de rédaction</p>}
+  </div>
+</Tag>

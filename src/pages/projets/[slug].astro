@@ -1,0 +1,105 @@
+---
+import ImageOrPlaceholder from '@/components/ui/ImageOrPlaceholder.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getPublishedProjects } from '@/lib/projects';
+import type { Project } from '@/types/project';
+
+export async function getStaticPaths() {
+  const projects = await getPublishedProjects();
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+const toolInitials = (name: string) => name.slice(0, 2);
+---
+
+<BaseLayout
+  title={`${project.titre} — Enzo Loddo`}
+  description={project.description[0]?.slice(0, 155)}
+>
+  <div class="px-4 pt-2 md:px-8">
+    <a href="/projets" class="inline-block py-2 font-display text-nav text-fg-2">← Retour</a>
+  </div>
+
+  {
+    project.hero && (
+      <section class="mt-4 flex flex-col items-center gap-2 bg-deep px-4 py-12 text-center md:py-20" aria-label="Présentation">
+        <p class="font-display text-2xl uppercase text-accent md:text-h3">{project.hero.surtitre}</p>
+        <p class="font-display text-[6rem] font-bold leading-none text-accent md:text-[10rem]">{project.hero.titre}</p>
+        <p class="font-display text-xl uppercase text-fg md:text-h3">{project.hero.lieu}</p>
+      </section>
+    )
+  }
+
+  <article class="flex flex-col gap-16 px-4 pb-16 pt-8 md:gap-24 md:px-8 md:pb-24 md:pt-12">
+    <header class="flex flex-col gap-10 md:flex-row md:gap-12">
+      <div class="flex flex-col items-center gap-8 md:flex-1">
+        <div class="aspect-4/5 w-full max-w-xl md:aspect-square md:max-w-none">
+          <ImageOrPlaceholder
+            src={project.visuel}
+            alt={project.visuelAlt ?? project.titre}
+            label={`VISUEL — ${project.titre}`}
+            loading="eager"
+          />
+        </div>
+        {
+          project.outils.length > 0 && (
+            <ul class="flex gap-4" aria-label="Outils utilisés">
+              {project.outils.map((tool) => (
+                <li
+                  class="flex size-18 items-center justify-center rounded-2xl bg-accent font-display text-h3 text-ink"
+                  title={tool}
+                >
+                  <span aria-hidden="true">{toolInitials(tool)}</span>
+                  <span class="sr-only">{tool}</span>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      <div class="flex flex-col gap-6 md:w-110 md:border-l-2 md:border-fg md:pl-8">
+        <h1 class="text-5xl uppercase text-accent md:text-h2">{project.titre}</h1>
+        <p class="font-display text-label uppercase tracking-widest text-fg-muted">
+          {project.itemId} · {project.sujet} · {project.categorie}
+        </p>
+        {project.citation && (
+          <blockquote class="relative border-l-4 border-accent bg-surface p-6">
+            <p class="text-body-l text-fg">« {project.citation.texte} »</p>
+            <footer class="mt-2 text-caption text-fg-muted">{project.citation.auteur}</footer>
+          </blockquote>
+        )}
+        {project.description.map((p) => <p class="text-body-m text-fg md:text-body-l">{p}</p>)}
+      </div>
+    </header>
+
+    {
+      project.sections?.map((section, i) => (
+        <section class="flex flex-col gap-8 md:flex-row md:items-start md:gap-12" aria-labelledby={`section-${i}`}>
+          <div class:list={['aspect-4/3 w-full md:w-[46%] md:shrink-0', i % 2 === 1 && 'md:order-2']}>
+            <ImageOrPlaceholder src={section.image} alt={section.imageAlt ?? section.titre} label={section.imageAlt} />
+          </div>
+          <div class="flex flex-col gap-4">
+            <h2 id={`section-${i}`} class="text-3xl uppercase text-accent md:text-h3">{section.titre}</h2>
+            <p class="max-w-prose text-body-m text-fg md:text-body-l">{section.texte}</p>
+          </div>
+        </section>
+      ))
+    }
+
+    {
+      project.video && (
+        <section class="flex flex-col gap-6" aria-labelledby="video-title">
+          <h2 id="video-title" class="text-3xl uppercase text-accent md:text-h3">LE FILM</h2>
+          <div class="aspect-video w-full">
+            <iframe src={project.video} title={`Vidéo — ${project.titre}`} class="size-full" loading="lazy" allowfullscreen />
+          </div>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>

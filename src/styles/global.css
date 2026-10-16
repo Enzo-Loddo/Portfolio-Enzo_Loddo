@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens issus de la maquette Figma v2 (collection « Couleurs » et styles de texte).
+ * Ne pas coder de valeur en dur dans les composants : utiliser ces tokens.
+ */
+@theme {
+  /* Couleurs */
+  --color-base: #2c2c2c;
+  --color-deep: #0b0b0b;
+  --color-surface: #1a1a1a;
+  --color-fg: #ffffff;
+  --color-fg-2: #d6d6d6;
+  --color-fg-muted: #b3b3b3;
+  --color-ink: #000000;
+  --color-accent: #f6dd0b;
+  --color-ok: #00e275;
+  --color-late: #ff666c;
+  --color-line: #555555;
+
+  /* Polices : 2 maximum (retour du jury) */
+  --font-display: "Oswald Variable", "Arial Narrow", sans-serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+
+  /* Échelle typographique (desktop). Le mobile utilise les classes de base de Tailwind. */
+  --text-h1: 5rem;
+  --text-h1--line-height: 1.05;
+  --text-h2: 3.5rem;
+  --text-h2--line-height: 1.15;
+  --text-h3: 2.25rem;
+  --text-h3--line-height: 1.2;
+  --text-row: 2.625rem;
+  --text-row--line-height: 1.15;
+  --text-board: 3rem;
+  --text-board--line-height: 1.15;
+  --text-status: 2.5rem;
+  --text-status--line-height: 1.2;
+  --text-nav: 1.5rem;
+  --text-nav--line-height: 1.35;
+  --text-label: 1.125rem;
+  --text-label--line-height: 1.35;
+  --text-body-l: 1.25rem;
+  --text-body-l--line-height: 1.6;
+  --text-body-m: 1.125rem;
+  --text-body-m--line-height: 1.55;
+  --text-caption: 1rem;
+  --text-caption--line-height: 1.5;
+
+  /* Espacements (grille de 8px) */
+  --spacing-gutter: 2rem;
+  --breakpoint-3xl: 100rem;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-base);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-size: var(--text-body-m);
+    line-height: 1.55;
+  }
+
+  /* Aucun titre souligné (retour du jury) */
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* Effet « panneau LED » : lueur jaune sur les heures */
+  .led {
+    text-shadow: 0 0 6px rgb(255 239 108 / 0.55);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Survol d'une ligne de vol : boucle entre deux états toutes les 400 ms */
+  .flight-row:hover,
+  .flight-row:focus-visible {
+    animation: flight-blink 0.8s steps(1) infinite;
+  }
+}
+
+@keyframes flight-blink {
+  0%   { background-color: rgb(246 221 11 / 0.12); }
+  50%  { background-color: rgb(246 221 11 / 0.26); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .flight-row:hover,
+  .flight-row:focus-visible {
+    animation: none;
+    background-color: rgb(246 221 11 / 0.18);
+  }
+}

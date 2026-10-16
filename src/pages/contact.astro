@@ -1,0 +1,31 @@
+---
+import SocialLinks from '@/components/ui/SocialLinks.astro';
+import { site } from '@/data/site';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Contact — Enzo Loddo"
+  description="Contacte Enzo Loddo sur ses réseaux ou par e-mail pour un stage, une alternance ou un projet."
+>
+  <div class="flex flex-col gap-12 px-4 pb-16 pt-6 md:flex-row md:items-center md:justify-between md:gap-16 md:px-8 md:pb-24 md:pt-12">
+    <div class="flex max-w-3xl flex-col gap-6">
+      <h1 class="text-[2.75rem] leading-[1.1] uppercase text-accent md:text-h1">
+        ALLON MET LA MAIN <br />ENSAMB<span aria-hidden="true">*</span>
+      </h1>
+      <p class="max-w-xl text-body-m text-fg md:text-body-l">
+        Contacte-moi sur mes différents réseaux, on pourrait bien s’entendre.
+      </p>
+      <SocialLinks variant="boxed" />
+      <a href={`mailto:${site.email}`} class="font-display text-3xl text-accent md:text-h3">{site.email}</a>
+      <p class="text-caption text-fg-muted">* « Allons mettre la main ensemble », en créole réunionnais.</p>
+    </div>
+    <!-- Décor : silhouette de La Réunion (à remplacer par /images/reunion.svg) -->
+    <div
+      class="hidden size-110 shrink-0 rounded-[50%] border border-dashed border-line bg-surface md:block"
+      role="img"
+      aria-label="Décor : silhouette de La Réunion"
+    >
+    </div>
+  </div>
+</BaseLayout>

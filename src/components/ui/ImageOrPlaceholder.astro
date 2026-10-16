@@ -1,0 +1,32 @@
+---
+/**
+ * Affiche une image si `src` est fourni, sinon un emplacement pointillé
+ * (utile tant que les visuels ne sont pas dans PocketBase / public/images).
+ */
+interface Props {
+  src?: string;
+  alt: string;
+  class?: string;
+  /** Texte de l'emplacement vide. */
+  label?: string;
+  loading?: 'lazy' | 'eager';
+}
+const { src, alt, class: className, label, loading = 'lazy' } = Astro.props;
+---
+
+{
+  src ? (
+    <img src={src} alt={alt} loading={loading} decoding="async" class:list={['h-full w-full object-cover', className]} />
+  ) : (
+    <div
+      role="img"
+      aria-label={alt}
+      class:list={[
+        'flex h-full w-full items-center justify-center border border-dashed border-line bg-surface p-4 text-center text-caption text-fg-muted',
+        className,
+      ]}
+    >
+      {label ?? alt}
+    </div>
+  )
+}

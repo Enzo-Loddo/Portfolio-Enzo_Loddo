@@ -1,0 +1,83 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import ImageOrPlaceholder from '@/components/ui/ImageOrPlaceholder.astro';
+
+interface Props {
+  photos: readonly { src: string; alt: string }[];
+}
+const { photos } = Astro.props;
+---
+
+<div class="flex w-full max-w-105 flex-col gap-6" data-carousel>
+  <div class="relative overflow-hidden bg-white" data-carousel-viewport>
+    <ul
+      class="flex flex-col transition-transform duration-500 ease-in-out motion-reduce:transition-none"
+      data-carousel-strip
+    >
+      {
+        photos.map((photo, i) => (
+          <li class="shrink-0 p-6 pb-20" aria-hidden={i === 0 ? 'false' : 'true'} data-carousel-slide>
+            <div class="aspect-4/5">
+              <ImageOrPlaceholder src={photo.src || undefined} alt={photo.alt} label={`PHOTO ${i + 1} / ${photos.length}`} />
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="flex items-center gap-4">
+    <button
+      type="button"
+      class="flex size-14 items-center justify-center rounded-full border-2 border-accent text-accent disabled:opacity-30"
+      aria-label="Photo précédente"
+      data-carousel-prev
+    >
+      <Icon name="arrow-up" />
+    </button>
+    <button
+      type="button"
+      class="flex size-14 items-center justify-center rounded-full border-2 border-accent text-accent disabled:opacity-30"
+      aria-label="Photo suivante"
+      data-carousel-next
+    >
+      <Icon name="arrow-down" />
+    </button>
+    <p class="text-caption text-fg-muted" aria-live="polite" data-carousel-status>1 / {photos.length}</p>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const strip = root.querySelector<HTMLElement>('[data-carousel-strip]')!;
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-carousel-slide]'));
+    const prev = root.querySelector<HTMLButtonElement>('[data-carousel-prev]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-carousel-next]')!;
+    const status = root.querySelector<HTMLElement>('[data-carousel-status]')!;
+    const viewport = root.querySelector<HTMLElement>('[data-carousel-viewport]')!;
+    let index = 0;
+
+    const render = () => {
+      const height = slides[0].offsetHeight;
+      viewport.style.height = `${height}px`;
+      strip.style.transform = `translateY(-${index * height}px)`;
+      slides.forEach((s, i) => s.setAttribute('aria-hidden', String(i !== index)));
+      prev.disabled = index === 0;
+      next.disabled = index === slides.length - 1;
+      status.textContent = `${index + 1} / ${slides.length}`;
+    };
+    const go = (to: number) => {
+      index = Math.min(Math.max(to, 0), slides.length - 1);
+      render();
+    };
+
+    prev.addEventListener('click', () => go(index - 1));
+    next.addEventListener('click', () => go(index + 1));
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp') go(index - 1);
+      if (e.key === 'ArrowDown') go(index + 1);
+    });
+    window.addEventListener('resize', render);
+    render();
+  });
+</script>

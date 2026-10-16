@@ -1,0 +1,15 @@
+---
+/** Barre jaune « TERMINAL 0X » au-dessus d'un tableau. */
+interface Props {
+  terminal: string;
+  title: string;
+}
+const { terminal, title } = Astro.props;
+---
+
+<div
+  class="flex items-center gap-8 rounded-br-3xl bg-accent px-6 py-2.5 font-display text-nav text-ink md:gap-16"
+>
+  <span>{terminal}</span>
+  <span class="font-medium">{title}</span>
+</div>

@@ -1,0 +1,53 @@
+---
+import FlightBoard from '@/components/board/FlightBoard.astro';
+import FlightRow from '@/components/board/FlightRow.astro';
+import Button from '@/components/ui/Button.astro';
+import { nav, site } from '@/data/site';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { getProjects } from '@/lib/projects';
+
+const projects = await getProjects();
+// Les dossiers publiés d'abord, puis les autres, 3 lignes au maximum.
+const boardProjects = [...projects.filter((p) => p.publie), ...projects.filter((p) => !p.publie)].slice(0, 3);
+---
+
+<BaseLayout header="home">
+  <section class="flex flex-col gap-6 px-4 pb-12 pt-4 md:px-8 md:pb-16 md:pt-6" aria-labelledby="hero-title">
+    <p class="font-display text-label uppercase tracking-widest text-accent">{site.kicker}</p>
+    <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-16">
+      <h1 id="hero-title" class="text-[2.75rem] leading-[1.1] uppercase md:text-h1">
+        <span class="block text-fg">{site.heroTitle[0]}</span>
+        <span class="block text-accent">{site.heroTitle[1]}</span>
+      </h1>
+      <div class="flex flex-col items-start gap-6 md:w-130 md:shrink-0">
+        <p class="text-body-m text-fg md:text-body-l">{site.intro}</p>
+        <Button href="#projets">VOIR MES PROJETS ↓</Button>
+      </div>
+    </div>
+  </section>
+
+  <div class="flex flex-col gap-16 px-4 pb-16 md:px-8 md:pb-24">
+    <FlightBoard terminal="TERMINAL 01" title="Menu principal">
+      {nav.map((item) => (
+        <FlightRow href={item.href} time={item.time} title={item.label} subtitle={item.subtitle} flight={item.flight} status="enter" />
+      ))}
+    </FlightBoard>
+
+    <div id="projets" class="flex scroll-mt-8 flex-col gap-4">
+      <h2 class="text-4xl uppercase text-fg md:text-h2">MES PROJETS</h2>
+      <p class="text-body-m text-fg-2">Sélection de projets. Clique sur un vol pour ouvrir le dossier.</p>
+      <FlightBoard terminal="TERMINAL 02" title="Projets sélectionnés" destinationLabel="PROJET">
+        {boardProjects.map((p) => (
+          <FlightRow
+            href={p.publie ? `/projets/${p.slug}` : undefined}
+            time={p.heure}
+            title={p.destination}
+            subtitle={p.itemId}
+            flight={p.vol}
+            status={p.statut}
+          />
+        ))}
+      </FlightBoard>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,13 @@
+---
+import Button from '@/components/ui/Button.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Vol introuvable — Enzo Loddo" description="Cette page n’existe pas.">
+  <div class="flex flex-col items-start gap-6 px-4 py-16 md:px-8 md:py-24">
+    <p class="font-display text-label uppercase tracking-widest text-late">● VOL ANNULÉ</p>
+    <h1 class="text-[2.75rem] uppercase text-fg md:text-h1">404 — PAGE INTROUVABLE</h1>
+    <p class="max-w-xl text-body-l text-fg-2">Ce vol n’existe pas ou a été déplacé. Retourne au terminal principal.</p>
+    <Button href="/">RETOUR ACCUEIL</Button>
+  </div>
+</BaseLayout>

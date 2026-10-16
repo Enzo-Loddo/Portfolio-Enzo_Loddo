@@ -1,0 +1,51 @@
+---
+import type { ProjectStatus } from '@/types/project';
+
+interface Props {
+  href?: string;
+  time: string;
+  title: string;
+  subtitle?: string;
+  flight: string;
+  /** `enter` = ligne de menu (« ENTRER → »). Sinon un statut de projet. */
+  status: ProjectStatus | 'enter';
+}
+const { href, time, title, subtitle, flight, status } = Astro.props;
+
+const statusMap = {
+  enter: { label: 'ENTRER →', color: 'text-accent', dot: false },
+  boarding: { label: 'BOARDING', color: 'text-accent', dot: true },
+  on_time: { label: 'ON TIME', color: 'text-ok', dot: true },
+  delayed: { label: 'DELAYED', color: 'text-late', dot: true },
+} as const;
+const s = statusMap[status];
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag
+  href={href}
+  class:list={[
+    'flight-row grid grid-cols-[1fr_auto] items-center gap-x-6 gap-y-2 border-b-2 border-line px-3 py-4',
+    'md:grid-cols-[200px_1fr_200px_300px]',
+    !href && 'opacity-80',
+  ]}
+>
+  <span class="led order-1 font-display text-3xl font-medium text-accent md:order-none md:col-start-1 md:row-start-1 md:text-board">
+    {time}
+  </span>
+  <span class="order-3 col-span-2 md:order-none md:col-span-1 md:col-start-2 md:row-start-1">
+    <span class="block font-display text-3xl font-medium uppercase text-fg-2 md:text-row">{title}</span>
+    {subtitle && <span class="block text-caption text-fg-muted">{subtitle}</span>}
+  </span>
+  <span class="order-4 col-span-2 font-display text-label uppercase tracking-widest text-fg-muted md:order-none md:col-span-1 md:col-start-3 md:row-start-1 md:text-h3 md:normal-case md:tracking-normal md:text-fg-2">
+    {flight}
+  </span>
+  <span
+    class:list={[
+      'order-2 justify-self-end font-display text-nav font-medium tracking-wider md:order-none md:col-start-4 md:row-start-1 md:justify-self-start md:text-status',
+      s.color,
+    ]}
+  >
+    {s.dot && <span aria-hidden="true">● </span>}{s.label}
+  </span>
+</Tag>
