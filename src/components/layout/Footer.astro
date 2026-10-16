@@ -3,7 +3,8 @@ import SocialLinks from '@/components/ui/SocialLinks.astro';
 import { nav, site } from '@/data/site';
 ---
 
-<footer class="mt-auto bg-deep px-4 pb-8 pt-10 md:px-8 md:pt-12">
+<!-- Pas de fond plein : un dégradé transparent → sombre évite toute démarcation avec la page. -->
+<footer class="mt-auto bg-linear-to-b from-transparent via-deep/40 to-deep/70 px-4 pb-8 pt-10 md:px-8 md:pt-14">
   <div class="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
     <SocialLinks />
     <nav aria-label="Navigation du pied de page">
@@ -11,7 +12,10 @@ import { nav, site } from '@/data/site';
         {
           nav.map((item) => (
             <li>
-              <a href={item.href} class="font-display text-nav uppercase text-accent hover:underline-offset-4">
+              <a
+                href={item.href}
+                class="inline-block font-display text-nav uppercase text-accent transition-transform hover:-translate-y-0.5"
+              >
                 {item.label}
               </a>
             </li>

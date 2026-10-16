@@ -1,0 +1,18 @@
+---
+/**
+ * Texte animé façon tableau à palettes. La version lisible par les lecteurs d'écran
+ * reste le texte final ; la version animée est masquée (aria-hidden).
+ */
+interface Props {
+  text: string;
+  class?: string;
+  /** Rejoue l'animation quand la ligne est survolée. */
+  onHover?: boolean;
+}
+const { text, class: className, onHover = false } = Astro.props;
+---
+
+<span class:list={[className]}>
+  <span class="sr-only">{text}</span>
+  <span class="inline-block whitespace-pre" aria-hidden="true" data-flap={text} data-flap-hover={onHover ? '' : undefined}>{text}</span>
+</span>

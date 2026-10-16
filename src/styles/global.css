@@ -85,23 +85,182 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Survol d'une ligne de vol : boucle entre deux états toutes les 400 ms */
+  /* Lueur phosphore : la couleur de la lueur suit la couleur du texte */
+  .glow {
+    text-shadow: 0 0 5px color-mix(in srgb, currentColor 65%, transparent);
+  }
+
+  /*
+   * Survol d'une ligne de vol (maquette Figma « Component 9 ») :
+   * chaque texte « respire » dans sa propre couleur en alternant normal / gras.
+   * Cycle lent de 2,4 s avec accélération douce (ease-in-out) pour un rendu fluide.
+   */
+  .flight-row:hover .blink-text,
+  .flight-row:focus-visible .blink-text {
+    animation: blink-bold 2.4s ease-in-out infinite;
+  }
+
+  /* --- Ligne de vol : repère de porte, balayage lumineux, flèche --- */
+  .flight-row {
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.6s ease;
+  }
   .flight-row:hover,
   .flight-row:focus-visible {
-    animation: flight-blink 0.8s steps(1) infinite;
+    background-color: rgb(246 221 11 / 0.05);
+  }
+  /* Repère jaune à gauche (comme le curseur d'un panneau d'affichage) */
+  .flight-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14%;
+    bottom: 14%;
+    width: 4px;
+    background: var(--color-accent);
+    box-shadow: 0 0 10px var(--color-accent);
+    transform: scaleY(0);
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .flight-row:hover::before,
+  .flight-row:focus-visible::before {
+    transform: scaleY(1);
+  }
+  /* Faisceau lumineux qui traverse la ligne */
+  .flight-row::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent 0%, rgb(246 221 11 / 0.1) 50%, transparent 100%);
+    transform: translateX(-100%);
+  }
+  .flight-row:hover::after,
+  .flight-row:focus-visible::after {
+    animation: row-sweep 3.2s ease-in-out infinite;
+  }
+  .flight-row:hover .arrow,
+  .flight-row:focus-visible .arrow {
+    animation: arrow-nudge 1.6s ease-in-out infinite;
+  }
+
+  /* --- Statuts : pastille qui pulse, retard qui clignote --- */
+  .status-dot {
+    display: inline-block;
+    animation: dot-pulse 2.4s ease-in-out infinite;
+  }
+  .status-dot--late {
+    animation: dot-blink 1.4s steps(1) infinite;
+  }
+
+  /* --- Bandeau d'annonces défilant --- */
+  .ticker {
+    animation: ticker-scroll 60s linear infinite;
+    will-change: transform;
+  }
+  /* Pause au survol de la barre entière : le défilement reprend exactement où il s'est arrêté. */
+  .ticker-bar:hover .ticker {
+    animation-play-state: paused;
   }
 }
 
-@keyframes flight-blink {
-  0%   { background-color: rgb(246 221 11 / 0.12); }
-  50%  { background-color: rgb(246 221 11 / 0.26); }
+/* État « gras » : graisse 700, léger contour et halo dans la couleur du texte. */
+@keyframes blink-bold {
+  0%, 100% { font-weight: 500; -webkit-text-stroke: 0 currentColor; text-shadow: 0 0 0 transparent; }
+  35%, 60% { font-weight: 700; -webkit-text-stroke: 1px currentColor; text-shadow: 0 0 14px currentColor; }
+}
+
+@keyframes row-sweep {
+  0%   { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(100%); }
+}
+
+@keyframes arrow-nudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(10px); }
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+@keyframes dot-blink {
+  0%   { opacity: 1; }
+  50%  { opacity: 0; }
+}
+
+@keyframes ticker-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+/*
+ * Écran cathodique (CRT) : fond d'affiche d'écran ancien.
+ * Activé par la classe `crt` sur <body> (prop `crt` de BaseLayout).
+ * Couches : lueur du tube, lignes de balayage, vignettage, grain, barre de rafraîchissement.
+ */
+.crt {
+  background: radial-gradient(ellipse 80% 60% at 50% 35%, #3b3b3b 0%, #262626 45%, #121212 80%, #070707 100%) fixed;
+  position: relative;
+}
+
+.crt::before,
+.crt::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* Lignes de balayage + vignettage + léger scintillement */
+.crt::before {
+  background:
+    radial-gradient(ellipse 120% 100% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.55) 100%),
+    repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.28) 0, rgb(0 0 0 / 0.28) 1px, transparent 1px, transparent 3px);
+  animation: crt-flicker 6s steps(1) infinite;
+}
+
+/* Grain du tube + barre de rafraîchissement qui descend */
+.crt::after {
+  background:
+    linear-gradient(to bottom, transparent 0%, rgb(255 255 255 / 0.5) 50%, transparent 100%) 0 -30% / 100% 30% no-repeat,
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.09;
+  mix-blend-mode: screen;
+  animation: crt-roll 7s linear infinite;
+}
+
+@keyframes crt-roll {
+  to { background-position: 0 130%, 0 0; }
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  92%      { opacity: 0.93; }
+  93%      { opacity: 1; }
+  97%      { opacity: 0.96; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .flight-row:hover,
-  .flight-row:focus-visible {
+  .crt::before,
+  .crt::after { animation: none; }
+  .ticker,
+  .ticker-bar:hover .ticker,
+  .status-dot,
+  .status-dot--late,
+  .flight-row:hover::after,
+  .flight-row:focus-visible::after,
+  .flight-row:hover .arrow,
+  .flight-row:focus-visible .arrow { animation: none; }
+  .flight-row:hover .blink-text,
+  .flight-row:focus-visible .blink-text {
     animation: none;
-    background-color: rgb(246 221 11 / 0.18);
+    font-weight: 700;
+    -webkit-text-stroke: 1px currentColor;
+    text-shadow: 0 0 14px currentColor;
   }
 }

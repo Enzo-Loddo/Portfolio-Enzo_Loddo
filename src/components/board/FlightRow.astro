@@ -1,5 +1,6 @@
 ---
 import type { ProjectStatus } from '@/types/project';
+import Flap from './Flap.astro';
 
 interface Props {
   href?: string;
@@ -13,10 +14,10 @@ interface Props {
 const { href, time, title, subtitle, flight, status } = Astro.props;
 
 const statusMap = {
-  enter: { label: 'ENTRER →', color: 'text-accent', dot: false },
-  boarding: { label: 'BOARDING', color: 'text-accent', dot: true },
-  on_time: { label: 'ON TIME', color: 'text-ok', dot: true },
-  delayed: { label: 'DELAYED', color: 'text-late', dot: true },
+  enter: { label: 'CHECK-IN', color: 'text-accent', dot: false, arrow: true },
+  boarding: { label: 'BOARDING', color: 'text-accent', dot: true, arrow: false },
+  on_time: { label: 'ON TIME', color: 'text-ok', dot: true, arrow: false },
+  delayed: { label: 'DELAYED', color: 'text-late', dot: true, arrow: false },
 } as const;
 const s = statusMap[status];
 const Tag = href ? 'a' : 'div';
@@ -24,28 +25,37 @@ const Tag = href ? 'a' : 'div';
 
 <Tag
   href={href}
+  data-flap-row
   class:list={[
-    'flight-row grid grid-cols-[1fr_auto] items-center gap-x-6 gap-y-2 border-b-2 border-line px-3 py-4',
+    'flight-row grid grid-cols-[1fr_auto] items-center gap-x-6 gap-y-2 border-b-2 border-line px-3 py-6 md:py-7',
     'md:grid-cols-[200px_1fr_200px_300px]',
     !href && 'opacity-80',
   ]}
 >
-  <span class="led order-1 font-display text-3xl font-medium text-accent md:order-none md:col-start-1 md:row-start-1 md:text-board">
-    {time}
-  </span>
+  <Flap
+    text={time}
+    class="blink-text led order-1 font-display text-3xl font-medium text-accent md:order-none md:col-start-1 md:row-start-1 md:text-board"
+  />
   <span class="order-3 col-span-2 md:order-none md:col-span-1 md:col-start-2 md:row-start-1">
-    <span class="block font-display text-3xl font-medium uppercase text-fg-2 md:text-row">{title}</span>
+    <Flap
+      text={title}
+      onHover
+      class="blink-text block font-display text-3xl font-medium uppercase text-fg-2 md:text-row"
+    />
     {subtitle && <span class="block text-caption text-fg-muted">{subtitle}</span>}
   </span>
-  <span class="order-4 col-span-2 font-display text-label uppercase tracking-widest text-fg-muted md:order-none md:col-span-1 md:col-start-3 md:row-start-1 md:text-h3 md:normal-case md:tracking-normal md:text-fg-2">
-    {flight}
-  </span>
+  <Flap
+    text={flight}
+    onHover
+    class="blink-text order-4 col-span-2 font-display text-label uppercase tracking-widest text-fg-muted md:order-none md:col-span-1 md:col-start-3 md:row-start-1 md:text-h3 md:normal-case md:tracking-normal md:text-fg-2"
+  />
   <span
     class:list={[
-      'order-2 justify-self-end font-display text-nav font-medium tracking-wider md:order-none md:col-start-4 md:row-start-1 md:justify-self-start md:text-status',
+      'blink-text glow order-2 justify-self-end font-display text-nav font-medium tracking-wider md:order-none md:col-start-4 md:row-start-1 md:justify-self-start md:text-status',
       s.color,
     ]}
   >
-    {s.dot && <span aria-hidden="true">● </span>}{s.label}
+    {s.dot && <span class:list={['status-dot', status === 'delayed' && 'status-dot--late']} aria-hidden="true">●</span>}
+    {s.dot && ' '}{s.label}{s.arrow && <span class="arrow ml-2 inline-block" aria-hidden="true">→</span>}
   </span>
 </Tag>

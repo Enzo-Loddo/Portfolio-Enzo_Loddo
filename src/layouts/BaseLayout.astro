@@ -11,8 +11,10 @@ interface Props {
   description?: string;
   /** `home` affiche le bandeau DEPARTURES, `inner` le bandeau ARRIVALS. */
   header?: 'home' | 'inner';
+  /** Fond « écran cathodique » (CRT) : lignes de balayage, vignettage, grain. */
+  crt?: boolean;
 }
-const { title = site.title, description = site.description, header = 'inner' } = Astro.props;
+const { title = site.title, description = site.description, header = 'inner', crt = false } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 ---
 
@@ -33,7 +35,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <meta property="og:locale" content="fr_FR" />
     <title>{title}</title>
   </head>
-  <body class="flex min-h-dvh flex-col bg-base">
+  <body class:list={['flex min-h-dvh flex-col', crt ? 'crt' : 'bg-base']}>
     <a
       href="#contenu"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-accent focus:px-4 focus:py-2 focus:text-ink"

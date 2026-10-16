@@ -1,4 +1,6 @@
 ---
+// Logo DEPARTURES exporté de la maquette Figma (texte vectorisé + avion).
+import departuresLogo from '@/assets/logo/departures.svg';
 import Icon from '@/components/ui/Icon.astro';
 import { nav } from '@/data/site';
 
@@ -14,9 +16,15 @@ const current = Astro.url.pathname.replace(/\/$/, '');
   <div class="flex items-center justify-between py-4 md:justify-center md:py-6">
     {
       variant === 'home' ? (
-        <p class="flex items-center gap-3 font-display text-3xl font-semibold uppercase tracking-[0.1em] text-accent md:gap-4 md:text-6xl">
-          <Icon name="plane" size={56} class="size-8 md:size-14" />
-          DEPARTURES
+        <p class="flex justify-center">
+          <img
+            src={departuresLogo.src}
+            width={departuresLogo.width}
+            height={departuresLogo.height}
+            alt="DEPARTURES"
+            class="h-9 w-auto md:h-14"
+            fetchpriority="high"
+          />
         </p>
       ) : (
         <a

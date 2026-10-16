@@ -1,0 +1,47 @@
+---
+import { nav } from '@/data/site';
+
+/** Bandeau d'annonces façon hall d'aéroport : horloges (France / La Réunion) + texte défilant. */
+const announcements = nav.map((n) => `● ${n.label} — PORTE ${n.flight} — EMBARQUEMENT IMMÉDIAT`);
+---
+
+<div class="ticker-bar flex items-stretch border-y border-line bg-deep/70 font-display uppercase" role="presentation">
+  <div class="hidden shrink-0 items-center gap-8 border-r border-line px-4 py-2 text-label tracking-widest md:flex">
+    <!-- Largeur fixe : le défilement à droite ne bouge plus quand les chiffres changent. -->
+    <p class="flex items-baseline gap-3">
+      <span class="text-fg-muted">MONTBÉLIARD</span>
+      <time class="led inline-block w-30 text-nav text-accent" data-clock="Europe/Paris">--:--:--</time>
+    </p>
+    <p class="flex items-baseline gap-3">
+      <span class="text-fg-muted">LA RÉUNION</span>
+      <time class="led inline-block w-30 text-nav text-accent" data-clock="Indian/Reunion">--:--:--</time>
+    </p>
+  </div>
+  <div class="relative flex-1 overflow-hidden py-2" aria-hidden="true">
+    <div class="ticker flex w-max gap-16 whitespace-nowrap text-label tracking-widest text-fg-2">
+      {[0, 1].map(() => <p class="flex gap-16">{announcements.map((a) => <span>{a}</span>)}</p>)}
+    </div>
+  </div>
+</div>
+
+<script>
+  const formatters = new Map<string, Intl.DateTimeFormat>();
+  const clocks = document.querySelectorAll<HTMLElement>('[data-clock]');
+
+  const tick = () => {
+    const now = new Date();
+    clocks.forEach((el) => {
+      const zone = el.dataset.clock!;
+      if (!formatters.has(zone)) {
+        formatters.set(
+          zone,
+          new Intl.DateTimeFormat('fr-FR', { timeZone: zone, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        );
+      }
+      el.textContent = formatters.get(zone)!.format(now);
+    });
+  };
+
+  tick();
+  setInterval(tick, 1000);
+</script>
