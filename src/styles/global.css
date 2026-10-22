@@ -17,6 +17,7 @@
   --color-ok: #00e275;
   --color-late: #ff666c;
   --color-line: #555555;
+  --color-stage: #191b1c;
 
   /* Polices : 2 maximum (retour du jury) */
   --font-display: "Oswald Variable", "Arial Narrow", sans-serif;
@@ -263,4 +264,148 @@
     -webkit-text-stroke: 1px currentColor;
     text-shadow: 0 0 14px currentColor;
   }
+}
+
+/* --- Logo ARRIVALS (maquette Figma : Default ⇄ Variant2 au survol) --- */
+.arrivals-logo {
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 0 3px #ffef6c);
+}
+
+.group:hover .arrivals-text,
+.group:focus-visible .arrivals-text {
+  animation: arrivals-blink-text 2.4s ease-in-out infinite;
+}
+
+.group:hover .arrivals-plane,
+.group:focus-visible .arrivals-plane {
+  animation: arrivals-blink-plane 2.4s ease-in-out infinite;
+}
+
+@keyframes arrivals-blink-text {
+  0%, 100% { stroke-width: 0; }
+  35%, 60% { stroke-width: 2.2; }
+}
+
+@keyframes arrivals-blink-plane {
+  0%, 100% { stroke-width: 1; }
+  35%, 60% { stroke-width: 3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .arrivals-text,
+  .group:focus-visible .arrivals-text,
+  .group:hover .arrivals-plane,
+  .group:focus-visible .arrivals-plane {
+    animation: none;
+  }
+  .group:hover .arrivals-text,
+  .group:focus-visible .arrivals-text { stroke-width: 2.2; }
+  .group:hover .arrivals-plane,
+  .group:focus-visible .arrivals-plane { stroke-width: 3; }
+}
+
+/* --- Transition de page « atterrissage » : GIF d'avion (départ) puis volets noirs (arrivée) --- */
+.pt {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  visibility: hidden;
+}
+.pt-bg {
+  position: absolute;
+  inset: 0;
+  background: #050505;
+  opacity: 0;
+}
+.pt-gif {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: saturate(1.1) contrast(1.05);
+}
+.pt-caption {
+  position: absolute;
+  left: 50%;
+  bottom: max(7vh, 40px);
+  width: min(70vw, 420px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  font: 500 clamp(0.9rem, 1.4vw, 1.25rem) / 1 var(--font-display);
+  letter-spacing: 0.3em;
+  color: var(--color-accent);
+  text-shadow: 0 0 12px rgb(246 221 11 / 0.6);
+  opacity: 0;
+}
+.pt-bar {
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 0.25);
+  position: relative;
+  overflow: hidden;
+}
+.pt-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  box-shadow: 0 0 10px var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.pt-blinds {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  visibility: hidden;
+}
+.pt-blinds i {
+  background: #050505;
+  transform: scaleY(0);
+  transform-origin: top;
+  margin-inline: -0.5px;
+}
+
+/* Départ : le GIF de l'avion qui atterrit apparaît en fondu, la barre se remplit, puis fondu vers le noir */
+.pt.is-in { visibility: visible; }
+.pt.is-in .pt-bg { opacity: 1; transition: opacity 0.3s ease; }
+.pt.is-in .pt-gif { animation: pt-gif var(--pt-duration, 2.9s) linear forwards; }
+.pt.is-in .pt-caption { animation: pt-caption var(--pt-duration, 2.9s) linear forwards; }
+.pt.is-in .pt-bar::after { animation: pt-bar var(--pt-duration, 2.9s) cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+
+@keyframes pt-gif {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes pt-caption {
+  0%   { opacity: 0; transform: translate(-50%, 12px); }
+  14%  { opacity: 1; transform: translate(-50%, 0); }
+  90%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes pt-bar { to { transform: scaleX(1); } }
+
+/* Arrivée : la page est déjà couverte (classe posée dans <head>), puis les volets se relèvent */
+.pt-held .pt { visibility: visible; }
+.pt-held .pt .pt-blinds { visibility: visible; }
+.pt-held .pt .pt-blinds i { transform: scaleY(1); transition: none; }
+.pt.is-out { visibility: visible; }
+.pt.is-out .pt-blinds { visibility: visible; }
+.pt.is-out .pt-blinds i {
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1) calc((7 - var(--i)) * 55ms);
 }

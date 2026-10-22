@@ -41,16 +41,3 @@ export const nav = [
     subtitle: 'Profil Community Manager, Infographiste',
   },
 ] as const;
-
-export const bio = [
-  'Originaire de La Réunion, j’ai toujours été animé par la volonté de concevoir des projets à la fois innovants et visuellement captivants. Mon parcours en BUT MMI à Montbéliard m’a permis d’explorer de nombreux domaines du digital, avec une spécialisation affirmée pour la stratégie de communication et le design d’expérience. J’ai eu l’opportunité de travailler sur des projets académiques variés, allant de l’élaboration de stratégies digitales globales au développement d’interfaces interactives.',
-  'En parallèle de mes études, je nourris constamment ma créativité à travers divers projets personnels. Je conçois régulièrement des affiches, des posts et du contenu « story » pour les réseaux sociaux, ce qui me permet d’expérimenter de nouvelles directions artistiques en toute liberté. Je suis toujours à la recherche de nouveaux défis pour mettre en pratique mes compétences, continuer d’apprendre et donner vie à des concepts percutants.',
-] as const;
-
-/** Photos du Polaroïd. Déposer les fichiers dans public/images/polaroid/. */
-export const polaroidPhotos = [
-  { src: '', alt: 'Photo d’Enzo 1' },
-  { src: '', alt: 'Photo d’Enzo 2' },
-  { src: '', alt: 'Photo d’Enzo 3' },
-  { src: '', alt: 'Photo d’Enzo 4' },
-] as const;

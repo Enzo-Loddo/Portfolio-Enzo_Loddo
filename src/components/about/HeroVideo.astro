@@ -1,0 +1,136 @@
+---
+/**
+ * Vidéo de fond (YouTube, lecture automatique, muette, en boucle, sans interface).
+ *
+ * Qualité : le lecteur est rendu en 2560 × 1440 px puis réduit à la taille de l'écran par CSS.
+ * YouTube choisit la définition selon la taille du lecteur : il sert donc de la haute définition
+ * (1440p / 1080p selon la connexion) au lieu d'une version basse qui serait floue une fois agrandie.
+ * Le lecteur est aussi agrandi de 25 % pour rogner le titre et les boutons YouTube.
+ *
+ * Boucle : gérée ici (retour à 0 juste avant la fin) plutôt que par `loop=1`, qui crée une liste de lecture
+ * et fait apparaître les boutons précédent / suivant de YouTube au milieu de l'image.
+ *
+ * Contrôle : les événements `hero:play` / `hero:pause` (window) lancent ou mettent en pause la lecture.
+ */
+import { hero } from '@/data/discover';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+const params = new URLSearchParams({
+  autoplay: '1',
+  mute: '1',
+  controls: '0',
+  disablekb: '1',
+  fs: '0',
+  modestbranding: '1',
+  playsinline: '1',
+  rel: '0',
+  iv_load_policy: '3',
+  cc_load_policy: '0',
+  enablejsapi: '1',
+  vq: 'hd1440',
+});
+const src = `https://www.youtube-nocookie.com/embed/${hero.video.id}?${params.toString()}`;
+---
+
+<div class:list={['hv', className]} data-hv style={`--poster:url(${hero.video.poster})`}>
+  <div class="hv-poster"></div>
+  <iframe
+    class="hv-frame"
+    data-src={src}
+    title={hero.video.title}
+    allow="autoplay; encrypted-media; picture-in-picture"
+    referrerpolicy="strict-origin-when-cross-origin"
+    tabindex="-1"
+    aria-hidden="true"
+  ></iframe>
+</div>
+
+<style>
+  .hv {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #0b0b0b;
+    pointer-events: none;
+  }
+  /* Image d'attente : miniature de la vidéo, visible tant que la lecture n'a pas démarré */
+  .hv-poster {
+    position: absolute;
+    inset: 0;
+    background: var(--poster) center / cover no-repeat;
+    filter: saturate(1.1) contrast(1.05);
+  }
+  .hv-frame {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 2560px;
+    height: 1440px;
+    max-width: none;
+    border: 0;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(var(--k, 0.6));
+    transform-origin: center;
+    transition: opacity 1.4s ease;
+  }
+  .hv.is-playing .hv-frame { opacity: 1; }
+</style>
+
+<script>
+  const instances = document.querySelectorAll<HTMLElement>('[data-hv]');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  instances.forEach((box) => {
+    const frame = box.querySelector<HTMLIFrameElement>('.hv-frame')!;
+    // Sur mobile / bureau, une seule des deux instances est visible : on ne charge que celle-là.
+    if (reduce || box.offsetParent === null) return;
+
+    // Ajuste la taille du lecteur 2560 × 1440 pour qu'il recouvre toute la zone (+ 25 % de rognage)
+    const fit = () => {
+      const r = box.getBoundingClientRect();
+      const k = Math.max(r.width / 2560, r.height / 1440) * 1.25;
+      frame.style.setProperty('--k', k.toFixed(4));
+    };
+    fit();
+    window.addEventListener('resize', fit);
+
+    const post = (msg: object) => frame.contentWindow?.postMessage(JSON.stringify(msg), '*');
+    const command = (func: string) => post({ event: 'command', func, args: [] });
+
+    let looping = false;
+    // Dès que la lecture démarre, on fait apparaître la vidéo en fondu ; on boucle avant l'écran de fin
+    window.addEventListener('message', (e) => {
+      if (e.source !== frame.contentWindow) return;
+      try {
+        const d = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        const state = d?.event === 'onStateChange' ? d.info : d?.info?.playerState;
+        if (state === 1 && !box.classList.contains('is-playing')) {
+          // Petit délai : l'icône lecture / pause de YouTube, affichée au démarrage, a disparu avant le fondu
+          window.setTimeout(() => box.classList.add('is-playing'), 1400);
+        }
+        const t = d?.info?.currentTime;
+        const total = d?.info?.duration;
+        if ((state === 0 || (t && total && total - t < 0.9)) && !looping) {
+          looping = true;
+          post({ event: 'command', func: 'seekTo', args: [0, true] });
+          command('playVideo');
+          window.setTimeout(() => (looping = false), 3000);
+        }
+      } catch {
+        /* message non JSON : ignoré */
+      }
+    });
+
+    frame.addEventListener('load', () => {
+      post({ event: 'listening', id: 1, channel: 'widget' });
+    });
+
+    window.addEventListener('hero:play', () => command('playVideo'));
+    window.addEventListener('hero:pause', () => command('pauseVideo'));
+
+    frame.src = `${frame.dataset.src}&origin=${encodeURIComponent(location.origin)}`;
+  });
+</script>

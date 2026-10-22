@@ -4,17 +4,29 @@ import '@fontsource-variable/inter';
 import '@/styles/global.css';
 import Footer from '@/components/layout/Footer.astro';
 import Header from '@/components/layout/Header.astro';
+import { transition } from '@/data/discover';
 import { site } from '@/data/site';
 
 interface Props {
   title?: string;
   description?: string;
   /** `home` affiche le bandeau DEPARTURES, `inner` le bandeau ARRIVALS. */
-  header?: 'home' | 'inner';
+  header?: 'home' | 'inner' | 'none';
   /** Fond « écran cathodique » (CRT) : lignes de balayage, vignettage, grain. */
   crt?: boolean;
+  /** `false` quand la page gère elle-même son pied de page (ex. Me découvrir). */
+  footer?: boolean;
+  /** Classe de fond de remplacement (par défaut `bg-base`). */
+  background?: string;
 }
-const { title = site.title, description = site.description, header = 'inner', crt = false } = Astro.props;
+const {
+  title = site.title,
+  description = site.description,
+  header = 'inner',
+  crt = false,
+  footer = true,
+  background = 'bg-base',
+} = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 ---
 
@@ -34,18 +46,41 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_FR" />
     <title>{title}</title>
+    <script is:inline>
+      try {
+        if (sessionStorage.getItem('pt') === '1' && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('pt-held');
+        }
+      } catch (e) {}
+    </script>
   </head>
-  <body class:list={['flex min-h-dvh flex-col', crt ? 'crt' : 'bg-base']}>
+  <body class:list={['flex min-h-dvh flex-col', crt ? 'crt' : background]}>
     <a
       href="#contenu"
       class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:bg-accent focus:px-4 focus:py-2 focus:text-ink"
     >
       Aller au contenu
     </a>
-    <Header variant={header} />
+    {header !== 'none' && <Header variant={header} />}
     <main id="contenu">
       <slot />
     </main>
-    <Footer />
+    {footer && <Footer />}
+
+    <!-- Transition de page : GIF d'un avion qui atterrit (départ) + volets noirs (arrivée) -->
+    <div class="pt" id="pt" aria-hidden="true" data-gif={transition.gif} data-duration={transition.duration}>
+      <div class="pt-bg"></div>
+      <img class="pt-gif" alt="" decoding="async" />
+      <div class="pt-caption">
+        <span>{transition.caption}</span>
+        <i class="pt-bar"></i>
+      </div>
+      <div class="pt-blinds">
+        {Array.from({ length: 8 }, (_, i) => <i style={`--i:${i}`} />)}
+      </div>
+    </div>
+    <script>
+      import '@/scripts/page-transition';
+    </script>
   </body>
 </html>

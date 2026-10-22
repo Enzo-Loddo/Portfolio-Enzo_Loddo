@@ -1,0 +1,1258 @@
+---
+/**
+ * Scène « Me découvrir » (desktop) — reprise de la maquette Figma, enrichie.
+ *
+ * Principe (inchangé) : des éléments FIXES (logo ARRIVALS, appareil Polaroïd, flèches) et un arrière-plan
+ * qui défile derrière eux à chaque clic. Ajouts :
+ *  - écran d'arrivée (héros) qui se lève comme un rideau ;
+ *  - parallaxe à la souris, balancement des plantes, poussière dorée, grain et lueur ;
+ *  - flash d'appareil photo, photo qui « se développe », avion qui traverse le ciel ;
+ *  - textes qui se composent mot à mot / lettre à lettre, tuiles qui rebondissent ;
+ *  - indicateur d'étapes à droite.
+ */
+import hintBottom from '@/assets/discover/hint-bottom.svg';
+import hintTop from '@/assets/discover/hint-top.svg';
+import ArrivalsLogo from '@/components/layout/ArrivalsLogo.astro';
+import DiscoverHero from './DiscoverHero.astro';
+import { nav, site } from '@/data/site';
+import {
+  arrows, camera, cvHref, dust, header, hint, layers, SCENE, steps, strip, texts, toWords, tools, toolsPanel,
+} from '@/data/discover';
+
+type Pos = [number, number];
+const posVars = (pos: Pos[]) => pos.map(([x, y], i) => `--x${i + 1}:${x};--y${i + 1}:${y}`).join(';');
+const num = (n: number) => Math.round(n * 100) / 100;
+let wi = 0;
+---
+
+<section class="discover" data-discover data-state="0" aria-label="Me découvrir">
+  <div class="scene" data-scene>
+    {/* Lueur chaude qui dérive lentement */}
+    <div class="leak" aria-hidden="true"></div>
+
+    {/* ---------- Arrière-plan mobile (défile à chaque état) ---------- */}
+    {
+      layers.map((l) => (
+        <img
+          class:list={['layer', 'decor', `a-${l.anchor}`]}
+          src={l.src}
+          alt={l.alt}
+          width={Math.round(l.w)}
+          height={Math.round(l.h)}
+          style={[
+            `--w:${num(l.w)}`,
+            `--h:${num(l.h)}`,
+            posVars(l.pos),
+            `--depth:${l.depth}`,
+            `--d:${l.enter}s`,
+            l.sway ? `--sway:${l.sway.deg}deg;--sway-dur:${l.sway.dur}s;--sway-o:${l.sway.origin};--sway-delay:${l.sway.delay ?? 0}s` : '',
+          ].join(';')}
+          data-sway={l.sway ? '' : undefined}
+          data-label={l.label}
+          decoding="async"
+          draggable="false"
+        />
+      ))
+    }
+
+    {/* Poussière dorée */}
+    <div class="dust" aria-hidden="true">
+      {
+        dust.map((d) => (
+          <span
+            style={`left:${d.x}%;top:${d.y}%;width:${d.size}px;height:${d.size}px;--dur:${d.dur}s;--delay:${d.delay}s;--drift:${d.drift}px`}
+          />
+        ))
+      }
+    </div>
+
+    {/* Bande de 4 Polaroïds qui sort de l'appareil */}
+    <div
+      class="layer a-l strip"
+      style={`--w:${strip.w};--h:${strip.h};${posVars(strip.pos)};--depth:0;--d:1s`}
+      aria-hidden="true"
+    >
+      <div
+        class="abs bg-white"
+        style={`--bx:${strip.backing.x};--by:${strip.backing.y};--bw:${strip.backing.w};--bh:${strip.backing.h}`}
+      >
+      </div>
+      {
+        strip.frames.map((f, i) => (
+          <>
+            <img
+              class="abs"
+              src={strip.frame.src}
+              alt=""
+              style={`--bx:0;--by:${f.y};--bw:${strip.frame.w};--bh:${strip.frame.h}`}
+              decoding="async"
+            />
+            <img
+              class={`abs photo p${i + 1}`}
+              src={f.photo.src}
+              alt={f.photo.alt}
+              style={`--bx:${f.photo.x};--by:${f.photo.y};--bw:${f.photo.w};--bh:${f.photo.h}`}
+              decoding="async"
+            />
+          </>
+        ))
+      }
+    </div>
+
+    {/* ---------- État 1 : titre, bio, indication « Clique » ---------- */}
+    <h2 class="fx s1 title a-l" style="--x:30;--y:148" aria-label={texts.title}>
+      {Array.from(texts.title).map((c, i) => <span class="chr" style={`--i:${i}`} aria-hidden="true">{c === ' ' ? ' ' : c}</span>)}
+    </h2>
+    <div class="fx s1 bio a-c" style="--x:445;--y:200;--w:640">
+      <span class="bio-bar" aria-hidden="true"></span>
+      <p class="lead">
+        {
+          toWords(texts.bio.lead).map(({ w, b, join }) => (
+            <>
+              <span class:list={['w', b && 'b']} style={`--i:${wi++}`}>{w}</span>{join ? '' : ' '}
+            </>
+          ))
+        }
+      </p>
+      {
+        texts.bio.paragraphs.map((p) => (
+          <p>
+            {toWords(p).map(({ w, b, join }) => (
+              <>
+                <span class:list={['w', b && 'b']} style={`--i:${wi++}`}>{w}</span>{join ? '' : ' '}
+              </>
+            ))}
+          </p>
+        ))
+      }
+      <p class="closing">
+        {
+          toWords(texts.bio.closing).map(({ w, b, join }) => (
+            <>
+              <span class:list={['w', b && 'b']} style={`--i:${wi++}`}>{w}</span>{join ? '' : ' '}
+            </>
+          ))
+        }
+      </p>
+    </div>
+    <p class="fx s1 hint a-l" style={`--x:${hint.label[0]};--y:${hint.label[1]}`}>{texts.hint}</p>
+    <img
+      class="fx s1 hint-arrow a-l"
+      src={hintTop.src}
+      alt=""
+      style={`--x:${hint.top.pos[0]};--y:${hint.top.pos[1]};--w:${hint.top.w};--h:${hint.top.h}`}
+    />
+    <img
+      class="fx s1 hint-arrow a-l"
+      src={hintBottom.src}
+      alt=""
+      style={`--x:${hint.bottom.pos[0]};--y:${hint.bottom.pos[1]};--w:${hint.bottom.w};--h:${hint.bottom.h}`}
+    />
+
+    {/* ---------- État 2 : logiciels & outils ---------- */}
+    <h2 class="fx s2 tools-title a-c" style="--x:742;--y:136;--w:430" aria-label={texts.toolsTitle}>
+      {Array.from(texts.toolsTitle).map((c, i) => <span class="chr" style={`--i:${i}`} aria-hidden="true">{c === ' ' ? ' ' : c}</span>)}
+    </h2>
+    {
+      tools.map((t, i) => (
+        <button
+          type="button"
+          class="fx s2 tool a-c"
+          style={`--x:${t.x};--y:${t.y};--w:123;--h:123;--i:${i}`}
+          aria-label={t.name}
+          aria-describedby={`tp-${i}`}
+          data-tool={i}
+        >
+          <img
+            class="abs"
+            src={t.src}
+            alt=""
+            style={`--bx:${t.logo.x};--by:${t.logo.y};--bw:${t.logo.w};--bh:${t.logo.h}`}
+            decoding="async"
+          />
+          <span class="tool-shine" aria-hidden="true"></span>
+        </button>
+      ))
+    }
+    {/* Panneau d'information : change quand on survole / sélectionne un logo */}
+    <div
+      class="fx s2 tools-panel a-c"
+      data-tools-panel
+      aria-live="polite"
+      style={`--x:${toolsPanel.x};--y:${toolsPanel.y};--w:${toolsPanel.w}`}
+    >
+      <p class="tp tp-hint">{toolsPanel.hint}</p>
+      {
+        tools.map((t, i) => (
+          <div class={`tp tp-card tp-${i}`} id={`tp-${i}`}>
+            <div class="tp-head">
+              <span class="tp-logo" aria-hidden="true">
+                <img src={t.src} alt="" />
+              </span>
+              <h3>{t.name}</h3>
+            </div>
+            <p class="tp-desc">{t.desc}</p>
+            <ul class="tp-tags">{t.tags.map((tag) => <li>{tag}</li>)}</ul>
+          </div>
+        ))
+      }
+    </div>
+
+    {/* ---------- État 3 : appel à l'action ---------- */}
+    <div class="fx s3 cta a-c" style="--x:470;--y:172;--w:620;--h:384">
+      <h2 class="abs cta-title" style="--bx:34;--by:20">{texts.ctaTitle}</h2>
+      <p class="abs cta-note" style="--bx:36;--by:82">{texts.ctaNote}</p>
+      <p class="abs cta-chip" style="--bx:34;--by:150">
+        <span class="cta-dot" aria-hidden="true"></span>{texts.ctaAvailability}
+      </p>
+      <a class="abs cta-btn" data-magnetic href={cvHref} download style="--bx:34;--by:206;--bw:250;--bh:66">
+        <span>{texts.ctaCv}</span>
+      </a>
+      <a class="abs cta-btn cta-btn--ghost" data-magnetic href="/contact" style="--bx:300;--by:206;--bw:250;--bh:66">
+        <span>{texts.ctaContact}</span>
+      </a>
+      <div class="abs cta-mail" style="--bx:34;--by:296">
+        <a class="cta-mail-link" href={`mailto:${site.email}`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+            <path d="M3 7l9 6 9-6"></path>
+          </svg>
+          <span>{site.email}</span>
+        </a>
+        <button type="button" class="cta-copy" data-copy={site.email} data-copied={texts.ctaCopied}>
+          <span>{texts.ctaCopy}</span>
+        </button>
+      </div>
+    </div>
+
+    {/* ---------- État 4 : pied de page ---------- */}
+    <div class="fx s4 footer-bg" aria-hidden="true"></div>
+    <nav class="fx s4 footer-nav" aria-label="Navigation">
+      <button type="button" class="abs nav-link a-r" data-goto="1" style="--bx:696;--by:326">{nav[0].label}</button>
+      <a class="abs nav-link a-r" href={nav[1].href} style="--bx:915;--by:326">{nav[1].label}</a>
+      <a class="abs nav-link a-r" href={nav[2].href} style="--bx:1130;--by:329">{nav[2].label}</a>
+    </nav>
+    <p class="fx s4 copyright a-c" style="--x:527;--y:668;--w:219">© 2026 Enzo Loddo</p>
+
+    {/* ---------- Éléments FIXES ---------- */}
+    <button
+      type="button"
+      class="layer a-l camera"
+      data-camera
+      data-label="Clic : photo suivante"
+      aria-label="Prendre la photo suivante"
+      style={`--w:${camera.w};--h:${camera.h};${posVars(camera.pos)};--depth:0;--d:1.2s;--fx:${camera.flash.x}%;--fy:${camera.flash.y}%`}
+    >
+      <img src={camera.src} alt="" width={Math.round(camera.w)} height={Math.round(camera.h)} decoding="async" draggable="false" />
+      <span class="cam-glow"></span>
+    </button>
+
+    <div class="arrows a-l" style={`--x:${arrows.x};--y:${arrows.y};--s:${num(arrows.size)}`}>
+      <button type="button" class="arrow" data-step="-1" aria-label="Section précédente">
+        <svg viewBox="0 0 60 60" fill="none" aria-hidden="true">
+          <path
+            d="M20 30L30 20L40 30M30 20V40M55 30C55 16.1929 43.8071 5 30 5C16.1929 5 5 16.1929 5 30C5 43.8071 16.1929 55 30 55C43.8071 55 55 43.8071 55 30Z"
+            stroke="white"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </button>
+      <button type="button" class="arrow" data-step="1" aria-label="Section suivante">
+        <svg viewBox="0 0 60 60" fill="none" aria-hidden="true">
+          <path
+            d="M20 30L30 40L40 30M30 40V20M55 30C55 16.1929 43.8071 5 30 5C16.1929 5 5 16.1929 5 30C5 43.8071 16.1929 55 30 55C43.8071 55 55 43.8071 55 30Z"
+            stroke="white"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  {/* ---------- Écran d'arrivée (rideau) ---------- */}
+  <DiscoverHero />
+
+  {/* Projecteur qui suit la souris + légende des éléments survolés */}
+  <div class="spot" aria-hidden="true"></div>
+  <div class="cursor-label" data-cursor-label aria-hidden="true"></div>
+
+  {/* ---------- Ambiance : grain + vignette + flash ---------- */}
+  <div class="grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="flash" data-flash aria-hidden="true"></div>
+
+  {/* Logo ARRIVALS : toujours au premier plan, même sur l'écran d'arrivée */}
+  <a
+    class="group header a-c"
+    href="/"
+    aria-label="ARRIVALS — retour à l’accueil"
+    title="Retour à l’accueil"
+    style={`--x:${header.x};--y:${header.y};--w:${header.w};--h:${header.h}`}
+  >
+    <ArrivalsLogo />
+  </a>
+
+  {/* Indicateur d'étapes */}
+  <ol class="progress" aria-label="Étapes">
+    {
+      steps.map((label, i) => (
+        <li>
+          <button type="button" data-goto={i + 1} class={`pi pi-${i + 1}`} aria-label={`Aller à : ${label}`}>
+            <span class="pi-num">0{i + 1}</span>
+            <span class="pi-line"></span>
+            <span class="pi-label">{label}</span>
+          </button>
+        </li>
+      ))
+    }
+  </ol>
+
+  <p class="sr-only" aria-live="polite" data-live></p>
+</section>
+
+<style define:vars={{ sceneW: SCENE.width, sceneH: SCENE.height }}>
+  .discover {
+    /* 1 unité = 1 px de la maquette, adaptée à la hauteur / largeur de la fenêtre */
+    --u: min(calc(100vw / var(--sceneW)), calc(100dvh / var(--sceneH)));
+    position: relative;
+    height: 100dvh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background: var(--color-stage);
+    color: var(--color-fg);
+    touch-action: none;
+  }
+
+  .scene {
+    position: relative;
+    flex: none;
+    width: 100%;
+    height: calc(var(--sceneH) * var(--u));
+    overflow: hidden;
+  }
+
+  /* Ancrages : gauche, centre, droite (les positions de la maquette sont relatives à ce repère) */
+  .a-l { --ax: 0px; }
+  .a-c { --ax: calc(50% - 640 * var(--u)); }
+  .a-r { --ax: calc(100% - 1280 * var(--u)); }
+
+  /* ---------- Calques animés : un déplacement par état ---------- */
+  .layer {
+    --x: var(--x1);
+    --y: var(--y1);
+    position: absolute;
+    left: var(--ax);
+    top: 0;
+    width: calc(var(--w) * var(--u));
+    height: calc(var(--h) * var(--u));
+    max-width: none;
+    transform: translate3d(calc(var(--x) * var(--u)), calc(var(--y) * var(--u)), 0);
+    /* Parallaxe souris : seuls les décors bougent (profondeur) ; le bloc Polaroïd reste fixe */
+    translate: calc(var(--mx, 0) * var(--depth, 0) * -1px) calc(var(--my, 0) * var(--depth, 0) * -1px);
+    transition:
+      transform 1.5s ease-out,
+      translate 0.7s ease-out,
+      opacity 1.2s ease var(--d, 0s),
+      scale 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) var(--d, 0s);
+    will-change: transform;
+    pointer-events: none;
+    user-select: none;
+  }
+  [data-state='2'] .layer { --x: var(--x2); --y: var(--y2); }
+  [data-state='3'] .layer { --x: var(--x3); --y: var(--y3); }
+  [data-state='4'] .layer { --x: var(--x4); --y: var(--y4); }
+
+  /* Avant l'ouverture du rideau : la scène est « éteinte » puis s'assemble */
+  [data-state='0'] .layer { opacity: 0; scale: 0.9; }
+
+  /* Balancement permanent des plantes et photos (propriété rotate : indépendante du déplacement) */
+  .decor[data-sway] {
+    transform-origin: var(--sway-o, 50% 50%);
+    animation: sway var(--sway-dur) ease-in-out var(--sway-delay) infinite;
+  }
+  @keyframes sway {
+    0%, 100% { rotate: calc(var(--sway) * -1); }
+    50%      { rotate: var(--sway); }
+  }
+
+  /* Position / taille à l'intérieur d'un groupe */
+  .abs {
+    position: absolute;
+    left: calc(var(--bx, 0) * var(--u));
+    top: calc(var(--by, 0) * var(--u));
+    width: calc(var(--bw) * var(--u));
+    height: calc(var(--bh) * var(--u));
+    max-width: none;
+  }
+  button.abs, a.abs, p.abs, h2.abs { width: auto; height: auto; }
+  .cta-btn.abs { width: calc(var(--bw) * var(--u)); height: calc(var(--bh) * var(--u)); }
+
+  /* ---------- Photo qui « se développe » ---------- */
+  .photo {
+    filter: grayscale(1) brightness(0.45) contrast(1.1) sepia(0.4) blur(1.5px);
+    transition: filter 2.2s ease;
+  }
+  [data-state='1'] .p1,
+  [data-state='2'] .p2,
+  [data-state='3'] .p3 {
+    filter: none;
+    transition-delay: 0.9s;
+  }
+  /* Les autres photos restent « ternes » tant qu'elles ne sont pas devant l'appareil */
+  [data-state='4'] .p3 { filter: grayscale(0.6) brightness(0.8); }
+
+  /* ---------- Appareil : lueur du flash ---------- */
+  .camera img { width: 100%; height: 100%; display: block; }
+  .cam-glow {
+    position: absolute;
+    left: var(--fx);
+    top: var(--fy);
+    width: 46%;
+    aspect-ratio: 1;
+    margin: -23% 0 0 -23%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(255 255 255 / 0.95) 0%, rgb(255 244 200 / 0.5) 35%, transparent 70%);
+    opacity: 0;
+    transform: scale(0.4);
+    pointer-events: none;
+  }
+  .camera.shoot .cam-glow { animation: cam-glow 0.9s ease-out; }
+  @keyframes cam-glow {
+    0%   { opacity: 0; transform: scale(0.4); }
+    12%  { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 0; transform: scale(2); }
+  }
+
+  /* ---------- Textes : apparaissent / disparaissent selon l'état ---------- */
+  .fx {
+    position: absolute;
+    left: calc(var(--ax, 0px) + var(--x, 0) * var(--u));
+    top: calc(var(--y, 0) * var(--u));
+    width: calc(var(--w, auto) * var(--u));
+    height: calc(var(--h, auto) * var(--u));
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.45s ease, visibility 0s linear 0.45s;
+  }
+  [data-state='1'] .s1,
+  [data-state='2'] .s2,
+  [data-state='3'] .s3,
+  [data-state='4'] .s4 {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.7s ease 0.7s, visibility 0s;
+  }
+
+  /* Lettres qui se composent */
+  .chr {
+    display: inline-block;
+    white-space: pre;
+    opacity: 0;
+    transform: translateY(0.6em) rotate(5deg);
+    transition: opacity 0.5s ease, transform 0.8s cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
+  [data-state='1'] .s1 .chr,
+  [data-state='2'] .s2 .chr {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(0.8s + var(--i) * 45ms);
+  }
+
+  .title {
+    font: 700 max(calc(73 * var(--u)), 40px) / 1.2 var(--font-display);
+    color: var(--color-accent);
+    white-space: nowrap;
+    width: auto;
+    height: auto;
+    text-shadow: 0 0 28px rgb(246 221 11 / 0.25);
+  }
+
+  /* Bio : mots qui apparaissent un à un, en jaune comme dans la maquette ; les mots clés ressortent en blanc */
+  .bio {
+    font: 400 max(calc(18 * var(--u)), 16px) / 1.65 var(--font-sans);
+    color: var(--color-accent);
+    text-align: left;
+    opacity: 1;
+    transition: visibility 0s linear 0.6s;
+  }
+  [data-state='1'] .bio { transition: visibility 0s; }
+  .bio p { margin: 0; }
+  .bio p + p { margin-top: calc(20 * var(--u)); }
+  /* Petit trait d'accent au-dessus de l'accroche */
+  .bio-bar {
+    display: block;
+    width: calc(64 * var(--u));
+    height: 3px;
+    margin-bottom: calc(16 * var(--u));
+    border-radius: 2px;
+    background: var(--color-accent);
+    box-shadow: 0 0 12px rgb(246 221 11 / 0.7);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  [data-state='1'] .bio-bar { transform: scaleX(1); transition: transform 0.9s cubic-bezier(0.2, 0.9, 0.2, 1) 0.8s; }
+  /* Accroche : plus grande */
+  .bio .lead {
+    font: 500 max(calc(26 * var(--u)), 19px) / 1.35 var(--font-display);
+    letter-spacing: 0.01em;
+    margin-bottom: calc(22 * var(--u));
+  }
+  .bio .w.b { color: #fff; font-weight: 600; }
+  /* Conclusion */
+  .bio .closing {
+    margin-top: calc(22 * var(--u));
+    padding-left: calc(16 * var(--u));
+    border-left: 3px solid var(--color-accent);
+    color: #fff;
+    font-weight: 500;
+  }
+  .bio p + .closing { margin-top: calc(22 * var(--u)); }
+  .bio .w {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.5em);
+    filter: blur(4px);
+    transition: opacity 0.5s ease, transform 0.7s ease, filter 0.6s ease;
+  }
+  [data-state='1'] .bio .w {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition-delay: calc(0.9s + var(--i) * 16ms);
+  }
+
+  .hint {
+    font: 400 max(calc(20 * var(--u)), 16px) / 1.4 var(--font-display);
+    color: #fff;
+    width: auto;
+    height: auto;
+    white-space: nowrap;
+  }
+  .hint-arrow { max-width: none; }
+
+  .tools-title {
+    font: 400 max(calc(55 * var(--u)), 28px) / 1.1 var(--font-display);
+    color: var(--color-accent);
+    white-space: nowrap;
+    height: auto;
+    text-shadow: 0 0 24px rgb(246 221 11 / 0.22);
+  }
+  /* Tuiles : rebondissent l'une après l'autre */
+  .tool {
+    background: var(--color-accent);
+    border-radius: calc(23 * var(--u));
+    scale: 0.4;
+    rotate: -12deg;
+    transition: opacity 0.4s ease, scale 0.4s ease, rotate 0.4s ease, visibility 0s linear 0.45s, transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  [data-state='2'] .tool {
+    scale: 1;
+    rotate: 0deg;
+    transition:
+      opacity 0.5s ease calc(1s + var(--i) * 0.09s),
+      scale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) calc(1s + var(--i) * 0.09s),
+      rotate 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) calc(1s + var(--i) * 0.09s),
+      visibility 0s,
+      transform 0.35s ease,
+      box-shadow 0.35s ease;
+    animation: tool-float 4.5s ease-in-out calc(2.2s + var(--i) * 0.3s) infinite;
+  }
+  @keyframes tool-float {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 calc(-5 * var(--u)); }
+  }
+  .tool {
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transform: perspective(600px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg));
+  }
+  .tool:hover,
+  .tool:focus-visible {
+    transform: perspective(600px) translateY(calc(-8 * var(--u))) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)) scale(1.08);
+    box-shadow: 0 0 calc(34 * var(--u)) rgb(246 221 11 / 0.55);
+    z-index: 2;
+  }
+  /* Reflet lumineux qui suit le curseur sur la tuile */
+  .tool-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--gx, 50%) var(--gy, 30%), rgb(255 255 255 / 0.65), transparent 55%);
+    mix-blend-mode: soft-light;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .tool:hover .tool-shine,
+  .tool:focus-visible .tool-shine { opacity: 1; }
+
+  /* Panneau d'information des outils */
+  .tools-panel {
+    display: grid;
+    padding: calc(20 * var(--u)) calc(24 * var(--u));
+    min-height: calc(170 * var(--u));
+    border: 1px solid rgb(246 221 11 / 0.35);
+    border-radius: calc(20 * var(--u));
+    background: rgb(0 0 0 / 0.38);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 calc(40 * var(--u)) rgb(246 221 11 / 0.08);
+  }
+  .tp {
+    grid-area: 1 / 1;
+    margin: 0;
+    opacity: 0;
+    transform: translateY(calc(10 * var(--u)));
+    pointer-events: none;
+    transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
+  .tp-hint {
+    align-self: center;
+    opacity: 1;
+    transform: none;
+    font: 400 max(calc(18 * var(--u)), 16px) / 1.5 var(--font-sans);
+    color: rgb(255 255 255 / 0.75);
+  }
+  .tools-panel[data-tool] .tp-hint { opacity: 0; }
+  .tools-panel[data-tool='0'] .tp-0,
+  .tools-panel[data-tool='1'] .tp-1,
+  .tools-panel[data-tool='2'] .tp-2,
+  .tools-panel[data-tool='3'] .tp-3,
+  .tools-panel[data-tool='4'] .tp-4,
+  .tools-panel[data-tool='5'] .tp-5 { opacity: 1; transform: none; }
+  .tp-head { display: flex; align-items: center; gap: calc(14 * var(--u)); margin-bottom: calc(8 * var(--u)); }
+  .tp-head h3 {
+    margin: 0;
+    font: 500 max(calc(34 * var(--u)), 24px) / 1.1 var(--font-display);
+    color: var(--color-accent);
+  }
+  .tp-logo {
+    display: grid;
+    place-items: center;
+    width: calc(54 * var(--u));
+    height: calc(54 * var(--u));
+    border-radius: calc(13 * var(--u));
+    background: var(--color-accent);
+  }
+  .tp-logo img { width: 62%; height: 62%; object-fit: contain; }
+  .tp-desc {
+    margin: 0 0 calc(12 * var(--u));
+    font: 400 max(calc(18 * var(--u)), 16px) / 1.5 var(--font-sans);
+    color: #fff;
+  }
+  .tp-tags { display: flex; flex-wrap: wrap; gap: calc(8 * var(--u)); margin: 0; padding: 0; list-style: none; }
+  .tp-tags li {
+    padding: calc(3 * var(--u)) calc(12 * var(--u));
+    border: 1px solid var(--color-accent);
+    border-radius: 999px;
+    font: 400 max(calc(15 * var(--u)), 15px) / 1.4 var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  /* Carte d'appel à l'action */
+  .cta {
+    background: var(--color-accent);
+    border-radius: calc(39 * var(--u));
+    color: #000;
+    transform: translateY(calc(34 * var(--u))) scale(0.94);
+    transition: opacity 0.4s ease, transform 0.5s ease, visibility 0s linear 0.45s;
+  }
+  [data-state='3'] .cta {
+    transform: none;
+    transition: opacity 0.7s ease 0.8s, transform 1s cubic-bezier(0.2, 0.9, 0.2, 1) 0.8s, visibility 0s;
+    box-shadow: 0 0 calc(60 * var(--u)) rgb(246 221 11 / 0.25);
+  }
+  .cta-title {
+    font: 600 max(calc(42 * var(--u)), 22px) / 1.2 var(--font-display);
+    white-space: nowrap;
+    margin: 0;
+  }
+  .cta-note {
+    max-width: calc(552 * var(--u));
+    font: 500 max(calc(16 * var(--u)), 16px) / 1.4 var(--font-sans);
+    margin: 0;
+  }
+  /* Pastille « disponible » avec point vert qui pulse */
+  .cta-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(10 * var(--u));
+    margin: 0;
+    padding: calc(7 * var(--u)) calc(16 * var(--u));
+    border: 2px solid #000;
+    border-radius: 999px;
+    font: 500 max(calc(18 * var(--u)), 16px) / 1.2 var(--font-display);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .cta-dot {
+    position: relative;
+    flex: none;
+    width: calc(12 * var(--u));
+    height: calc(12 * var(--u));
+    border-radius: 50%;
+    background: #0a7a3e;
+  }
+  .cta-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: #0a7a3e;
+    animation: dot-ping 1.8s ease-out infinite;
+  }
+  @keyframes dot-ping {
+    0%   { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+  /* Bouton secondaire : contour noir, se remplit au survol */
+  .cta-btn.cta-btn--ghost {
+    background: transparent;
+    color: #000;
+    border: 3px solid #000;
+  }
+  .cta-btn.cta-btn--ghost:hover,
+  .cta-btn.cta-btn--ghost:focus-visible { background: #000; color: var(--color-accent); box-shadow: none; }
+  /* Ligne e-mail : lien + bouton « Copier » */
+  .cta-mail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(16 * var(--u));
+    width: calc(552 * var(--u));
+    height: auto !important;
+    padding-top: calc(18 * var(--u));
+    border-top: 2px solid rgb(0 0 0 / 0.25);
+  }
+  .cta-mail-link {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(12 * var(--u));
+    color: #000;
+    font: 500 max(calc(24 * var(--u)), 17px) / 1.2 var(--font-display);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    min-width: 0;
+  }
+  .cta-mail-link svg { width: calc(30 * var(--u)); height: calc(30 * var(--u)); flex: none; }
+  .cta-mail-link span { overflow: hidden; text-overflow: ellipsis; }
+  .cta-mail-link:hover span,
+  .cta-mail-link:focus-visible span { text-decoration: underline; text-underline-offset: 4px; }
+  .cta-copy {
+    flex: none;
+    min-width: calc(110 * var(--u));
+    padding: calc(8 * var(--u)) calc(18 * var(--u));
+    border: 0;
+    border-radius: 999px;
+    background: #000;
+    color: var(--color-accent);
+    font: 500 max(calc(17 * var(--u)), 15px) / 1 var(--font-display);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease;
+  }
+  .cta-copy:hover,
+  .cta-copy:focus-visible { transform: translateY(-2px); background: #1a1a1a; }
+  .cta-copy.done { background: #0a7a3e; color: #fff; }
+  .cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+    color: var(--color-accent);
+    border-radius: calc(41 * var(--u));
+    font: 400 max(calc(26 * var(--u)), 18px) / 1 var(--font-display);
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
+    overflow: hidden;
+  }
+  .cta-btn span { position: relative; pointer-events: none; }
+  .cta-btn:hover,
+  .cta-btn:focus-visible { background: #1a1a1a; box-shadow: 0 8px calc(24 * var(--u)) rgb(0 0 0 / 0.35); }
+
+  .footer-bg {
+    left: 0;
+    top: calc(158 * var(--u));
+    width: 100%;
+    height: calc(733 * var(--u));
+    background: linear-gradient(0.3deg, rgb(11 11 11 / 0.52) 69%, rgb(34 34 34 / 0) 98.8%);
+  }
+  .footer-nav { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+  .nav-link {
+    left: calc(var(--ax) + var(--bx) * var(--u));
+    pointer-events: auto;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font: 400 max(calc(30 * var(--u)), 18px) / 1.2 var(--font-display);
+    color: var(--color-accent);
+    white-space: nowrap;
+    text-shadow: 0 0 5px rgb(255 239 108 / 0.55);
+    transition: transform 0.25s ease;
+  }
+  .nav-link:hover,
+  .nav-link:focus-visible { transform: translateY(calc(-3 * var(--u))); }
+  .copyright {
+    font: 400 max(calc(30 * var(--u)), 18px) / 1.2 var(--font-display);
+    color: var(--color-accent);
+    text-align: center;
+    text-shadow: 0 0 5px rgb(255 239 108 / 0.55);
+    height: auto;
+  }
+
+  /* ---------- Éléments fixes ---------- */
+  .header {
+    position: absolute;
+    z-index: 40;
+    left: calc(var(--ax) + var(--x) * var(--u));
+    top: calc((100dvh - var(--sceneH) * var(--u)) / 2 + var(--y) * var(--u));
+    width: calc(var(--w) * var(--u));
+    height: calc(var(--h) * var(--u));
+    display: block;
+  }
+  .header :global(svg) { width: 100%; height: 100%; }
+  /* Le .header est un enfant direct de .discover (pas de .scene) : repère centré sur la fenêtre */
+  .discover > .a-c { --ax: calc(50% - 640 * var(--u)); }
+
+  .arrows {
+    position: absolute;
+    left: calc(var(--ax) + var(--x) * var(--u));
+    top: calc(var(--y) * var(--u));
+    display: flex;
+    flex-direction: column;
+    z-index: 3;
+    transition: opacity 0.6s ease 0.8s;
+  }
+  [data-state='0'] .arrows { opacity: 0; pointer-events: none; }
+  .arrow {
+    width: calc(var(--s) * var(--u));
+    height: calc(var(--s) * var(--u));
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    transition: opacity 0.6s ease, transform 0.25s ease, filter 0.3s ease;
+  }
+  .arrow svg { display: block; width: 100%; height: 100%; }
+  .arrow:hover:not([aria-disabled='true']),
+  .arrow:focus-visible { transform: scale(1.1); filter: drop-shadow(0 0 8px rgb(255 255 255 / 0.7)); }
+  .arrow[aria-disabled='true'] { opacity: 0.35; cursor: default; }
+  /* État final : flèches grisées comme dans la maquette (opacité 13 %), la flèche du haut reste utilisable */
+  [data-state='4'] .arrow { opacity: 0.13; }
+  [data-state='4'] .arrow:hover:not([aria-disabled='true']) { opacity: 1; }
+
+
+  /* Poussière dorée : points qui flottent doucement */
+  .dust { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .dust span {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(255 236 150 / 0.95), rgb(246 221 11 / 0) 70%);
+    opacity: 0;
+    animation: dust var(--dur) ease-in-out var(--delay) infinite;
+  }
+  @keyframes dust {
+    0%   { opacity: 0; transform: translate(0, 0); }
+    20%  { opacity: 0.8; }
+    80%  { opacity: 0.5; }
+    100% { opacity: 0; transform: translate(var(--drift), calc(-140 * var(--u))); }
+  }
+  [data-state='0'] .dust { opacity: 0; }
+
+  /* Lueur chaude (« light leak ») */
+  .leak {
+    position: absolute;
+    inset: -10%;
+    background:
+      radial-gradient(ellipse 45% 40% at 85% 8%, rgb(255 170 60 / 0.16), transparent 70%),
+      radial-gradient(ellipse 40% 45% at 10% 95%, rgb(255 90 60 / 0.1), transparent 70%);
+    animation: leak 14s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes leak {
+    from { transform: translate(-2%, 1%) scale(1); opacity: 0.8; }
+    to   { transform: translate(2%, -1%) scale(1.1); opacity: 1; }
+  }
+
+  /* ---------- Ambiance : grain, vignette, flash ---------- */
+  .grain,
+  .vignette,
+  .flash { position: absolute; inset: 0; pointer-events: none; }
+  .grain {
+    z-index: 20;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    animation: grain 0.8s steps(5) infinite;
+  }
+  @keyframes grain {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-3%, 2%); }
+    50%  { transform: translate(2%, -3%); }
+    75%  { transform: translate(-2%, -1%); }
+    100% { transform: translate(0, 0); }
+  }
+  .vignette {
+    z-index: 21;
+    background: radial-gradient(ellipse 120% 100% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.5) 100%);
+  }
+  .flash {
+    z-index: 25;
+    background: #fff;
+    opacity: 0;
+  }
+  .flash.go { animation: flash 0.9s ease-out; }
+  @keyframes flash {
+    0%   { opacity: 0; }
+    6%   { opacity: 0.8; }
+    100% { opacity: 0; }
+  }
+
+  /* ---------- Indicateur d'étapes ---------- */
+  .progress {
+    position: absolute;
+    z-index: 35;
+    right: max(calc(22 * var(--u)), 14px);
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: opacity 0.6s ease 1s;
+  }
+  [data-state='0'] .progress { opacity: 0; pointer-events: none; }
+  .pi {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    width: 100%;
+    padding: 4px 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font: 400 14px / 1 var(--font-display);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.45);
+    transition: color 0.4s ease;
+  }
+  .pi-label { max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width 0.5s ease, opacity 0.4s ease; }
+  .pi:hover .pi-label,
+  .pi:focus-visible .pi-label { max-width: 120px; opacity: 1; }
+  .pi-line { width: 14px; height: 2px; background: currentColor; transition: width 0.5s cubic-bezier(0.2, 0.9, 0.2, 1), box-shadow 0.4s; }
+  [data-state='1'] .pi-1,
+  [data-state='2'] .pi-2,
+  [data-state='3'] .pi-3,
+  [data-state='4'] .pi-4 { color: var(--color-accent); text-shadow: 0 0 10px rgb(246 221 11 / 0.6); }
+  [data-state='1'] .pi-1 .pi-line,
+  [data-state='2'] .pi-2 .pi-line,
+  [data-state='3'] .pi-3 .pi-line,
+  [data-state='4'] .pi-4 .pi-line { width: 38px; box-shadow: 0 0 10px rgb(246 221 11 / 0.8); }
+  [data-state='1'] .pi-1 .pi-label,
+  [data-state='2'] .pi-2 .pi-label,
+  [data-state='3'] .pi-3 .pi-label,
+  [data-state='4'] .pi-4 .pi-label { max-width: 120px; opacity: 1; }
+
+
+  /* ---------- Survol : décors, appareil, titres ---------- */
+  .decor,
+  .camera { pointer-events: auto; }
+  .decor {
+    cursor: help;
+  }
+  .decor:hover {
+    scale: 1.06;
+    filter: drop-shadow(0 0 22px rgb(246 221 11 / 0.35)) brightness(1.06);
+    transition:
+      transform 1.5s ease-out,
+      translate 0.7s ease-out,
+      opacity 1.2s ease var(--d, 0s),
+      scale 0.4s ease,
+      filter 0.3s ease;
+  }
+  .camera {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  .camera:hover,
+  .camera:focus-visible { animation: cam-wiggle 0.6s ease; }
+  .camera:hover img,
+  .camera:focus-visible img { filter: drop-shadow(0 0 16px rgb(255 255 255 / 0.4)); }
+  @keyframes cam-wiggle {
+    0%, 100% { rotate: 0deg; }
+    25% { rotate: -1.4deg; }
+    55% { rotate: 1.1deg; }
+    80% { rotate: -0.5deg; }
+  }
+  .strip .photo { pointer-events: none; }
+
+
+  /* Invite à cliquer : la flèche du bas pulse jusqu'au premier clic */
+  [data-state='1']:not([data-used]) .arrow[data-step='1'] { animation: arrow-ring 1.8s ease-out infinite; }
+  @keyframes arrow-ring {
+    0%   { filter: drop-shadow(0 0 0 rgb(255 255 255 / 0.7)); transform: translateY(0); }
+    50%  { filter: drop-shadow(0 0 12px rgb(255 255 255 / 0.9)); transform: translateY(calc(4 * var(--u))); }
+    100% { filter: drop-shadow(0 0 0 rgb(255 255 255 / 0)); transform: translateY(0); }
+  }
+
+  /* Carte d'appel à l'action : projecteur qui suit le curseur */
+  .cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle calc(220 * var(--u)) at var(--gx, 50%) var(--gy, 50%), rgb(255 255 255 / 0.55), transparent 70%);
+    mix-blend-mode: soft-light;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  .cta:hover::before { opacity: 1; }
+
+  /* Projecteur doré qui suit la souris + légende */
+  .spot {
+    position: absolute;
+    inset: 0;
+    z-index: 19;
+    pointer-events: none;
+    background: radial-gradient(circle 280px at var(--px, 50%) var(--py, 50%), rgb(255 236 150 / 0.1), transparent 70%);
+    mix-blend-mode: screen;
+    transition: opacity 0.6s ease;
+  }
+  [data-state='0'] .spot { opacity: 0; }
+  .cursor-label {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 60;
+    padding: 6px 12px;
+    border: 1px solid var(--color-accent);
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.78);
+    color: var(--color-accent);
+    font: 400 15px / 1.2 var(--font-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translate(var(--lx, 0px), var(--ly, 0px));
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .cursor-label.on { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .layer { transition-duration: 0.01s; }
+    .fx, .chr, .bio .w, .tool, .cta { transition-duration: 0.01s; transition-delay: 0s; }
+    .decor[data-sway], .tool, .dust span, .leak, .grain { animation: none !important; }
+  }
+</style>
+
+<script>
+  import { STATE_COUNT } from '@/data/discover';
+
+  const root = document.querySelector<HTMLElement>('[data-discover]');
+  if (root) {
+    const prev = root.querySelector<HTMLButtonElement>('[data-step="-1"]')!;
+    const next = root.querySelector<HTMLButtonElement>('[data-step="1"]')!;
+    const live = root.querySelector<HTMLElement>('[data-live]')!;
+    const camera = root.querySelector<HTMLElement>('.camera')!;
+    const flash = root.querySelector<HTMLElement>('[data-flash]')!;
+    const labels = ['Introduction', 'Présentation', 'Logiciels et outils', 'Me contacter', 'Fin de la page'];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const DURATION = 1600; // 1,5 s d'animation + marge
+    let state = 0;
+    let locked = false;
+
+    /** Rejoue une animation CSS portée par une classe. */
+    const replay = (el: HTMLElement, cls: string) => {
+      el.classList.remove(cls);
+      void el.offsetWidth;
+      el.classList.add(cls);
+    };
+
+    const render = (silent = false) => {
+      root.dataset.state = String(state);
+      if (state >= 1 && !silent) root.dataset.used = '';
+      // La vidéo ne tourne que sur l'écran d'arrivée (économie de ressources)
+      if (!reduce && !silent) {
+        if (state === 0) window.dispatchEvent(new Event('hero:play'));
+        else window.setTimeout(() => state !== 0 && window.dispatchEvent(new Event('hero:pause')), 1700);
+      }
+      prev.setAttribute('aria-disabled', String(state <= 0));
+      next.setAttribute('aria-disabled', String(state === STATE_COUNT));
+      live.textContent = `${labels[state]}${state ? ` (${state} sur ${STATE_COUNT})` : ''}`;
+      if (!silent && !reduce) {
+        // Flash d'appareil photo + avion à chaque changement de section
+        if (state >= 1) {
+          replay(camera, 'shoot');
+          replay(flash, 'go');
+        }
+      }
+    };
+
+    const go = (to: number) => {
+      const target = Math.min(Math.max(to, 0), STATE_COUNT);
+      if (target === state || locked) return;
+      state = target;
+      locked = true;
+      render();
+      window.setTimeout(() => (locked = false), DURATION);
+    };
+
+    prev.addEventListener('click', () => go(state - 1));
+    next.addEventListener('click', () => go(state + 1));
+    root.querySelectorAll<HTMLElement>('[data-goto]').forEach((el) =>
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        go(Number(el.dataset.goto));
+      }),
+    );
+    // Clic n'importe où sur l'écran d'arrivée : on embarque
+    root.querySelector('[data-hero]')?.addEventListener('click', () => go(1));
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || (e.key === ' ' && state === 0)) { e.preventDefault(); go(state + 1); }
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); go(state - 1); }
+    });
+
+    // Molette et balayage tactile : même effet que les flèches
+    window.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) < 20) return;
+      go(state + (e.deltaY > 0 ? 1 : -1));
+    }, { passive: true });
+
+    let touchY = 0;
+    window.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', (e) => {
+      const dy = touchY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) > 50) go(state + (dy > 0 ? 1 : -1));
+    }, { passive: true });
+
+    // Parallaxe : les décors suivent doucement la souris, les éléments fixes ne bougent pas
+    if (!reduce) {
+      let raf = 0;
+      window.addEventListener('pointermove', (e) => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          root.style.setProperty('--mx', String(((e.clientX / window.innerWidth) * 2 - 1).toFixed(3)));
+          root.style.setProperty('--my', String(((e.clientY / window.innerHeight) * 2 - 1).toFixed(3)));
+          root.style.setProperty('--px', `${e.clientX}px`);
+          root.style.setProperty('--py', `${e.clientY}px`);
+        });
+      });
+
+      // Boutons « magnétiques » : ils se rapprochent légèrement du curseur
+      root.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((btn) => {
+        btn.addEventListener('pointermove', (e) => {
+          const r = btn.getBoundingClientRect();
+          const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+          const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+          btn.style.transform = `translate(${dx * 10}px, ${dy * 8 - 3}px)`;
+        });
+        btn.addEventListener('pointerleave', () => (btn.style.transform = ''));
+      });
+    }
+
+    // Écran d'arrivée : pas de lecture automatique si l'utilisateur préfère moins d'animations
+    // Le lien de crédit ne doit pas déclencher l'embarquement
+    root.querySelector('.hero-credit a')?.addEventListener('click', (e) => e.stopPropagation());
+
+    // Appareil Polaroïd : un clic = photo suivante
+    root.querySelector('[data-camera]')?.addEventListener('click', () => go(state >= STATE_COUNT ? 1 : state + 1));
+
+    // Panneau d'information des outils + inclinaison des tuiles
+    const panel = root.querySelector<HTMLElement>('[data-tools-panel]');
+    let panelTimer = 0;
+    root.querySelectorAll<HTMLElement>('.tool').forEach((tile) => {
+      const show = () => {
+        window.clearTimeout(panelTimer);
+        panel?.setAttribute('data-tool', tile.dataset.tool ?? '');
+      };
+      const hide = () => {
+        window.clearTimeout(panelTimer);
+        panelTimer = window.setTimeout(() => panel?.removeAttribute('data-tool'), 220);
+      };
+      tile.addEventListener('pointerenter', show);
+      tile.addEventListener('focus', show);
+      tile.addEventListener('click', show);
+      tile.addEventListener('pointerleave', () => {
+        tile.style.removeProperty('--rx');
+        tile.style.removeProperty('--ry');
+        hide();
+      });
+      tile.addEventListener('blur', hide);
+      tile.addEventListener('pointermove', (e) => {
+        if (reduce) return;
+        const r = tile.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        tile.style.setProperty('--rx', `${((px - 0.5) * 22).toFixed(1)}deg`);
+        tile.style.setProperty('--ry', `${((0.5 - py) * 22).toFixed(1)}deg`);
+        tile.style.setProperty('--gx', `${(px * 100).toFixed(0)}%`);
+        tile.style.setProperty('--gy', `${(py * 100).toFixed(0)}%`);
+      });
+    });
+
+    // Bouton « Copier » de l'e-mail
+    root.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+      const label = btn.querySelector('span')!;
+      const original = label.textContent ?? '';
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+          label.textContent = btn.dataset.copied ?? 'OK';
+          btn.classList.add('done');
+          window.setTimeout(() => {
+            label.textContent = original;
+            btn.classList.remove('done');
+          }, 1800);
+        } catch {
+          window.location.href = `mailto:${btn.dataset.copy}`;
+        }
+      });
+    });
+
+    // Carte d'appel à l'action : le reflet suit le curseur
+    root.querySelector<HTMLElement>('.cta')?.addEventListener('pointermove', (e) => {
+      const el = e.currentTarget as HTMLElement;
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--gx', `${(((e.clientX - r.left) / r.width) * 100).toFixed(0)}%`);
+      el.style.setProperty('--gy', `${(((e.clientY - r.top) / r.height) * 100).toFixed(0)}%`);
+    });
+
+    // Légende au survol des décors et de l'appareil
+    const tip = root.querySelector<HTMLElement>('[data-cursor-label]')!;
+    root.addEventListener('pointermove', (e) => {
+      const target = (e.target as Element | null)?.closest<HTMLElement>('[data-label]');
+      if (target && state >= 1) {
+        tip.textContent = target.dataset.label ?? '';
+        tip.style.setProperty('--lx', `${e.clientX + 16}px`);
+        tip.style.setProperty('--ly', `${e.clientY + 20}px`);
+        tip.classList.add('on');
+      } else {
+        tip.classList.remove('on');
+      }
+    });
+    root.addEventListener('pointerleave', () => tip.classList.remove('on'));
+
+    render(true);
+  }
+</script>

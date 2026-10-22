@@ -1,0 +1,51 @@
+IMAGES DE LA PAGE PROJET « LA CITÉ DE DIEU » (BRÉSIL)
+======================================================
+
+Dépose tes fichiers dans CE dossier avec EXACTEMENT les noms ci-dessous
+(minuscules, sans accent, sans espace, sans espace au début du nom).
+
+Dans Figma : sélectionne le calque > panneau de droite > Export > PNG @2x
+(PNG = fond transparent possible). Exporte chaque calque SANS le faire pivoter
+quand c'est possible. Les calques sont dans la frame « Projet 2 » de la page « Maquette ».
+
+COUVERTURE (écran fixe du début)
+--------------------------------
+couverture.jpg           « image portfolio 3 1 » — la photo de la favela + Christ Rédempteur.
+                         IDÉAL : la photo SANS le texte « WELCOME IN BRAZIL » (je le recrée en
+                         vrai texte, net à toutes les tailles). Si tu n'as que la version avec
+                         texte, envoie-la quand même et dis-le-moi.
+
+PRÉSENTATION DU FILM
+--------------------
+affiche.png              « image 3 » — l'affiche du film (sans les scotchs)
+scotch-1.png             « image 4 » — morceau de scotch gris (PNG transparent)
+scotch-2.png             « image 5 » — morceau de scotch gris (PNG transparent)
+scotch-3.png             « image 6 » — morceau de scotch gris (PNG transparent)
+appareil-nikon.png       « image 2 » — l'appareil photo Nikon (PNG transparent)
+papier-dechire.png       « image 8 » — le papier déchiré gris (PNG transparent, sans le texte)
+
+INSPIRATION (collage de 4 photos, contour blanc déchiré conservé)
+------------------------------------------------------------------
+inspiration-1.png        « image 32 » — le groupe d'enfants dans la rue (la grande photo du haut)
+inspiration-2.png        « image 33 » — la photo avec le fond bleu / le couple à la plage
+inspiration-3.png        « image 34 » — l'homme appuyé contre la porte (noir et blanc)
+inspiration-4.png        « image 35 » — le garçon qui prend une photo (bleu)
+
+LE FILM
+-------
+palmier.png             « image 15 » — le palmier (PNG transparent)
+cadre-video.png         (optionnel) la bordure blanche « dessinée » autour de la vidéo
+VIDÉO                    donne-moi SOIT le lien YouTube de la bande-annonce, SOIT le fichier
+                         bande-annonce.mp4 (si tu as les droits). Je ne peux pas extraire
+                         la vidéo de Figma.
+
+COMPARATEUR AVANT / APRÈS
+-------------------------
+comparateur-affiche-film.jpg   « Affiche 2 » — l'affiche originale du film
+comparateur-ma-creation.jpg    « image 29 » — ton affiche finale (le collage rouge)
+
+CE QUE JE FAIS MOI-MÊME (rien à déposer)
+-----------------------------------------
+- les flèches pointillées blanches (je les exporte en vectoriel depuis ton Figma)
+- le logo ARRIVALS, le footer, les textes
+- le comparateur (curseur qu'on fait glisser), le défilement, les effets

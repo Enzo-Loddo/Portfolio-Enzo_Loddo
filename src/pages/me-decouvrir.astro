@@ -1,29 +1,21 @@
 ---
-import PolaroidCarousel from '@/components/about/PolaroidCarousel.astro';
-import ImageOrPlaceholder from '@/components/ui/ImageOrPlaceholder.astro';
-import { bio, polaroidPhotos } from '@/data/site';
+import DiscoverMobile from '@/components/about/DiscoverMobile.astro';
+import DiscoverStage from '@/components/about/DiscoverStage.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
   title="Me découvrir — Enzo Loddo"
-  description="Originaire de La Réunion, étudiant en BUT MMI à Montbéliard : mon parcours, mes projets personnels et mon univers."
+  description="Originaire de La Réunion, étudiant en BUT MMI à Montbéliard : mon parcours, mes outils et mon univers."
+  header="none"
+  footer={false}
+  background="bg-stage"
 >
-  <div class="px-4 pb-16 pt-4 md:px-8 md:pb-24">
-    <h1 class="mb-6 text-4xl uppercase text-accent md:text-h2">ME DÉCOUVRIR</h1>
-    <div class="flex flex-col gap-10 md:flex-row md:gap-16">
-      <PolaroidCarousel photos={polaroidPhotos} />
-      <div class="flex max-w-2xl flex-col gap-6 md:pt-6">
-        {bio.map((paragraph) => <p class="text-body-m text-fg md:text-body-l">{paragraph}</p>)}
-        <div class="mt-4 flex gap-6" aria-hidden="true">
-          <div class="h-56 w-72">
-            <ImageOrPlaceholder alt="" label="CARTE DE LA RÉUNION (décor)" />
-          </div>
-          <div class="hidden h-56 w-48 sm:block">
-            <ImageOrPlaceholder alt="" label="FOUGÈRE / HIBISCUS (décor)" />
-          </div>
-        </div>
-      </div>
-    </div>
+  <!-- Desktop : scène animée (fixe + arrière-plan qui défile). Mobile : version en une colonne. -->
+  <div class="hidden md:block">
+    <DiscoverStage />
+  </div>
+  <div class="md:hidden">
+    <DiscoverMobile />
   </div>
 </BaseLayout>

@@ -1,0 +1,120 @@
+---
+/**
+ * Comparateur avant / après : une poignée à faire glisser (souris, doigt ou flèches du clavier)
+ * révèle l'image « avant » par-dessus l'image « après ».
+ */
+interface Img {
+  src: string;
+  alt: string;
+  label: string;
+}
+interface Props {
+  before: Img;
+  after: Img;
+}
+const { before, after } = Astro.props;
+---
+
+<div class="ba" data-ba style="--pos:50%">
+  <img class="ba-img" src={after.src} alt={after.alt} loading="lazy" draggable="false" />
+  <img class="ba-img ba-before" src={before.src} alt={before.alt} loading="lazy" draggable="false" />
+  <span class="ba-tag ba-tag--l">{before.label}</span>
+  <span class="ba-tag ba-tag--r">{after.label}</span>
+  <div class="ba-line" aria-hidden="true"><span class="ba-knob">◄ ►</span></div>
+  <input
+    class="ba-range"
+    type="range"
+    min="0"
+    max="100"
+    step="1"
+    value="50"
+    aria-label={`Comparer : ${before.label} et ${after.label}`}
+  />
+</div>
+
+<style>
+  .ba {
+    position: relative;
+    aspect-ratio: 960 / 1282;
+    width: min(100%, calc(80svh * 960 / 1282));
+    margin-inline: auto;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.5);
+    user-select: none;
+    touch-action: pan-y;
+    cursor: ew-resize;
+  }
+  .ba-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ba-before {
+    clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+  }
+  .ba-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--pos);
+    width: 3px;
+    background: #f6dd0b;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .ba-knob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    display: grid;
+    place-items: center;
+    min-width: 4.25rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: #f6dd0b;
+    color: #000;
+    font: 600 0.9rem/1 var(--font-display, 'Oswald Variable', sans-serif);
+    letter-spacing: 0.1em;
+    box-shadow: 0 0.5rem 1.25rem rgb(0 0 0 / 0.5);
+  }
+  .ba-tag {
+    position: absolute;
+    bottom: 1rem;
+    padding: 0.35rem 0.8rem;
+    background: #000;
+    color: #f6dd0b;
+    font: 500 1rem/1.2 var(--font-display, 'Oswald Variable', sans-serif);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .ba-tag--l { left: 1rem; }
+  .ba-tag--r { right: 1rem; }
+  /* Le champ range couvre toute la zone : il gère le glisser et le clavier, sans être visible */
+  .ba-range {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+  }
+  .ba:has(.ba-range:focus-visible) {
+    outline: 3px solid #f6dd0b;
+    outline-offset: 4px;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-ba]').forEach((box) => {
+    const range = box.querySelector<HTMLInputElement>('.ba-range')!;
+    const set = () => box.style.setProperty('--pos', `${range.value}%`);
+    range.addEventListener('input', set);
+    set();
+  });
+</script>

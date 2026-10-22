@@ -1,0 +1,100 @@
+---
+/**
+ * Version simple de « Me découvrir » pour petits écrans (< 768 px) : une colonne, sans scène animée.
+ * La version mobile dessinée dans Figma (iPhone 17) pourra la remplacer plus tard.
+ */
+import Footer from '@/components/layout/Footer.astro';
+import Header from '@/components/layout/Header.astro';
+import { cvHref, hero, segments, strip, texts, tools } from '@/data/discover';
+import { site } from '@/data/site';
+import HeroVideo from './HeroVideo.astro';
+---
+
+<div class="bg-stage text-fg">
+  <Header variant="inner" />
+
+  <!-- Écran d'arrivée : grande photo de La Réunion -->
+  <section class="relative -mt-2 flex h-[62svh] items-end overflow-hidden" aria-label="Introduction">
+    <HeroVideo />
+    <div class="absolute inset-0 bg-gradient-to-t from-stage via-stage/40 to-transparent"></div>
+    <div class="relative flex flex-col gap-2 px-4 pb-6">
+      <p class="w-fit rounded bg-accent px-3 py-1.5 font-display text-xs tracking-[0.2em] text-ink">{hero.ticket[0]} · {hero.ticket[1]}</p>
+      <p class="font-display text-7xl font-bold uppercase leading-[0.9]">
+        {hero.lines[0]}<br /><span class="text-accent">{hero.lines[1]}</span>
+      </p>
+      <p class="font-display text-base uppercase tracking-[0.12em]">{hero.subtitle}</p>
+      <p class="text-xs text-fg-muted"><a href={hero.credit.href} target="_blank" rel="noopener noreferrer" class="underline">{hero.credit.text}</a></p>
+    </div>
+  </section>
+
+  <div class="flex flex-col gap-10 px-4 pb-16 pt-6">
+    <h1 class="font-display text-[2.75rem] font-bold leading-tight text-accent">{texts.title}</h1>
+
+    <ul class="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2" aria-label="Photos">
+      {
+        strip.frames.map((f) => (
+          <li class="relative aspect-[425/505] w-56 shrink-0 snap-center">
+            <img src={strip.frame.src} alt="" class="absolute inset-0 h-full w-full" loading="lazy" />
+            <img
+              src={f.photo.src}
+              alt={f.photo.alt}
+              class="absolute"
+              style={`left:${(f.photo.x / strip.frame.w) * 100}%;top:${((f.photo.y - f.y) / strip.frame.h) * 100}%;width:${(f.photo.w / strip.frame.w) * 100}%;height:${(f.photo.h / strip.frame.h) * 100}%`}
+              loading="lazy"
+            />
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex flex-col gap-4 text-body-m text-accent">
+      <p class="font-display text-2xl leading-snug">{texts.bio.lead}</p>
+      {
+        texts.bio.paragraphs.map((p) => (
+          <p>{segments(p).map((seg) => (seg.b ? <strong class="font-semibold text-white">{seg.t}</strong> : seg.t))}</p>
+        ))
+      }
+      <p class="border-l-[3px] border-accent pl-4 font-medium text-white">{texts.bio.closing}</p>
+    </div>
+
+    <section aria-labelledby="outils-mobile" class="flex flex-col gap-4">
+      <h2 id="outils-mobile" class="font-display text-4xl text-accent">{texts.toolsTitle}</h2>
+      <ul class="grid grid-cols-3 gap-3">
+        {
+          tools.map((t) => (
+            <li class="relative aspect-square rounded-[19%] bg-accent" role="img" aria-label={t.name}>
+              <img
+                src={t.src}
+                alt=""
+                class="absolute"
+                style={`left:${(t.logo.x / 123) * 100}%;top:${(t.logo.y / 123) * 100}%;width:${(t.logo.w / 123) * 100}%;height:${(t.logo.h / 123) * 100}%`}
+                loading="lazy"
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="flex flex-col gap-4 rounded-[2rem] bg-accent p-6 text-ink">
+      <h2 class="font-display text-3xl font-semibold leading-tight">{texts.ctaTitle}</h2>
+      <p class="text-base font-medium">{texts.ctaNote}</p>
+      <p class="flex w-fit items-center gap-2 rounded-full border-2 border-black px-4 py-1.5 font-display text-sm uppercase tracking-wide">
+        <span class="size-2.5 rounded-full bg-[#0a7a3e]" aria-hidden="true"></span>{texts.ctaAvailability}
+      </p>
+      <div class="flex flex-col gap-3">
+        <a href={cvHref} download class="rounded-full bg-black px-6 py-4 text-center font-display text-xl text-accent">
+          {texts.ctaCv}
+        </a>
+        <a href="/contact" class="rounded-full border-[3px] border-black px-6 py-3.5 text-center font-display text-xl text-black">
+          {texts.ctaContact}
+        </a>
+        <a href={`mailto:${site.email}`} class="break-all border-t-2 border-black/25 pt-4 text-center font-display text-lg">
+          {site.email}
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <Footer />
+</div>

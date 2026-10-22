@@ -3,6 +3,7 @@
 import departuresLogo from '@/assets/logo/departures.svg';
 import Icon from '@/components/ui/Icon.astro';
 import { nav } from '@/data/site';
+import ArrivalsLogo from './ArrivalsLogo.astro';
 
 interface Props {
   /** `home` : tableau « DEPARTURES » (non cliquable). `inner` : « ARRIVALS » = retour accueil. */
@@ -29,29 +30,11 @@ const current = Astro.url.pathname.replace(/\/$/, '');
       ) : (
         <a
           href="/"
-          class="group flex flex-col items-start md:items-center"
-          aria-label="Retour à l’accueil"
+          class="group flex items-center"
+          aria-label="ARRIVALS — retour à l’accueil"
+          title="Retour à l’accueil"
         >
-          <span class="flex items-center gap-3 font-display text-3xl font-semibold uppercase tracking-[0.1em] text-accent md:gap-4 md:text-6xl">
-            <Icon name="plane" size={56} class="size-8 md:size-14" />
-            <span class="grid">
-              <span class="col-start-1 row-start-1 transition-opacity duration-150 group-hover:opacity-0 group-focus-visible:opacity-0">
-                ARRIVALS
-              </span>
-              <span
-                class="col-start-1 row-start-1 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
-                aria-hidden="true"
-              >
-                ACCUEIL
-              </span>
-            </span>
-          </span>
-          <span
-            class="hidden font-display text-label uppercase tracking-widest text-fg-muted opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 md:block"
-            aria-hidden="true"
-          >
-            [ RETOUR ACCUEIL ]
-          </span>
+          <ArrivalsLogo class="h-14 w-auto md:h-20" />
         </a>
       )
     }

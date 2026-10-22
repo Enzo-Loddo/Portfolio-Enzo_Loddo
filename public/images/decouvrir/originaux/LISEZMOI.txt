@@ -1,0 +1,36 @@
+IMAGES DE LA PAGE « ME DÉCOUVRIR »
+=================================
+
+Dépose tes fichiers dans CE dossier avec EXACTEMENT les noms ci-dessous
+(minuscules, sans accent, sans espace). Pas besoin de les redimensionner.
+
+Format : PNG à fond TRANSPARENT pour les découpes, JPG pour les photos.
+Dans Figma : clic droit sur le calque > « Copy/Paste as » ne suffit pas, utilise
+le panneau de droite > Export > PNG @2x (ou l'original si tu l'as).
+Exporte chaque calque SANS sa rotation : je remets l'angle moi-même, depuis Figma.
+
+Nom de fichier              Calque Figma (page « Maquette », frame « Me découvrir 4 »)
+--------------------------  -------------------------------------------------------
+appareil-polaroid.png       « image 22 » (appareil Polaroïd One Step 2)
+photo-1.jpg                 1er portrait de la bande (celui qui sort de l'appareil)
+photo-2.jpg                 2e portrait (ciel bleu, cheveux bouclés)
+photo-3.jpg                 3e portrait (casquette, bandana)
+photo-4.jpg                 4e portrait (coucher de soleil, deux personnes)
+cadre-polaroid.png          (optionnel) le cadre blanc texturé d'une photo, sans la photo
+fougere-droite.png          « image 20 » (grande fougère en haut à droite)
+fougere-gauche.png          « image 24 » (fougère au milieu à gauche)
+hibiscus.png                « Capture d'écran … 16.37.13 1 » (fleurs rouges)
+panier.png                  « image 23 » (panier tressé)
+carte-reunion.png           « image 21 » (carte de La Réunion)
+montagne-nb.png             « Capture d'écran … 16.32.12 1 » (montagne noir et blanc)
+eglise.png                  « Capture d'écran … 16.29.46 1 » (église)
+coucher-soleil.png          « IMG_2919 1 » (plage au coucher de soleil)
+
+Logos des outils (fond transparent, en NOIR si possible, SVG de préférence) :
+logo-figma.svg   logo-affinity.svg   logo-canva.svg
+logo-vscode.svg  logo-astro.svg      logo-etoile.svg
+
+CE QUE JE FAIS MOI-MÊME (rien à déposer) :
+- le logo ARRIVALS (je l'exporte en vectoriel depuis ton Figma, comme DEPARTURES)
+- les carrés jaunes des outils, la carte jaune « ALLON MET LA MAIN ENSAMB* »,
+  les flèches, le footer
