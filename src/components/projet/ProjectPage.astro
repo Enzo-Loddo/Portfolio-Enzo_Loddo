@@ -37,8 +37,6 @@ const sections = [
 
 <style is:global define:vars={themeVars}></style>
 
-<div class="progress" aria-hidden="true"><i data-progress></i></div>
-
 <!-- Couverture fixe -->
 <section class="cover" aria-label="Couverture">
   <img src={cover.src} alt="" class="cover-backdrop" aria-hidden="true" />
@@ -69,9 +67,9 @@ const sections = [
 <!-- Feuille qui recouvre la couverture -->
 <article class="sheet">
   <header class="wrap head">
-    <a href="/projets" class="back" data-reveal>← Retour aux projets</a>
-    <h1 class="title" data-reveal>{title}</h1>
-    <ul class="chips" data-reveal aria-label="Informations du projet">
+    <a href="/projets" class="back">← Retour aux projets</a>
+    <h1 class="title">{title}</h1>
+    <ul class="chips" aria-label="Informations du projet">
       <li>{meta.item}</li>
       <li>{meta.sujet}</li>
       <li>{meta.outils.join(' · ')}</li>
@@ -80,13 +78,13 @@ const sections = [
 
   <!-- 1. Synopsis + citation -->
   <section class="wrap intro" id="synopsis" aria-labelledby="intro-title">
-    <div class="intro-main" data-reveal>
+    <div class="intro-main">
       <h2 id="intro-title" class="kicker"><span>{intro.kicker}</span></h2>
       <p class="lead">{richSegments(intro.synopsis).map((s) => (s.b ? <mark>{s.t}</mark> : s.i ? <em>{s.t}</em> : s.t))}</p>
     </div>
     {
       intro.quote && (
-        <blockquote class="quote" data-reveal tabindex="0">
+        <blockquote class="quote" tabindex="0">
           <span class="quote-mark" aria-hidden="true">“</span>
           <p>{intro.quote.text}</p>
           <footer>— {intro.quote.author}</footer>
@@ -104,7 +102,7 @@ const sections = [
           alt=""
           class:list={['decor', `decor--${d.side}`]}
           style={`--w:${d.width};--t:${d.top};--r:${d.rotate}`}
-          data-parallax="-0.12"
+         
           loading="lazy"
           aria-hidden="true"
         />
@@ -112,12 +110,12 @@ const sections = [
     }
     <div class="wrap research">
       <div class="research-text">
-        <p class="note" data-reveal>{richSegments(intro.note).map((s) => (s.b ? <mark>{s.t}</mark> : s.t))}</p>
-        <h2 id="research-title" class="h2" data-reveal>{research.title}</h2>
+        <p class="note">{richSegments(intro.note).map((s) => (s.b ? <mark>{s.t}</mark> : s.t))}</p>
+        <h2 id="research-title" class="h2">{research.title}</h2>
         <ol class="steps">
           {
             research.paragraphs.map((p, i) => (
-              <li class="step" data-reveal style={`--d:${i * 120}ms`} tabindex="0">
+              <li class="step" style={`--d:${i * 120}ms`} tabindex="0">
                 <span class="step-n">0{i + 1}</span>
                 <h3>{research.labels[i]}</h3>
                 <p>{richSegments(p).map((s) => (s.b ? <mark>{s.t}</mark> : s.t))}</p>
@@ -126,7 +124,7 @@ const sections = [
           }
         </ol>
       </div>
-      <figure class="polaroid" data-reveal>
+      <figure class="polaroid">
         <img src={research.image.src} alt={research.image.alt} loading="lazy" />
         <span class="tape" aria-hidden="true"></span>
         {research.sticker && <img src={research.sticker.src} alt="" class="sticker" loading="lazy" />}
@@ -140,7 +138,7 @@ const sections = [
     film && (
       <section class="film" id="bande-annonce" aria-labelledby="film-title">
         <h2 id="film-title" class="sr-only">{film.title}</h2>
-        <div class="film-frame" data-reveal data-film>
+        <div class="film-frame" data-film>
           <video
             autoplay
             muted
@@ -173,11 +171,11 @@ const sections = [
     compare && (
       <section class="wrap compare" id="avant-apres" aria-labelledby="compare-title">
         <div class="compare-text">
-          <h2 id="compare-title" class="h2" data-reveal>{compare.title}</h2>
+          <h2 id="compare-title" class="h2">{compare.title}</h2>
           <ul class="points">
             {
               compare.paragraphs.map((p, i) => (
-                <li data-reveal style={`--d:${i * 120}ms`} tabindex="0">
+                <li style={`--d:${i * 120}ms`} tabindex="0">
                   <span class="point-n">0{i + 1}</span>
                   <p>{richSegments(p).map((s) => (s.b ? <mark>{s.t}</mark> : s.t))}</p>
                 </li>
@@ -185,7 +183,7 @@ const sections = [
             }
           </ul>
         </div>
-        <div class="compare-tool" data-reveal>
+        <div class="compare-tool">
           <BeforeAfter before={compare.before} after={compare.after} />
           <p class="hint">↔ Glisse la poignée pour comparer</p>
         </div>
@@ -193,31 +191,27 @@ const sections = [
     )
   }
 
-  <nav class="wrap next" aria-label="Suite" data-reveal>
-    <a href={next.slug === 'projets' ? '/projets' : `/projets/${next.slug}`}>{next.label} <span>→</span></a>
+  <nav class="wrap next" aria-label="Suite">
+    <p class="next-lead">Envie de voir la suite ?</p>
+    <a class="next-btn" href={next.slug === 'projets' ? '/projets' : `/projets/${next.slug}`}>{next.label} <span>→</span></a>
   </nav>
 </article>
 
 <style>
-  /* --- Barre de progression ----------------------------------------------- */
-  .progress { position: fixed; inset: 0 0 auto; height: 4px; z-index: 60; }
-  .progress i { display: block; height: 100%; width: 100%; background: var(--p-accent); transform: scaleX(0); transform-origin: left; }
-
   /* --- Couverture fixe ----------------------------------------------------- */
   .cover { position: fixed; inset: 0; z-index: 0; height: 100svh; overflow: hidden; background: #0b0b0b; }
   /* Bureau : l'image remplit l'écran, cadrée vers le bas pour garder tout le texte visible. */
   .cover-backdrop { display: none; }
   .cover-img { width: 100%; height: 100%; object-fit: cover; object-position: center 88%; }
   @media (max-width: 767px) {
-    .cover-backdrop { display: block; position: absolute; inset: -5%; width: 110%; height: 110%; object-fit: cover; filter: blur(28px) brightness(0.45); }
+    .cover-backdrop { display: block; position: absolute; inset: -5%; width: 110%; height: 110%; object-fit: cover; filter: brightness(0.4); }
     .cover-img { position: relative; object-fit: contain; object-position: center; }
   }
   .cover-text { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; color: var(--p-accent); font-family: var(--font-display); text-transform: uppercase; }
   .cover-title { font-size: clamp(5rem, 16vw, 14rem); font-weight: 700; line-height: 1; }
   .cover-hint { position: absolute; left: 50%; bottom: 0.6rem; translate: -50% 0; text-shadow: 0 1px 6px #000; font: 500 1rem/1 var(--font-display); letter-spacing: 0.2em; text-transform: uppercase; color: #fff; }
-  .cover-hint span { display: inline-block; animation: nudge 1.6s ease-in-out infinite; }
-  @keyframes nudge { 50% { transform: translateY(0.35rem); } }
-  .cover-spacer { height: 100svh; }
+  .cover-hint span { display: inline-block; }
+    .cover-spacer { height: 100svh; }
 
   /* En-tête posé sur la couverture ; pied de page opaque pour masquer la couverture fixe */
   :global(body > header) { position: absolute; inset: 0 0 auto; z-index: 5; }
@@ -227,25 +221,24 @@ const sections = [
   .dots { position: fixed; right: 1.25rem; top: 50%; translate: 0 -50%; z-index: 40; display: none; }
   .dots ul { display: grid; gap: 0.9rem; }
   .dots a { display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem; font: 500 0.95rem/1 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; color: #fff; }
-  .dots span { opacity: 0; translate: 0.5rem 0; padding: 0.3rem 0.6rem; background: #000; color: var(--p-accent); transition: opacity 0.25s, translate 0.25s; }
-  .dots i { width: 0.8rem; height: 0.8rem; border-radius: 50%; border: 2px solid var(--p-accent); background: #000; transition: background 0.25s, scale 0.25s; }
+  .dots span { opacity: 0; translate: 0.5rem 0; padding: 0.3rem 0.6rem; background: #000; color: var(--p-accent); }
+  .dots i { width: 0.8rem; height: 0.8rem; border-radius: 50%; border: 2px solid var(--p-accent); background: #000; }
   .dots a:hover span, .dots a:focus-visible span, .dots a.is-active span { opacity: 1; translate: 0 0; }
   .dots a.is-active i { background: var(--p-accent); scale: 1.3; }
   @media (min-width: 1100px) { .dots { display: block; } }
 
   /* --- Feuille ----------------------------------------------------------------- */
-  .sheet { position: relative; z-index: 1; background: var(--p-bg); padding-bottom: 7rem; overflow-x: clip; box-shadow: 0 -1.5rem 3rem rgb(0 0 0 / 0.6); }
+  .sheet { position: relative; z-index: 1; background: var(--p-bg); padding-bottom: 7rem; overflow-x: clip; }
   .wrap { width: min(100% - 2rem, 76rem); margin-inline: auto; }
   mark { background: none; color: var(--p-key); font-weight: 600; }
   em { font-style: italic; }
-  [data-parallax], .decor { transform: translate3d(0, var(--py, 0px), 0); }
 
   .head { padding-top: 6rem; display: grid; gap: 1rem; }
-  .back { width: fit-content; font: 500 1rem/1.4 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: #d6d6d6; transition: color 0.2s, translate 0.2s; }
+  .back { width: fit-content; font: 500 1rem/1.4 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: #d6d6d6; }
   .back:hover { color: var(--p-accent); translate: -0.25rem 0; }
   .title { font: 700 clamp(3rem, 9vw, 7.5rem)/0.95 var(--font-display); text-transform: uppercase; color: var(--p-accent); }
   .chips { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-  .chips li { padding: 0.4rem 0.9rem; border: 2px solid var(--p-accent); font: 500 1rem/1.3 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--p-accent); transition: background 0.2s, color 0.2s; }
+  .chips li { padding: 0.4rem 0.9rem; border: 2px solid var(--p-accent); font: 500 1rem/1.3 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--p-accent); }
   .chips li:hover { background: var(--p-accent); color: #000; }
 
   .h2 { font: 700 clamp(2rem, 4.2vw, 3.25rem)/1.05 var(--font-display); text-transform: uppercase; color: var(--p-accent); }
@@ -255,48 +248,48 @@ const sections = [
   .intro { display: grid; gap: 3rem; padding-top: 5rem; }
   .intro-main { display: grid; gap: 1.5rem; max-width: 54rem; }
   .lead { font-size: clamp(1.25rem, 2.1vw, 1.65rem); line-height: 1.6; color: var(--p-text); }
-  .quote { position: relative; justify-self: end; max-width: 36rem; padding: 2.75rem 2.5rem 3rem; background: url('/images/projets/la-cite-de-dieu/papier-dechire.webp') center / 100% 100% no-repeat; filter: drop-shadow(0 1rem 1.5rem rgb(0 0 0 / 0.5)); rotate: -2deg; transition: rotate 0.4s cubic-bezier(0.2, 0.7, 0.2, 1), scale 0.4s, opacity 0.8s ease, translate 0.8s ease; outline-offset: 6px; }
+  .quote { position: relative; justify-self: end; max-width: 36rem; padding: 2.75rem 2.5rem 3rem; background: url('/images/projets/la-cite-de-dieu/papier-dechire.webp') center / 100% 100% no-repeat; rotate: -2deg; outline-offset: 6px; }
   .quote:hover, .quote:focus-visible { rotate: 0deg; scale: 1.03; }
   .quote-mark { position: absolute; top: -1.2rem; left: 1rem; font: 700 6rem/1 var(--font-display); color: var(--p-accent); }
   .quote p { font: 500 clamp(1.4rem, 2.4vw, 1.75rem)/1.35 var(--font-display); color: #fff; }
   .quote footer { margin-top: 0.75rem; font-size: 1.0625rem; color: var(--p-accent); }
 
   /* --- Bloc recherches (fond coloré) ------------------------------------------------ */
-  .panel { position: relative; margin-top: 4rem; padding: 9rem 0 10rem; color: var(--p-on-panel); background: linear-gradient(to bottom, var(--p-bg) 0%, color-mix(in srgb, var(--p-panel) 35%, var(--p-bg)) 12%, var(--p-panel) 30%, var(--p-panel) 72%, color-mix(in srgb, var(--p-panel) 35%, var(--p-bg)) 88%, var(--p-bg) 100%); }
+  .panel { position: relative; margin-top: 7rem; padding: 0; color: var(--p-on-panel); }
   .panel mark { color: var(--p-on-panel-key); }
-  .panel .h2 { color: var(--p-on-panel); text-shadow: 3px 3px 0 #000; }
+  .panel .h2 { color: var(--p-accent); }
   .research { display: grid; gap: 3.5rem; align-items: start; }
   .research-text { display: grid; gap: 1.5rem; }
-  .note { font-size: clamp(1.2rem, 2vw, 1.4rem); line-height: 1.6; padding: 1.25rem 1.5rem; background: #000; color: #fff; }
+  .note { font-size: clamp(1.2rem, 2vw, 1.4rem); line-height: 1.6; padding: 1.25rem 1.5rem; border: 2px solid var(--p-accent); color: #fff; }
   .note mark { color: var(--p-accent); }
   .steps { display: grid; gap: 1rem; }
-  .step { position: relative; padding: 1.25rem 1.5rem 1.25rem 4.5rem; background: rgb(0 0 0 / 0.28); border-left: 5px solid var(--p-accent); transition: background 0.3s, opacity 0.8s ease var(--d, 0ms), translate 0.4s; outline-offset: 4px; }
-  .step:hover, .step:focus-visible { background: rgb(0 0 0 / 0.5); }
+  .step { position: relative; padding: 1.25rem 1.5rem 1.25rem 4.5rem; background: rgb(255 255 255 / 0.05); border-left: 5px solid var(--p-accent); outline-offset: 4px; }
+  .step:hover, .step:focus-visible { background: rgb(255 255 255 / 0.1); }
   .step-n { position: absolute; left: 1rem; top: 0.9rem; font: 700 2.25rem/1 var(--font-display); color: var(--p-accent); }
   .step h3 { font: 600 1.25rem/1.2 var(--font-display); letter-spacing: 0.06em; text-transform: uppercase; color: #fff; margin-bottom: 0.4rem; }
   .step p { font-size: 1.125rem; line-height: 1.6; }
 
-  .polaroid { position: relative; justify-self: center; width: min(100%, 26rem); rotate: 3deg; transition: rotate 0.5s cubic-bezier(0.2, 0.7, 0.2, 1), scale 0.5s, opacity 0.8s ease, translate 0.8s ease; }
+  .polaroid { position: relative; justify-self: center; width: min(100%, 26rem); rotate: 3deg; }
   .polaroid:hover { rotate: 0deg; scale: 1.04; }
   .polaroid > img:first-child { width: 100%; box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.6); }
   .polaroid figcaption { margin-top: 0.75rem; text-align: center; font: 600 1.25rem/1 var(--font-display); letter-spacing: 0.18em; text-transform: uppercase; color: #fff; }
   .tape { position: absolute; top: -1.3rem; left: 50%; width: 9rem; height: 3.2rem; translate: -50% 0; rotate: -4deg; background: url('/images/projets/la-cite-de-dieu/scotch.webp') center / contain no-repeat; }
-  .sticker { position: absolute; right: -2.25rem; bottom: -2rem; width: 7rem; rotate: -8deg; filter: drop-shadow(0 0.75rem 1rem rgb(0 0 0 / 0.5)); transition: rotate 0.4s; }
+  .sticker { position: absolute; right: -2.25rem; bottom: -2rem; width: 7rem; rotate: -8deg; }
   .polaroid:hover .sticker { rotate: 6deg; }
-  .decor { position: absolute; top: var(--t); width: var(--w); rotate: var(--r); pointer-events: none; filter: drop-shadow(0 0.75rem 1rem rgb(0 0 0 / 0.45)); display: none; }
+  .decor { position: absolute; top: var(--t); width: var(--w); rotate: var(--r); pointer-events: none; display: none; }
   .decor--left { left: -1.5rem; }
   .decor--right { right: -1.5rem; }
   @media (min-width: 1200px) { .decor { display: block; } }
 
   /* --- Bande-annonce ------------------------------------------------------------------------ */
-  .film { display: grid; gap: 1.5rem; padding-top: 5rem; width: min(100% - 1rem, 100rem); margin-inline: auto; }
+  .film { display: grid; gap: 1.5rem; padding-top: 5rem; width: min(100% - 2rem, 64rem); margin-inline: auto; }
   .film-frame { position: relative; aspect-ratio: 1045 / 598; width: 100%; margin-inline: auto; }
   .film-frame video { position: absolute; left: 1.2%; top: 4.2%; width: 97%; height: 93.2%; object-fit: cover; background: #000; }
   .film-border { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  .film-bar { position: absolute; left: 3%; bottom: 7%; display: flex; flex-wrap: wrap; gap: 0.5rem; opacity: 0; translate: 0 0.5rem; transition: opacity 0.3s, translate 0.3s; }
-  .film-frame:hover .film-bar, .film-frame:focus-within .film-bar { opacity: 1; translate: 0 0; }
-  @media (hover: none) { .film-bar { opacity: 1; translate: 0 0; } }
-  .film-bar button { padding: 0.5rem 0.9rem; background: var(--p-accent); color: #000; font: 600 1rem/1 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: scale 0.2s; }
+  .film-bar { position: absolute; left: 3%; bottom: 7%; display: flex; flex-wrap: wrap; gap: 0.5rem; opacity: 0; }
+  .film-frame:hover .film-bar, .film-frame:focus-within .film-bar { opacity: 1; }
+  @media (hover: none) { .film-bar { opacity: 1; } }
+  .film-bar button { padding: 0.5rem 0.9rem; background: var(--p-accent); color: #000; font: 600 1rem/1 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
   .film-bar button:hover { scale: 1.06; }
   .film-bar [aria-pressed='false'] .ico-play, .film-bar [aria-pressed='false'] .ico-on,
   .film-bar [aria-pressed='true'] .ico-pause, .film-bar [aria-pressed='true'] .ico-off { display: none; }
@@ -306,17 +299,19 @@ const sections = [
   .compare { display: grid; gap: 3rem; padding-top: 7rem; align-items: start; }
   .compare-text { display: grid; gap: 1.5rem; }
   .points { display: grid; gap: 1rem; }
-  .points li { position: relative; padding: 1rem 1.25rem 1rem 3.75rem; border: 2px solid var(--p-accent); transition: background 0.3s, opacity 0.8s ease var(--d, 0ms), translate 0.8s ease var(--d, 0ms); outline-offset: 4px; }
+  .points li { position: relative; padding: 1rem 1.25rem 1rem 3.75rem; border: 2px solid var(--p-accent); outline-offset: 4px; }
   .points li:hover, .points li:focus-visible { background: rgb(255 255 255 / 0.07); }
   .point-n { position: absolute; left: 1rem; top: 0.75rem; font: 700 1.75rem/1 var(--font-display); color: var(--p-accent); }
   .points p { font-size: 1.125rem; line-height: 1.6; color: var(--p-text); }
   .compare-tool { display: grid; gap: 0.75rem; }
   .hint { text-align: center; font-size: 1rem; color: var(--p-muted); }
 
-  .next { padding-top: 7rem; }
-  .next a { display: inline-flex; gap: 0.75rem; font: 700 clamp(2rem, 5vw, 3.25rem)/1.1 var(--font-display); text-transform: uppercase; color: var(--p-accent); }
-  .next a span { transition: translate 0.25s; }
-  .next a:hover span { translate: 0.75rem 0; }
+  .next { position: relative; z-index: 1; padding-top: 8rem; display: grid; justify-items: center; gap: 1.25rem; text-align: center; }
+  .next-lead { font: 500 1.25rem/1.3 var(--font-display); letter-spacing: 0.15em; text-transform: uppercase; color: #fff; }
+  .next-btn { display: inline-flex; align-items: center; gap: 1rem; padding: 1.1rem 2.5rem; border-radius: 999px; background: var(--p-accent); color: #000; font: 700 clamp(1.4rem, 3vw, 2rem)/1 var(--font-display); letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 0 0 0 0 var(--p-accent); }
+  .next-btn span { }
+  .next-btn:hover, .next-btn:focus-visible { scale: 1.05; box-shadow: 0 0 0 8px rgb(255 255 255 / 0.15); }
+  .next-btn:hover span { translate: 0.5rem 0; }
 
   @media (min-width: 768px) {
     .research { grid-template-columns: 1.15fr 0.85fr; gap: 5rem; }
@@ -324,59 +319,11 @@ const sections = [
     .compare-tool { order: 2; }
   }
 
-  /* --- Apparition au défilement ------------------------------------------------------------------ */
-  :global(html.js) [data-reveal] { opacity: 0; translate: 0 2.5rem; transition: opacity 0.8s ease var(--d, 0ms), translate 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0ms); }
-  :global(html.js) [data-reveal].is-visible { opacity: 1; translate: 0 0; }
-  @media (prefers-reduced-motion: reduce) {
-    :global(html.js) [data-reveal] { opacity: 1; translate: none; transition: none; }
-    .cover-hint span { animation: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { .cover-hint span { animation: none; } }
 </style>
 
 <script>
-  document.documentElement.classList.add('js');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Apparition au défilement
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          e.target.classList.add('is-visible');
-          io.unobserve(e.target);
-        }
-      }
-    },
-    { rootMargin: '0px 0px -10% 0px', threshold: 0.1 },
-  );
-  document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
-
-  // Progression de lecture + parallaxe des éléments de décor
-  const bar = document.querySelector<HTMLElement>('[data-progress]');
-  const moving = [...document.querySelectorAll<HTMLElement>('[data-parallax]')];
-  let ticking = false;
-  const update = () => {
-    ticking = false;
-    const max = document.documentElement.scrollHeight - innerHeight;
-    if (bar) bar.style.transform = `scaleX(${max > 0 ? Math.min(scrollY / max, 1) : 0})`;
-    if (reduce) return;
-    for (const el of moving) {
-      const r = el.parentElement!.getBoundingClientRect();
-      const dy = (r.top + r.height / 2 - innerHeight / 2) * Number(el.dataset.parallax);
-      el.style.setProperty('--py', `${dy.toFixed(1)}px`);
-    }
-  };
-  addEventListener(
-    'scroll',
-    () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(update);
-      }
-    },
-    { passive: true },
-  );
-  update();
 
   // Repère de section actif
   const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-dot]')];
