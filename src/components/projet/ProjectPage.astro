@@ -2,9 +2,9 @@
 /**
  * Modèle de page projet : la couverture reste fixe, puis le contenu monte et la recouvre au défilement.
  *
- * La DISPOSITION est la même pour tous les projets (couverture → bande → titre → synopsis → recherches →
+ * La DISPOSITION est la même pour tous les projets (couverture → titre → synopsis → recherches →
  * film → avant/après → suite). Chaque projet apporte sa propre direction artistique : couleurs (`theme`),
- * mots de la bande défilante et décors (src/data/project-pages.ts).
+ * décors (src/data/project-pages.ts).
  */
 import { richSegments, type ProjectPageContent } from '@/data/project-pages';
 import BeforeAfter from './BeforeAfter.astro';
@@ -14,7 +14,7 @@ interface Props {
   title: string;
 }
 const { page, title } = Astro.props;
-const { theme, cover, meta, intro, research, film, compare, next, marquee } = page;
+const { theme, cover, meta, intro, research, film, compare, next } = page;
 
 const themeVars = {
   'p-bg': theme.bg,
@@ -33,7 +33,6 @@ const sections = [
   ...(film ? [{ id: 'bande-annonce', label: 'Bande-annonce' }] : []),
   ...(compare ? [{ id: 'avant-apres', label: 'Avant / après' }] : []),
 ];
-const words = [...marquee, ...marquee];
 ---
 
 <style is:global define:vars={themeVars}></style>
@@ -69,13 +68,6 @@ const words = [...marquee, ...marquee];
 
 <!-- Feuille qui recouvre la couverture -->
 <article class="sheet">
-  <!-- Bande défilante : sépare la couverture du contenu -->
-  <div class="band" aria-hidden="true">
-    <div class="band-track">
-      {words.map((w) => <span>{w}<b>✦</b></span>)}
-    </div>
-  </div>
-
   <header class="wrap head">
     <a href="/projets" class="back" data-reveal>← Retour aux projets</a>
     <h1 class="title" data-reveal>{title}</h1>
@@ -146,8 +138,8 @@ const words = [...marquee, ...marquee];
   <!-- 3. Bande-annonce (lecture automatique, sans le son) -->
   {
     film && (
-      <section class="wrap film" id="bande-annonce" aria-labelledby="film-title">
-        <h2 id="film-title" class="h2" data-reveal>{film.title}</h2>
+      <section class="film" id="bande-annonce" aria-labelledby="film-title">
+        <h2 id="film-title" class="sr-only">{film.title}</h2>
         <div class="film-frame" data-reveal data-film>
           <video
             autoplay
@@ -229,7 +221,7 @@ const words = [...marquee, ...marquee];
 
   /* En-tête posé sur la couverture ; pied de page opaque pour masquer la couverture fixe */
   :global(body > header) { position: absolute; inset: 0 0 auto; z-index: 5; }
-  :global(body > footer) { position: relative; z-index: 1; background-color: var(--p-bg); }
+  :global(body > footer) { position: relative; z-index: 1; background: #000 !important; }
 
   /* --- Repères de section --------------------------------------------------- */
   .dots { position: fixed; right: 1.25rem; top: 50%; translate: 0 -50%; z-index: 40; display: none; }
@@ -248,14 +240,7 @@ const words = [...marquee, ...marquee];
   em { font-style: italic; }
   [data-parallax], .decor { transform: translate3d(0, var(--py, 0px), 0); }
 
-  /* Bande défilante */
-  .band { overflow: hidden; background: var(--p-panel); color: #fff; padding: 0.85rem 0; border-bottom: 3px solid #000; }
-  .band-track { display: flex; width: max-content; animation: marquee 38s linear infinite; font: 700 clamp(1.25rem, 2.4vw, 1.75rem)/1 var(--font-display); letter-spacing: 0.12em; text-transform: uppercase; }
-  .band-track span { padding-right: 1.5rem; white-space: nowrap; }
-  .band-track b { margin-left: 1.5rem; color: var(--p-accent); }
-  @keyframes marquee { to { transform: translateX(-50%); } }
-
-  .head { padding-top: 4rem; display: grid; gap: 1rem; }
+  .head { padding-top: 6rem; display: grid; gap: 1rem; }
   .back { width: fit-content; font: 500 1rem/1.4 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: #d6d6d6; transition: color 0.2s, translate 0.2s; }
   .back:hover { color: var(--p-accent); translate: -0.25rem 0; }
   .title { font: 700 clamp(3rem, 9vw, 7.5rem)/0.95 var(--font-display); text-transform: uppercase; color: var(--p-accent); }
@@ -277,7 +262,7 @@ const words = [...marquee, ...marquee];
   .quote footer { margin-top: 0.75rem; font-size: 1.0625rem; color: var(--p-accent); }
 
   /* --- Bloc recherches (fond coloré) ------------------------------------------------ */
-  .panel { position: relative; margin-top: 7rem; padding: 5rem 0 6rem; background: var(--p-panel); color: var(--p-on-panel); border-block: 3px solid #000; }
+  .panel { position: relative; margin-top: 4rem; padding: 9rem 0 10rem; color: var(--p-on-panel); background: linear-gradient(to bottom, var(--p-bg) 0%, color-mix(in srgb, var(--p-panel) 35%, var(--p-bg)) 12%, var(--p-panel) 30%, var(--p-panel) 72%, color-mix(in srgb, var(--p-panel) 35%, var(--p-bg)) 88%, var(--p-bg) 100%); }
   .panel mark { color: var(--p-on-panel-key); }
   .panel .h2 { color: var(--p-on-panel); text-shadow: 3px 3px 0 #000; }
   .research { display: grid; gap: 3.5rem; align-items: start; }
@@ -304,8 +289,8 @@ const words = [...marquee, ...marquee];
   @media (min-width: 1200px) { .decor { display: block; } }
 
   /* --- Bande-annonce ------------------------------------------------------------------------ */
-  .film { display: grid; gap: 1.5rem; padding-top: 7rem; }
-  .film-frame { position: relative; aspect-ratio: 1045 / 598; width: min(100%, 62rem); margin-inline: auto; }
+  .film { display: grid; gap: 1.5rem; padding-top: 5rem; width: min(100% - 1rem, 100rem); margin-inline: auto; }
+  .film-frame { position: relative; aspect-ratio: 1045 / 598; width: 100%; margin-inline: auto; }
   .film-frame video { position: absolute; left: 1.2%; top: 4.2%; width: 97%; height: 93.2%; object-fit: cover; background: #000; }
   .film-border { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .film-bar { position: absolute; left: 3%; bottom: 7%; display: flex; flex-wrap: wrap; gap: 0.5rem; opacity: 0; translate: 0 0.5rem; transition: opacity 0.3s, translate 0.3s; }
@@ -344,7 +329,7 @@ const words = [...marquee, ...marquee];
   :global(html.js) [data-reveal].is-visible { opacity: 1; translate: 0 0; }
   @media (prefers-reduced-motion: reduce) {
     :global(html.js) [data-reveal] { opacity: 1; translate: none; transition: none; }
-    .cover-hint span, .band-track { animation: none; }
+    .cover-hint span { animation: none; }
   }
 </style>
 

@@ -29,8 +29,6 @@ export interface ProjectPageContent {
     onPanelKey: string;
     muted: string;
   };
-  /** Mots qui défilent en bande sous la couverture */
-  marquee: string[];
   /** Couverture : texte déjà intégré à l'image (cover.liveText = false) ou texte affiché en direct. */
   cover: {
     src: string;
@@ -89,7 +87,6 @@ export const projectPages: Record<string, ProjectPageContent> = {
       onPanelKey: '#ffd400',
       muted: '#bdbdbd',
     },
-    marquee: ['Rio de Janeiro', 'Cidade de Deus', 'Collage brut', 'Rouge sang', 'Fanzine', 'Années 70', 'Favela'],
     cover: {
       src: `${base}/couverture.webp`,
       srcMobile: `${base}/couverture-mobile.webp`,
