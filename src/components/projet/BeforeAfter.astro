@@ -61,7 +61,7 @@ const { before, after } = Astro.props;
     bottom: 0;
     left: var(--pos);
     width: 3px;
-    background: #f6dd0b;
+    background: var(--p-accent, #f6dd0b);
     transform: translateX(-50%);
     pointer-events: none;
   }
@@ -75,7 +75,7 @@ const { before, after } = Astro.props;
     min-width: 4.25rem;
     height: 2.75rem;
     border-radius: 999px;
-    background: #f6dd0b;
+    background: var(--p-accent, #f6dd0b);
     color: #000;
     font: 600 0.9rem/1 var(--font-display, 'Oswald Variable', sans-serif);
     letter-spacing: 0.1em;
@@ -86,7 +86,7 @@ const { before, after } = Astro.props;
     bottom: 1rem;
     padding: 0.35rem 0.8rem;
     background: #000;
-    color: #f6dd0b;
+    color: var(--p-accent, #f6dd0b);
     font: 500 1rem/1.2 var(--font-display, 'Oswald Variable', sans-serif);
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -105,7 +105,7 @@ const { before, after } = Astro.props;
     cursor: ew-resize;
   }
   .ba:has(.ba-range:focus-visible) {
-    outline: 3px solid #f6dd0b;
+    outline: 3px solid var(--p-accent, #f6dd0b);
     outline-offset: 4px;
   }
 </style>
@@ -116,5 +116,23 @@ const { before, after } = Astro.props;
     const set = () => box.style.setProperty('--pos', `${range.value}%`);
     range.addEventListener('input', set);
     set();
+
+    // Petite démonstration à la première apparition : la poignée balaie l'image, pour montrer qu'elle se déplace
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let touched = false;
+    range.addEventListener('pointerdown', () => (touched = true), { once: true });
+    new IntersectionObserver((entries, obs) => {
+      if (!entries[0].isIntersecting) return;
+      obs.disconnect();
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const t = (now - t0) / 2200;
+        if (touched || t >= 1) return;
+        range.value = String(50 + Math.sin(t * Math.PI * 2) * 28 * (1 - t));
+        set();
+        requestAnimationFrame(step);
+      };
+      window.setTimeout(() => requestAnimationFrame(step), 600);
+    }, { threshold: 0.6 }).observe(box);
   });
 </script>

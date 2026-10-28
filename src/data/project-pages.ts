@@ -12,6 +12,25 @@
  */
 export interface ProjectPageContent {
   slug: string;
+  /** Direction artistique propre au projet : couleurs (la disposition, elle, ne change pas). */
+  theme: {
+    /** Fond de la page */
+    bg: string;
+    /** Fond des blocs mis en avant (bande défilante, section recherches) */
+    panel: string;
+    /** Couleur d'accent : titres, repères, boutons */
+    accent: string;
+    /** Couleur du texte courant sur le fond de page */
+    text: string;
+    /** Mots clés mis en valeur sur le fond de page */
+    key: string;
+    /** Texte et mots clés sur les blocs `panel` */
+    onPanel: string;
+    onPanelKey: string;
+    muted: string;
+  };
+  /** Mots qui défilent en bande sous la couverture */
+  marquee: string[];
   /** Couverture : texte déjà intégré à l'image (cover.liveText = false) ou texte affiché en direct. */
   cover: {
     src: string;
@@ -32,9 +51,13 @@ export interface ProjectPageContent {
   research: {
     title: string;
     paragraphs: string[];
+    /** Titre court de chaque paragraphe (cartes numérotées) */
+    labels: string[];
     image: { src: string; alt: string; label: string };
     /** Petit objet décoratif posé près de l'image (facultatif). */
     sticker?: { src: string };
+    /** Décors qui flottent autour de la section (parallaxe) */
+    decor?: { src: string; side: 'left' | 'right'; width: string; top: string; rotate: string }[];
   };
   film?: {
     title: string;
@@ -56,6 +79,17 @@ const base = '/images/projets/la-cite-de-dieu';
 export const projectPages: Record<string, ProjectPageContent> = {
   'la-cite-de-dieu': {
     slug: 'la-cite-de-dieu',
+    theme: {
+      bg: '#0e0e0e',
+      panel: '#b3121c',
+      accent: '#ffd400',
+      text: '#ffd400',
+      key: '#ffffff',
+      onPanel: '#ffffff',
+      onPanelKey: '#ffd400',
+      muted: '#bdbdbd',
+    },
+    marquee: ['Rio de Janeiro', 'Cidade de Deus', 'Collage brut', 'Rouge sang', 'Fanzine', 'Années 70', 'Favela'],
     cover: {
       src: `${base}/couverture.webp`,
       srcMobile: `${base}/couverture-mobile.webp`,
@@ -77,6 +111,10 @@ export const projectPages: Record<string, ProjectPageContent> = {
       paragraphs: [
         'La première étape a été de capturer **l’énergie et la tension** du film sans utiliser les codes d’une affiche classique. J’ai d’abord regroupé et découpé les scènes clés comme les pièces d’un puzzle ; mon objectif était aussi de montrer **l’évolution des personnages**.',
         'Ma recherche graphique s’est ensuite concentrée sur le **collage brut**, puis sur des photographies en **noir et blanc très contrastées** avec un grain marqué. Cette étape a permis de poser l’ambiance et le style « fanzine » avant d’entamer la composition finale.',
+      ],
+      labels: ['Capturer la tension', 'Tester le collage'],
+      decor: [
+        { src: `${base}/palmier.webp`, side: 'left', width: '9rem', top: '4%', rotate: '-8deg' },
       ],
       image: { src: `${base}/inspiration.webp`, alt: 'Planche d’inspiration : scènes du film découpées et assemblées', label: 'Inspiration' },
       sticker: { src: `${base}/appareil-nikon.webp` },
