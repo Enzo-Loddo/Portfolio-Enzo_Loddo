@@ -11,11 +11,14 @@ interface Img {
 interface Props {
   before: Img;
   after: Img;
+  /** Proportions des images, ex. « 960 / 1282 » */
+  ratio?: string;
 }
-const { before, after } = Astro.props;
+const { before, after, ratio = '960 / 1282' } = Astro.props;
+const [rw, rh] = ratio.split('/').map((n) => Number(n.trim()));
 ---
 
-<div class="ba" data-ba style="--pos:50%">
+<div class="ba" data-ba style={`--pos:50%;--ratio:${rw} / ${rh};--w:${rw / rh}`}>
   <img class="ba-img" src={after.src} alt={after.alt} loading="lazy" draggable="false" />
   <img class="ba-img ba-before" src={before.src} alt={before.alt} loading="lazy" draggable="false" />
   <span class="ba-tag ba-tag--l">{before.label}</span>
@@ -35,8 +38,8 @@ const { before, after } = Astro.props;
 <style>
   .ba {
     position: relative;
-    aspect-ratio: 960 / 1282;
-    width: min(100%, calc(80svh * 960 / 1282));
+    aspect-ratio: var(--ratio);
+    width: min(100%, calc(80svh * var(--w)));
     margin-inline: auto;
     overflow: hidden;
     background: #000;

@@ -1,0 +1,12 @@
+TOKYO - RWB : dépose ici les fichiers (PNG de préférence, export Figma en 1x, pas en x2)
+
+- couverture.png        Image d'en-tête plein écran, paysage, 2400 px de large minimum (idéalement sans texte incrusté)
+- inspiration.png       Planche d'inspiration / moodboard
+- decors (png)          Éléments détourés à fond transparent (kanji, néons, voiture, cassette...) : un fichier par élément
+- video.mp4             (facultatif) teaser, making-of, timelapse
+- avant.png             Version d'origine / brouillon
+- apres.png             Visuel final (même format que avant.png)
+- affiche-finale.png    Affiche finale en haute définition
+
+Textes à me fournir (ou à me demander de rédiger) : synopsis, citation (facultative), note de l'auteur,
+2 étapes de recherche (titre court + texte), 3 points avant/après, outils utilisés.

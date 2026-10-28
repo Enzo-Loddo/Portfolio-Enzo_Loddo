@@ -80,7 +80,7 @@ export const fallbackProjects: Project[] = [
     description: [],
     outils: [],
     ordre: 2,
-    publie: false,
+    publie: true,
   },
   {
     slug: 'post-003',

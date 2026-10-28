@@ -25,6 +25,7 @@ const themeVars = {
   'p-on-panel': theme.onPanel,
   'p-on-panel-key': theme.onPanelKey,
   'p-muted': theme.muted,
+  'p-footer': theme.footer,
 };
 
 const sections = [
@@ -65,14 +66,14 @@ const sections = [
 </nav>
 
 <!-- Feuille qui recouvre la couverture -->
-<article class="sheet">
+<article class:list={['sheet', theme.vhs && 'vhs']}>
   <header class="wrap head">
     <a href="/projets" class="back">← Retour aux projets</a>
     <h1 class="title">{title}</h1>
     <ul class="chips" aria-label="Informations du projet">
       <li>{meta.item}</li>
       <li>{meta.sujet}</li>
-      <li>{meta.outils.join(' · ')}</li>
+      {meta.outils.length > 0 && <li>{meta.outils.join(' · ')}</li>}
     </ul>
   </header>
 
@@ -127,6 +128,7 @@ const sections = [
       <figure class="polaroid">
         <img src={research.image.src} alt={research.image.alt} loading="lazy" />
         <span class="tape" aria-hidden="true"></span>
+        {research.extra && <img src={research.extra.src} alt={research.extra.alt} class="extra" loading="lazy" />}
         {research.sticker && <img src={research.sticker.src} alt="" class="sticker" loading="lazy" />}
         <figcaption>{research.image.label}</figcaption>
       </figure>
@@ -138,28 +140,33 @@ const sections = [
     film && (
       <section class="film" id="bande-annonce" aria-labelledby="film-title">
         <h2 id="film-title" class="sr-only">{film.title}</h2>
-        <div class="film-frame" data-film>
-          <video
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="auto"
-            poster={film.poster}
-            src={film.src}
-            aria-label={`${film.title} — bande-annonce`}
-          />
-          <img src="/images/projets/la-cite-de-dieu/cadre-video.webp" alt="" class="film-border" aria-hidden="true" />
-          <div class="film-bar">
-            <button type="button" data-film-pause aria-pressed="false">
-              <span class="ico-pause">❚❚ Pause</span>
-              <span class="ico-play">▶ Lecture</span>
-            </button>
-            <button type="button" data-film-sound aria-pressed="false">
-              <span class="ico-off">Activer le son</span>
-              <span class="ico-on">Couper le son</span>
-            </button>
-          </div>
+        <div class="film-frame" data-film={film.src ? '' : undefined}>
+          {
+            film.youtube ? (
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${film.youtube}?autoplay=1&mute=1&loop=1&playlist=${film.youtube}&playsinline=1&rel=0&modestbranding=1`}
+                title={`${film.title} — vidéo`}
+                allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              />
+            ) : (
+              <>
+                <video autoplay muted loop playsinline preload="auto" poster={film.poster} src={film.src} aria-label={`${film.title} — bande-annonce`} />
+                <div class="film-bar">
+                  <button type="button" data-film-pause aria-pressed="false">
+                    <span class="ico-pause">❚❚ Pause</span>
+                    <span class="ico-play">▶ Lecture</span>
+                  </button>
+                  <button type="button" data-film-sound aria-pressed="false">
+                    <span class="ico-off">Activer le son</span>
+                    <span class="ico-on">Couper le son</span>
+                  </button>
+                </div>
+              </>
+            )
+          }
+          <img src="/images/projets/commun/cadre-video.webp" alt="" class="film-border" aria-hidden="true" />
         </div>
         <p class="credit">{film.credit}</p>
       </section>
@@ -184,7 +191,7 @@ const sections = [
           </ul>
         </div>
         <div class="compare-tool">
-          <BeforeAfter before={compare.before} after={compare.after} />
+          <BeforeAfter before={compare.before} after={compare.after} ratio={compare.ratio} />
           <p class="hint">↔ Glisse la poignée pour comparer</p>
         </div>
       </section>
@@ -215,7 +222,7 @@ const sections = [
 
   /* En-tête posé sur la couverture ; pied de page opaque pour masquer la couverture fixe */
   :global(body > header) { position: absolute; inset: 0 0 auto; z-index: 5; }
-  :global(body > footer) { position: relative; z-index: 1; background: #000 !important; }
+  :global(body > footer) { position: relative; z-index: 1; background: var(--p-footer) !important; }
 
   /* --- Repères de section --------------------------------------------------- */
   .dots { position: fixed; right: 1.25rem; top: 50%; translate: 0 -50%; z-index: 40; display: none; }
@@ -233,6 +240,10 @@ const sections = [
   mark { background: none; color: var(--p-key); font-weight: 600; }
   em { font-style: italic; }
 
+  /* Habillage VHS (statique) : lignes de balayage + léger décalage des couleurs du titre */
+  .vhs { background-image: repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.14) 0, rgb(0 0 0 / 0.14) 1px, transparent 1px, transparent 3px); }
+  .vhs .title, .vhs .h2 { text-shadow: 3px 0 rgb(0 229 255 / 0.7), -3px 0 rgb(255 45 149 / 0.7); }
+  .vhs .kicker span { box-shadow: 3px 3px 0 #00e5ff; }
   .head { padding-top: 6rem; display: grid; gap: 1rem; }
   .back { width: fit-content; font: 500 1rem/1.4 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: #d6d6d6; }
   .back:hover { color: var(--p-accent); translate: -0.25rem 0; }
@@ -248,7 +259,7 @@ const sections = [
   .intro { display: grid; gap: 3rem; padding-top: 5rem; }
   .intro-main { display: grid; gap: 1.5rem; max-width: 54rem; }
   .lead { font-size: clamp(1.25rem, 2.1vw, 1.65rem); line-height: 1.6; color: var(--p-text); }
-  .quote { position: relative; justify-self: end; max-width: 36rem; padding: 2.75rem 2.5rem 3rem; background: url('/images/projets/la-cite-de-dieu/papier-dechire.webp') center / 100% 100% no-repeat; rotate: -2deg; outline-offset: 6px; }
+  .quote { position: relative; justify-self: end; max-width: 36rem; padding: 2.75rem 2.5rem 3rem; background: url('/images/projets/commun/papier-dechire.webp') center / 100% 100% no-repeat; rotate: -2deg; outline-offset: 6px; }
   .quote:hover, .quote:focus-visible { rotate: 0deg; scale: 1.03; }
   .quote-mark { position: absolute; top: -1.2rem; left: 1rem; font: 700 6rem/1 var(--font-display); color: var(--p-accent); }
   .quote p { font: 500 clamp(1.4rem, 2.4vw, 1.75rem)/1.35 var(--font-display); color: #fff; }
@@ -273,7 +284,8 @@ const sections = [
   .polaroid:hover { rotate: 0deg; scale: 1.04; }
   .polaroid > img:first-child { width: 100%; box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.6); }
   .polaroid figcaption { margin-top: 0.75rem; text-align: center; font: 600 1.25rem/1 var(--font-display); letter-spacing: 0.18em; text-transform: uppercase; color: #fff; }
-  .tape { position: absolute; top: -1.3rem; left: 50%; width: 9rem; height: 3.2rem; translate: -50% 0; rotate: -4deg; background: url('/images/projets/la-cite-de-dieu/scotch.webp') center / contain no-repeat; }
+  .extra { position: absolute; left: 0.5rem; bottom: -3.5rem; width: 36%; rotate: -7deg; box-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 0.5); border: 4px solid #fff; }
+  .tape { position: absolute; top: -1.3rem; left: 50%; width: 9rem; height: 3.2rem; translate: -50% 0; rotate: -4deg; background: url('/images/projets/commun/scotch.webp') center / contain no-repeat; }
   .sticker { position: absolute; right: -2.25rem; bottom: -2rem; width: 7rem; rotate: -8deg; }
   .polaroid:hover .sticker { rotate: 6deg; }
   .decor { position: absolute; top: var(--t); width: var(--w); rotate: var(--r); pointer-events: none; display: none; }
@@ -284,7 +296,7 @@ const sections = [
   /* --- Bande-annonce ------------------------------------------------------------------------ */
   .film { display: grid; gap: 1.5rem; padding-top: 5rem; width: min(100% - 2rem, 64rem); margin-inline: auto; }
   .film-frame { position: relative; aspect-ratio: 1045 / 598; width: 100%; margin-inline: auto; }
-  .film-frame video { position: absolute; left: 1.2%; top: 4.2%; width: 97%; height: 93.2%; object-fit: cover; background: #000; }
+  .film-frame video, .film-frame iframe { border: 0; position: absolute; left: 1.2%; top: 4.2%; width: 97%; height: 93.2%; object-fit: cover; background: #000; }
   .film-border { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   .film-bar { position: absolute; left: 3%; bottom: 7%; display: flex; flex-wrap: wrap; gap: 0.5rem; opacity: 0; }
   .film-frame:hover .film-bar, .film-frame:focus-within .film-bar { opacity: 1; }
