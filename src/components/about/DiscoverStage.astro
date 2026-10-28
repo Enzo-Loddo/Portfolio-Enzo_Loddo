@@ -286,13 +286,17 @@ let wi = 0;
 
   {/* Logo ARRIVALS : toujours au premier plan, même sur l'écran d'arrivée */}
   <a
-    class="group header a-c"
+    class="group home-link header a-c"
     href="/"
     aria-label="ARRIVALS — retour à l’accueil"
     title="Retour à l’accueil"
     style={`--x:${header.x};--y:${header.y};--w:${header.w};--h:${header.h}`}
   >
     <ArrivalsLogo />
+    <span class="home-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"></path></svg>
+      Retour à l’accueil
+    </span>
   </a>
 
   {/* Indicateur d'étapes */}

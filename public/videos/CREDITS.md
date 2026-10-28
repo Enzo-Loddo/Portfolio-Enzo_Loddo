@@ -15,3 +15,7 @@ Le crédit est affiché sur l'écran d'arrivée.
 ## La Cité de Dieu — bande-annonce (`la-cite-de-dieu-bande-annonce.mp4`)
 Fournie par Enzo Loddo (projet d'étude, affiche détournée). Œuvre © Miramax / O2 Filmes : droits réservés,
 utilisée à titre d'illustration pédagogique. À retirer ou remplacer par un lien YouTube en cas de mise en ligne publique.
+
+## Vidéo d'accueil de « Me découvrir » — fichiers `reunion-hero.*` (remplace le lecteur YouTube)
+« Aerial views of Réunion » — JSery Films — https://commons.wikimedia.org/wiki/File:Aerial_views_of_R%C3%A9union.webm
+Licence Creative Commons Attribution 3.0 (attribution obligatoire : affichée dans le héros). Fichiers réencodés (sans le son) pour le web.

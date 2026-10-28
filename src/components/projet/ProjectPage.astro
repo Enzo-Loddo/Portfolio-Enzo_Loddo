@@ -16,6 +16,7 @@ const { cover, meta, intro, research, film, compare, next } = page;
 
 <!-- Couverture fixe -->
 <section class="cover" aria-label="Couverture">
+  <img src={cover.src} alt="" class="cover-backdrop" aria-hidden="true" />
   <picture>
     {cover.srcMobile && <source media="(max-width: 767px)" srcset={cover.srcMobile} />}
     <img src={cover.src} alt={cover.alt} class="cover-img" fetchpriority="high" />
@@ -29,15 +30,12 @@ const { cover, meta, intro, research, film, compare, next } = page;
       </div>
     )
   }
-  <div class="cover-shade" aria-hidden="true"></div>
   <p class="cover-hint" aria-hidden="true">Défiler <span>↓</span></p>
 </section>
 <div class="cover-spacer" aria-hidden="true"></div>
 
 <!-- Feuille qui recouvre la couverture -->
 <article class="sheet">
-  <div class="sheet-edge" aria-hidden="true"></div>
-
   <header class="wrap head" data-reveal>
     <a href="/projets" class="back">← Retour aux projets</a>
     <h1 class="title">{title}</h1>
@@ -129,17 +127,33 @@ const { cover, meta, intro, research, film, compare, next } = page;
     overflow: hidden;
     background: #0b0b0b;
   }
+  /* Bureau : l'image remplit l'écran. Elle est cadrée vers le bas pour garder tout le texte
+     (« Welcome in Brazil … Cidade de Deus ») visible ; c'est le haut (ciel) qui est rogné. */
+  .cover-backdrop { display: none; }
   .cover-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 40%;
+    object-position: center 88%;
+  }
+  /* Mobile (écran en hauteur) : image entière, le reste est comblé par une version floue de la photo */
+  @media (max-width: 767px) {
+    .cover-backdrop {
+      display: block;
+      position: absolute;
+      inset: -5%;
+      width: 110%;
+      height: 110%;
+      object-fit: cover;
+      filter: blur(28px) brightness(0.45);
+    }
+    .cover-img { position: relative; object-fit: contain; object-position: center; }
   }
   .cover-shade {
     position: absolute;
     inset: auto 0 0;
-    height: 30%;
-    background: linear-gradient(to top, rgb(0 0 0 / 0.65), transparent);
+    height: 14%;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.5), transparent);
   }
   .cover-text {
     position: absolute;
@@ -155,8 +169,9 @@ const { cover, meta, intro, research, film, compare, next } = page;
   .cover-hint {
     position: absolute;
     left: 50%;
-    bottom: 1.5rem;
+    bottom: 0.6rem;
     translate: -50% 0;
+    text-shadow: 0 1px 6px #000;
     font: 500 1rem/1 var(--font-display);
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -178,16 +193,6 @@ const { cover, meta, intro, research, film, compare, next } = page;
     padding-bottom: 6rem;
     box-shadow: 0 -2rem 4rem rgb(0 0 0 / 0.55);
     overflow-x: clip;
-  }
-  /* Bord supérieur en papier déchiré (image du dossier) */
-  .sheet-edge {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: -2.6rem;
-    height: 3.2rem;
-    background: url('/images/projets/la-cite-de-dieu/papier-dechire.webp') center top / 100% 100% no-repeat;
-    pointer-events: none;
   }
   .wrap { width: min(100% - 2rem, 76rem); margin-inline: auto; }
 

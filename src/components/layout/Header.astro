@@ -30,11 +30,15 @@ const current = Astro.url.pathname.replace(/\/$/, '');
       ) : (
         <a
           href="/"
-          class="group flex items-center"
+          class="group home-link flex items-center"
           aria-label="ARRIVALS — retour à l’accueil"
           title="Retour à l’accueil"
         >
           <ArrivalsLogo class="h-14 w-auto md:h-20" />
+          <span class="home-hint" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"></path></svg>
+      Retour à l’accueil
+    </span>
         </a>
       )
     }

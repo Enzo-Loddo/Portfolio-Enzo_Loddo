@@ -239,17 +239,17 @@ export const texts = {
   ctaContact: 'Me contacter',
 };
 
-/** Écran d'arrivée (héros) : vidéo YouTube officielle du tourisme réunionnais, en fond (boucle muette). */
+/** Écran d'arrivée (héros) : vidéo aérienne de La Réunion, en fond (boucle muette). */
 export const hero = {
   video: {
-    id: 'j_sjZYb8SkM',
-    title: 'La Réunion, l’île intense - Best of',
-    poster: 'https://i.ytimg.com/vi/j_sjZYb8SkM/maxresdefault.jpg',
+    mp4: '/videos/reunion-hero.mp4',
+    webm: '/videos/reunion-hero.webm',
+    poster: '/videos/reunion-hero-poster.webp',
   },
   videoLabel: 'Vidéo de présentation de La Réunion',
   credit: {
-    text: 'Vidéo : Comité Réunionnais du Tourisme',
-    href: 'https://www.youtube.com/watch?v=j_sjZYb8SkM',
+    text: 'Vidéo : JSery Films (CC BY 3.0)',
+    href: 'https://commons.wikimedia.org/wiki/File:Aerial_views_of_R%C3%A9union.webm',
   },
   ticket: ['VOL RUN-974', 'PORTE 974', 'PLACE 01A'],
   lines: ['LA', 'RÉUNION'],
