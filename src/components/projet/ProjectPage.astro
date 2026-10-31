@@ -4,16 +4,16 @@
  *
  * La DISPOSITION est la même pour tous les projets (couverture → titre → synopsis → recherches →
  * film → avant/après → suite). Chaque projet apporte sa propre direction artistique : couleurs (`theme`),
- * décors (src/data/project-pages.ts).
+ * décors (un fichier par projet dans src/data/projets/).
  */
-import { richSegments, type ProjectPageContent } from '@/data/project-pages';
+import { richSegments, type ProjectPageContent } from '@/data/projets/types';
 import BeforeAfter from './BeforeAfter.astro';
 
 interface Props {
   page: ProjectPageContent;
-  title: string;
 }
-const { page, title } = Astro.props;
+const { page } = Astro.props;
+const title = page.title;
 const { theme, cover, meta, intro, research, film, compare, next } = page;
 
 const themeVars = {

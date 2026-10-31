@@ -1,0 +1,13 @@
+---
+/**
+ * Page projet « La Cité de Dieu » (/projets/la-cite-de-dieu).
+ * Disposition : ProjectPage.astro (commune à tous les projets). Contenu et couleurs : src/data/projets/la-cite-de-dieu.ts
+ */
+import ProjectPage from '@/components/projet/ProjectPage.astro';
+import page from '@/data/projets/la-cite-de-dieu';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title={`${page.title} — Enzo Loddo`} description={page.description}>
+  <ProjectPage page={page} />
+</BaseLayout>

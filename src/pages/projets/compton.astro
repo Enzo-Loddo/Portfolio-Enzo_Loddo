@@ -1,0 +1,13 @@
+---
+/**
+ * Page projet « Compton - Dre » (/projets/compton).
+ * Disposition : ProjectPage.astro (commune à tous les projets). Contenu et couleurs : src/data/projets/compton.ts
+ */
+import ProjectPage from '@/components/projet/ProjectPage.astro';
+import page from '@/data/projets/compton';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title={`${page.title} — Enzo Loddo`} description={page.description}>
+  <ProjectPage page={page} />
+</BaseLayout>

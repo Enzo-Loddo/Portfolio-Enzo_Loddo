@@ -1,13 +1,16 @@
 ---
 import ImageOrPlaceholder from '@/components/ui/ImageOrPlaceholder.astro';
-import ProjectPage from '@/components/projet/ProjectPage.astro';
-import { projectPages } from '@/data/project-pages';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getPublishedProjects } from '@/lib/projects';
 import type { Project } from '@/types/project';
 
+/**
+ * Gabarit de secours : sert uniquement les projets qui n'ont pas encore leur propre page
+ * (une page dédiée = un fichier src/pages/projets/<slug>.astro).
+ */
 export async function getStaticPaths() {
-  const projects = await getPublishedProjects();
+  const dedicated = Object.keys(import.meta.glob('./*.astro')).map((f) => f.replace(/^\.\/|\.astro$/g, ''));
+  const projects = (await getPublishedProjects()).filter((p) => !dedicated.includes(p.slug));
   return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
 }
 
@@ -15,7 +18,6 @@ interface Props {
   project: Project;
 }
 const { project } = Astro.props;
-const page = projectPages[project.slug];
 const toolInitials = (name: string) => name.slice(0, 2);
 ---
 
@@ -23,16 +25,12 @@ const toolInitials = (name: string) => name.slice(0, 2);
   title={`${project.titre} — Enzo Loddo`}
   description={project.description[0]?.slice(0, 155)}
 >
-  {page && <ProjectPage page={page} title={project.titre} />}
-
-  {!page && (
   <div class="px-4 pt-2 md:px-8">
     <a href="/projets" class="inline-block py-2 font-display text-nav text-fg-2">← Retour</a>
   </div>
-  )}
 
   {
-    !page && project.hero && (
+    project.hero && (
       <section class="mt-4 flex flex-col items-center gap-2 bg-deep px-4 py-12 text-center md:py-20" aria-label="Présentation">
         <p class="font-display text-2xl uppercase text-accent md:text-h3">{project.hero.surtitre}</p>
         <p class="font-display text-[6rem] font-bold leading-none text-accent md:text-[10rem]">{project.hero.titre}</p>
@@ -41,7 +39,7 @@ const toolInitials = (name: string) => name.slice(0, 2);
     )
   }
 
-  {!page && <article class="flex flex-col gap-16 px-4 pb-16 pt-8 md:gap-24 md:px-8 md:pb-24 md:pt-12">
+  <article class="flex flex-col gap-16 px-4 pb-16 pt-8 md:gap-24 md:px-8 md:pb-24 md:pt-12">
     <header class="flex flex-col gap-10 md:flex-row md:gap-12">
       <div class="flex flex-col items-center gap-8 md:flex-1">
         <div class="aspect-4/5 w-full max-w-xl md:aspect-square md:max-w-none">
@@ -108,5 +106,5 @@ const toolInitials = (name: string) => name.slice(0, 2);
         </section>
       )
     }
-  </article>}
+  </article>
 </BaseLayout>
