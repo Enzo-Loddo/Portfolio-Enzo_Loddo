@@ -151,17 +151,18 @@ export const projectPages: Record<string, ProjectPageContent> = {
 
   'tokyo-rwb': {
     slug: 'tokyo-rwb',
-    // Tokyo années 90-2000, vu sur une cassette VHS : bleu nuit, rose néon, lignes de balayage.
+    // Tokyo la nuit, scènes de rue clandestines des années 90-2000, vu sur une cassette VHS :
+    // bleu nuit presque noir, orange sodium des lampadaires, lignes de balayage.
     theme: {
-      bg: '#0b1f6b',
-      accent: '#ff5aa5',
-      text: '#ff93c8',
+      bg: '#070b14',
+      accent: '#e8962e',
+      text: '#e6c28a',
       key: '#ffffff',
       onPanel: '#ffffff',
-      onPanelKey: '#ff5aa5',
-      panel: '#0b1f6b',
-      muted: '#b8c4f5',
-      footer: '#050d33',
+      onPanelKey: '#e8962e',
+      panel: '#070b14',
+      muted: '#97a1b5',
+      footer: '#03050a',
       vhs: true,
     },
     cover: {
@@ -190,12 +191,14 @@ export const projectPages: Record<string, ProjectPageContent> = {
     },
     film: {
       title: 'AMBIANCE TOKYO',
-      youtube: 'EeCebnSx3Ms',
-      credit: 'Vidéo : ＫＡＮＪＯＺＯＫＵ — sɛɴsɛɴ, via YouTube. Présentée à titre d’illustration.',
+      src: '/videos/tokyo-rwb-video.mp4',
+      poster: '/videos/tokyo-rwb-video-poster.webp',
+      credit: 'Vidéo : ＫＡＮＪＯＺＯＫＵ — sɛɴsɛɴ (YouTube). Présentée à titre d’illustration.',
     },
     compare: {
       title: 'AVANT / APRÈS',
-      ratio: '2481 / 3508',
+      // Les deux images ont exactement la même taille et le même cadrage (voir scripts/process-project-images.mjs)
+      ratio: '1400 / 1980',
       before: { src: `${tokyo}/avant.webp`, alt: 'Photographie d’origine : Porsche 911 RWB sur un passage piéton à Tokyo', label: 'Photo d’origine' },
       after: { src: `${tokyo}/apres.webp`, alt: 'Affiche concept finale : la 911 RWB, textes japonais et étoile jaune', label: 'Affiche finale' },
       paragraphs: [

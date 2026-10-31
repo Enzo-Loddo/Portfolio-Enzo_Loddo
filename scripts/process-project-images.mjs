@@ -6,6 +6,8 @@
  *
  * Chaque règle : nom du fichier source (sans extension, accents ignorés) → { out, width, quality, ... }
  *   keyWhite : rend transparent le blanc relié aux bords (autocollants exportés sur fond blanc)
+ *   crop     : { left, top, width, height } en pixels de l'original, appliqué avant le redimensionnement
+ *   height   : avec width, force une taille exacte (fit: fill)
  *   mobile   : largeur d'une variante mobile (`<out>-mobile.webp`)
  */
 import { mkdir, readdir } from 'node:fs/promises';
@@ -27,7 +29,9 @@ const PROJECTS = {
   },
   'tokyo-rwb': {
     couverture: { width: 2400, quality: 82, mobile: 1100 },
-    avant: { width: 1000, quality: 86 },
+    // Recadrage exact de la photo d'origine tel qu'il apparaît dans l'affiche (mesuré par comparaison des deux images),
+    // puis mise à la même taille que l'affiche : le comparateur avant / après ne « bouge » plus.
+    avant: { crop: { left: 2, top: 76, width: 729, height: 1030 }, width: 1400, height: 1980, quality: 88 },
     apres: { width: 1400, quality: 86 },
     decors: { out: 'plaque', width: 700, quality: 90 },
     decors2: { out: 'logo-kanjozoku', width: 600, quality: 90, keyWhite: true },
@@ -79,7 +83,10 @@ for (const file of (await readdir(SRC)).filter((f) => /\.(png|jpe?g)$/i.test(f))
   }
   const out = rule.out ?? name;
   const input = path.join(SRC, file);
-  const base = rule.keyWhite ? await keyWhite(input, rule.width) : sharp(input).rotate().resize({ width: rule.width, withoutEnlargement: true });
+  let base;
+  if (rule.keyWhite) base = await keyWhite(input, rule.width);
+  else if (rule.crop) base = sharp(input).extract(rule.crop).resize(rule.width, rule.height, { fit: 'fill' });
+  else base = sharp(input).rotate().resize({ width: rule.width, withoutEnlargement: true });
   const info = await base.clone().webp({ quality: rule.quality, alphaQuality: 100 }).toFile(path.join(OUT, `${out}.webp`));
   console.log(`${out}.webp ${info.width}x${info.height} (${Math.round(info.size / 1024)} Ko)`);
   if (rule.mobile) {
