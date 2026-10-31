@@ -1,0 +1,14 @@
+COMPTON - DRE (adresse /projets/compton) : dépose ici les fichiers
+(PNG de préférence, export Figma en 1x, pas en x2)
+
+- couverture.png        Image d'en-tête plein écran, paysage, 2400 px de large minimum (idéalement sans texte incrusté)
+- inspiration.png       Planche(s) d'inspiration : inspiration.png + inspiration2.png si tu en as deux
+- decors (png)          Éléments détourés à fond transparent (flammes, logo Jumpman, étiquette...) : un fichier par élément
+- video.mp4             (facultatif) fichier MP4 directement (pas de lien YouTube)
+- avant.png             Version d'origine / brouillon
+- apres.png             Visuel final
+  -> avant et apres doivent avoir le même cadrage ; sinon je les aligne moi-même si l'image d'origine est entièrement visible dans l'affiche finale.
+
+Textes : ceux déjà présents sur le site pour ce projet (3 paragraphes, Affinity + Figma)
+seront repris ; donne-moi aussi une citation (facultative), la note de l'auteur, 2 étapes de recherche et 3 points avant/après,
+ou dis-moi de les rédiger. Pense aussi à la nuance de couleurs de la page et à l'accent.

@@ -38,6 +38,17 @@ const PROJECTS = {
     inspiration: { width: 900, quality: 86 },
     inspiration2: { width: 900, quality: 86 },
   },
+  compton: {
+    couverture: { width: 2400, quality: 82, mobile: 1100 },
+    // Cadrage exact de la photo d'origine dans la couverture finale (mesuré par corrélation des deux images),
+    // mis à la même taille que le visuel final pour que le comparateur ne « bouge » pas.
+    avant: { crop: { left: 7, top: 37, width: 1193, height: 1492 }, width: 1080, height: 1350, quality: 88 },
+    apres: { width: 1080, quality: 88 },
+    decor: { out: 'radio', width: 700, quality: 90, keyWhite: true },
+    decor2: { out: 'impala', width: 800, quality: 90, keyWhite: true },
+    'inspiration-1': { out: 'inspiration', width: 800, quality: 86 },
+    'inspiration-2': { out: 'inspiration2', width: 800, quality: 86 },
+  },
 };
 const RULES = PROJECTS[slug];
 if (!RULES) {
@@ -46,7 +57,7 @@ if (!RULES) {
 }
 const SRC = `public/images/projets/${slug}/originaux`;
 const OUT = `public/images/projets/${slug}`;
-const plain = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+const plain = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase().replace(/\s+/g, '-');
 
 /** Remplit depuis les bords : le blanc (ou quasi blanc) connecté au bord devient transparent. */
 async function keyWhite(file, width) {

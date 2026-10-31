@@ -85,6 +85,7 @@ export interface ProjectPageContent {
 
 const base = '/images/projets/la-cite-de-dieu';
 const tokyo = '/images/projets/tokyo-rwb';
+const compton = '/images/projets/compton';
 
 export const projectPages: Record<string, ProjectPageContent> = {
   'la-cite-de-dieu': {
@@ -205,6 +206,64 @@ export const projectPages: Record<string, ProjectPageContent> = {
         'Je suis parti d’**une seule photographie** : la 911 RWB sur le passage piéton, devant une façade pleine d’enseignes.',
         'J’ai gardé le décor en l’état et ajouté de **grands textes verticaux en japonais**, une couronne et une étoile jaune derrière la voiture pour la faire ressortir.',
         'Le **jaune** relie l’ensemble : il reprend le ton des enseignes et donne à l’affiche un côté **magazine japonais** des années 90.',
+      ],
+    },
+    next: { slug: 'projets', label: 'Tous mes projets' },
+  },
+  compton: {
+    slug: 'compton',
+    // West Coast : violet nuit (Lakers, brume « G-funk »), or des chaînes et des maillots, rouge XXL en second plan.
+    theme: {
+      bg: '#150a23',
+      accent: '#f2b522',
+      text: '#f3d98f',
+      key: '#ffffff',
+      onPanel: '#ffffff',
+      onPanelKey: '#f2b522',
+      panel: '#150a23',
+      muted: '#b9a9d0',
+      footer: '#0a0412',
+    },
+    cover: {
+      src: `${compton}/couverture.webp`,
+      srcMobile: `${compton}/couverture-mobile.webp`,
+      alt: 'Welcome in United States, California, Compton : vue de nuit sur une rue de Compton et les lumières de Los Angeles',
+    },
+    meta: { item: 'ITEM #001', sujet: 'Post Instagram', outils: [] },
+    intro: {
+      kicker: 'LE SUJET',
+      synopsis:
+        'Direction **Compton**, en **Californie**. C’est ici que **Dr. Dre** a grandi, et que le rap de la **West Coast** a trouvé sa voix, avec **Snoop Dogg**, **2Pac** et toute la scène **G-funk** des années 90.',
+      note: 'J’ai voulu rendre hommage à cet univers en imaginant une **fausse couverture du magazine XXL** : un portrait de Dr. Dre en **noir et blanc**, pensé comme un **post Instagram**.',
+    },
+    research: {
+      title: 'INSPIRATION & RECHERCHES',
+      paragraphs: [
+        'J’ai commencé par regarder de vraies **couvertures du magazine XXL** : le gros logo rouge en haut à gauche, un portrait cadré serré, un titre en grandes lettres et une liste de noms sur le côté. Ces **codes de la presse hip-hop** sont devenus ma base.',
+        'Pour mon visuel, j’ai choisi un portrait en **noir et blanc**, plus intemporel. Le **rouge** du logo et du sous-titre ressort sur le gris, et j’ai ajouté des textes de vrai magazine pour que l’illusion soit **complète**.',
+      ],
+      labels: ['Étudier les couvertures XXL', 'Composer la couverture'],
+      image: { src: `${compton}/inspiration.webp`, alt: 'Couverture du magazine XXL avec 2Pac, bandana blanc et titre rouge', label: 'Inspiration' },
+      extra: { src: `${compton}/inspiration2.webp`, alt: 'Couverture du magazine XXL avec Snoop Dogg, « 40 years of hip-hop »' },
+      sticker: { src: `${compton}/radio.webp` },
+      decor: [{ src: `${compton}/impala.webp`, side: 'left', width: '13rem', top: '4%', rotate: '-6deg' }],
+    },
+    film: {
+      title: 'AMBIANCE WEST COAST',
+      src: '/videos/compton-video.mp4',
+      poster: '/videos/compton-video-poster.webp',
+      credit: 'Extrait vidéo présenté à titre d’illustration — droits réservés à ses auteurs.',
+    },
+    compare: {
+      title: 'AVANT / APRÈS',
+      // Les deux images ont exactement la même taille et le même cadrage (voir scripts/process-project-images.mjs)
+      ratio: '1080 / 1350',
+      before: { src: `${compton}/avant.webp`, alt: 'Photographie d’origine : Dr. Dre en noir et blanc, appuyé contre une voiture, casquette Compton', label: 'Photo d’origine' },
+      after: { src: `${compton}/apres.webp`, alt: 'Fausse couverture XXL : Dr. Dre, titre DR.DRE et logo XXL rouge', label: 'Ma couverture' },
+      paragraphs: [
+        'Je suis parti d’**une seule photographie** en noir et blanc de Dr. Dre, appuyé contre une voiture, casquette « Compton » sur la tête.',
+        'J’ai ajouté le **logo XXL**, le titre **DR.DRE** et les listes de noms, en reprenant la mise en page des vraies couvertures.',
+        'Une **touche de rouge** sur le titre et le logo suffit : l’image reste sobre, très **presse hip-hop** des années 2000.',
       ],
     },
     next: { slug: 'projets', label: 'Tous mes projets' },

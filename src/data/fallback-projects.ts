@@ -6,8 +6,8 @@ import type { Project } from '@/types/project';
  */
 export const fallbackProjects: Project[] = [
   {
-    slug: 'charme',
-    titre: 'CHARME',
+    slug: 'compton',
+    titre: 'COMPTON - DRE',
     destination: 'COMPTON - DRE',
     heure: '00:42',
     vol: 'DRE-92',
@@ -15,13 +15,9 @@ export const fallbackProjects: Project[] = [
     itemId: 'ITEM #001',
     sujet: 'Post Instagram',
     categorie: 'Design',
-    description: [
-      'Ce projet est une création sur-mesure réalisée pour les réseaux sociaux d’un ami. L’objectif était de concevoir un visuel percutant, reprenant les codes esthétiques de la culture urbaine, du streetwear et des pochettes d’albums de rap américain.',
-      'Conçue sur Affinity, l’image repose sur une esthétique sombre, texturée et expérimentale. Le logo « Jumpman » de Jordan, l’étiquette « Parental Advisory » et des motifs de flammes tribales ancrent l’œuvre dans le streetwear et le design des années 2000.',
-      'Le rouge profond et bordeaux installe la tension, un traitement grunge (grain, rayures, usure) casse l’aspect lisse du numérique, et deux encarts bleu/cyan aux textures liquides simulent un bug numérique.',
-    ],
-    visuelAlt: 'Cover art « Charme »',
-    outils: ['Affinity', 'Figma'],
+    description: [],
+    visuelAlt: 'Fausse couverture du magazine XXL : Dr. Dre',
+    outils: [],
     ordre: 1,
     publie: true,
   },
