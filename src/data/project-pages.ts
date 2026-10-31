@@ -32,6 +32,8 @@ export interface ProjectPageContent {
     footer: string;
     /** Habillage « VHS » : lignes de balayage et décalage chromatique du titre (statique) */
     vhs?: boolean;
+    /** Habillage « panneau routier » : cadres blancs arrondis et lueur de coucher de soleil */
+    sign?: boolean;
   };
   /** Couverture : texte déjà intégré à l'image (cover.liveText = false) ou texte affiché en direct. */
   cover: {
@@ -212,24 +214,25 @@ export const projectPages: Record<string, ProjectPageContent> = {
   },
   compton: {
     slug: 'compton',
-    // West Coast : violet nuit (Lakers, brume « G-funk »), or des chaînes et des maillots, rouge XXL en second plan.
+    // Panneaux d'autoroute américains : vert foncé uni, texte jaune, titres orange (contrastes > 5,5 : AA et plus).
     theme: {
-      bg: '#150a23',
-      accent: '#f2b522',
-      text: '#f3d98f',
+      bg: '#0a3a2a',
+      accent: '#ff9f1c',
+      text: '#ffd23f',
       key: '#ffffff',
       onPanel: '#ffffff',
-      onPanelKey: '#f2b522',
-      panel: '#150a23',
-      muted: '#b9a9d0',
-      footer: '#0a0412',
+      onPanelKey: '#ffd23f',
+      panel: '#0a3a2a',
+      muted: '#b7d3c5',
+      footer: '#062218',
+      sign: true,
     },
     cover: {
       src: `${compton}/couverture.webp`,
       srcMobile: `${compton}/couverture-mobile.webp`,
       alt: 'Welcome in United States, California, Compton : vue de nuit sur une rue de Compton et les lumières de Los Angeles',
     },
-    meta: { item: 'ITEM #001', sujet: 'Post Instagram', outils: [] },
+    meta: { item: 'ITEM #001', sujet: 'Post Instagram', outils: ['Affinity'] },
     intro: {
       kicker: 'LE SUJET',
       synopsis:
@@ -249,10 +252,10 @@ export const projectPages: Record<string, ProjectPageContent> = {
       decor: [{ src: `${compton}/impala.webp`, side: 'left', width: '13rem', top: '4%', rotate: '-6deg' }],
     },
     film: {
-      title: 'AMBIANCE WEST COAST',
+      title: 'CALIFORNIA LOVE — BEHIND THE SCENES',
       src: '/videos/compton-video.mp4',
       poster: '/videos/compton-video-poster.webp',
-      credit: 'Extrait vidéo présenté à titre d’illustration — droits réservés à ses auteurs.',
+      credit: 'Vidéo : « California Love » (Behind The Scenes, 10-13 novembre 1995) — Makaveli Lives On (YouTube). Présentée à titre d’illustration.',
     },
     compare: {
       title: 'AVANT / APRÈS',

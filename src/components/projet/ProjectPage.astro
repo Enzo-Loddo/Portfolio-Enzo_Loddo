@@ -68,7 +68,7 @@ const sections = [
 </nav>
 
 <!-- Feuille qui recouvre la couverture -->
-<article class:list={['sheet', theme.vhs && 'vhs']}>
+<article class:list={['sheet', theme.vhs && 'vhs', theme.sign && 'sign']}>
   <header class="wrap head">
     <a href="/projets" class="back">← Retour aux projets</a>
     <h1 class="title">{title}</h1>
@@ -111,10 +111,10 @@ const sections = [
         />
       ))
     }
+    <h2 id="research-title" class="wrap h2 research-title">{research.title}</h2>
     <div class="wrap research">
       <div class="research-text">
         <p class="note">{richSegments(intro.note).map((s) => (s.b ? <mark>{s.t}</mark> : s.t))}</p>
-        <h2 id="research-title" class="h2">{research.title}</h2>
         <ol class="steps">
           {
             research.paragraphs.map((p, i) => (
@@ -261,6 +261,11 @@ const sections = [
   .vhs { background-image: repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.14) 0, rgb(0 0 0 / 0.14) 1px, transparent 1px, transparent 3px); }
   .vhs .title, .vhs .h2 { text-shadow: 3px 0 rgb(40 150 170 / 0.55), -3px 0 rgb(190 40 40 / 0.55); }
   .vhs .kicker span { box-shadow: 3px 3px 0 rgb(40 150 170 / 0.8); }
+  /* Panneau routier américain : cadres blancs aux coins arrondis, fond uni */
+  .sign .chips li, .sign .note, .sign .points li { border-color: #fff; border-radius: 0.6rem; }
+  .sign .chips li { color: #fff; }
+  .sign .chips li:hover { background: #fff; color: #082b20; }
+  .sign .step { border-radius: 0 0.6rem 0.6rem 0; }
   .head { padding-top: 6rem; display: grid; gap: 1rem; }
   .back { width: fit-content; font: 500 1rem/1.4 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: #d6d6d6; }
   .back:hover { color: var(--p-accent); translate: -0.25rem 0; }
@@ -286,6 +291,8 @@ const sections = [
   .panel { position: relative; margin-top: 7rem; padding: 0; color: var(--p-on-panel); }
   .panel mark { color: var(--p-on-panel-key); }
   .panel .h2 { color: var(--p-accent); }
+  /* Le titre occupe toute la largeur : il reste sur une seule ligne, quelle que soit la taille des images */
+  .research-title { display: block; margin-bottom: 2rem; white-space: nowrap; font-size: min(5.6vw, 3.25rem); }
   .research { display: grid; gap: 3.5rem; align-items: start; }
   .research-text { display: grid; gap: 1.5rem; }
   .note { font-size: clamp(1.2rem, 2vw, 1.4rem); line-height: 1.6; padding: 1.25rem 1.5rem; border: 2px solid var(--p-accent); color: #fff; }
@@ -302,7 +309,7 @@ const sections = [
   .polaroid > img:first-child { width: 100%; box-shadow: 0 1.5rem 3rem rgb(0 0 0 / 0.6); }
   .polaroid figcaption { margin-top: 0.75rem; text-align: center; font: 600 1.25rem/1 var(--font-display); letter-spacing: 0.18em; text-transform: uppercase; color: #fff; }
   /* Deux images côte à côte, la seconde décalée vers le bas ; la plaque chevauche la jonction */
-  .duo { position: relative; justify-self: center; width: 100%; max-width: 34rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; padding-bottom: 3rem; }
+  .duo { position: relative; justify-self: center; width: 100%; max-width: 42rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; padding-bottom: 3rem; }
   .duo-a, .duo-b { position: relative; }
   .duo-a { rotate: -2deg; }
   .duo-b { margin-top: 5rem; rotate: 2deg; }
@@ -351,8 +358,7 @@ const sections = [
 
   @media (min-width: 768px) {
     .research { grid-template-columns: 1.15fr 0.85fr; gap: 5rem; }
-    .research:has(.duo) { grid-template-columns: 1.25fr 0.75fr; gap: 3rem; }
-    #research-title { white-space: nowrap; font-size: clamp(1.75rem, 3.1vw, 3rem); }
+    .research:has(.duo) { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
     .compare { grid-template-columns: 0.9fr 1.1fr; gap: 5rem; }
     .compare-tool { order: 2; }
   }
