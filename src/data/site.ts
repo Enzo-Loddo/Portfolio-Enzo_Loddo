@@ -9,10 +9,9 @@ export const site = {
   intro:
     'Je suis Enzo Loddo, étudiant en MMI à l’IUT « Marie et Louis Pasteur » à Montbéliard. Bienvenue dans mon Portfolio, un espace pensé pour vous faire découvrir mes projets et mon univers.',
   email: 'enzo.loddo05@gmail.com',
-  /** TODO : renseigner les URLs réelles des réseaux. */
   socials: [
-    { id: 'instagram', label: 'Instagram', href: '#' },
-    { id: 'linkedin', label: 'LinkedIn', href: '#' },
+    { id: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/3nzo_ldd/' },
+    { id: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/in/enzo-loddo-15338b398/' },
     { id: 'mail', label: 'E-mail', href: 'mailto:enzo.loddo05@gmail.com' },
   ],
   year: 2026,
