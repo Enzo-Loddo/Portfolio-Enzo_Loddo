@@ -7,17 +7,17 @@ const page: ProjectPageContent = {
   slug: 'compton',
   title: 'COMPTON - DRE',
   description: 'Compton - Dre : fausse couverture du magazine XXL, hommage à la West Coast.',
-  // Panneaux d'autoroute américains : vert foncé uni, texte jaune, titres orange (contrastes > 5,5 : AA et plus).
+  // Gris anthracite uni, texte jaune, titres orange : contrastes très confortables.
   theme: {
-    bg: '#0a3a2a',
+    bg: '#2a2c2f',
     accent: '#ff9f1c',
     text: '#ffd23f',
     key: '#ffffff',
     onPanel: '#ffffff',
     onPanelKey: '#ffd23f',
-    panel: '#0a3a2a',
-    muted: '#b7d3c5',
-    footer: '#062218',
+    panel: '#2a2c2f',
+    muted: '#c3c6ca',
+    footer: '#161718',
     sign: true,
   },
   cover: {

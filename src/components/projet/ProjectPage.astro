@@ -216,8 +216,17 @@ const sections = [
   }
 
   <nav class="wrap next" aria-label="Suite">
-    <p class="next-lead">Envie de voir la suite ?</p>
-    <a class="next-btn" href={next.slug === 'projets' ? '/projets' : `/projets/${next.slug}`}>{next.label} <span>→</span></a>
+    <div class="next-card">
+      <p class="next-tag">Prochain vol</p>
+      <p class="next-title">Envie de voir la suite ?</p>
+      <p class="next-text">D’autres créations t’attendent : affiches, posts et stories, réunis au même endroit.</p>
+      <div class="next-route" aria-hidden="true">
+        <i></i>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.8 0 1.5.7 1.5 1.5V9l8 4.5v2l-8-2.2v4.2l2.2 1.6v1.6L12 20l-3.7 1.2v-1.6l2.2-1.6v-4.2l-8 2.2v-2l8-4.5V3.5C10.5 2.7 11.2 2 12 2z" /></svg>
+        <i></i>
+      </div>
+      <a class="next-btn" href={next.slug === 'projets' ? '/projets' : `/projets/${next.slug}`}>{next.label} <span aria-hidden="true">→</span></a>
+    </div>
   </nav>
 </article>
 
@@ -349,12 +358,17 @@ const sections = [
   .compare-tool { display: grid; gap: 0.75rem; }
   .hint { text-align: center; font-size: 1rem; color: var(--p-muted); }
 
-  .next { position: relative; z-index: 1; padding-top: 8rem; display: grid; justify-items: center; gap: 1.25rem; text-align: center; }
-  .next-lead { font: 500 1.25rem/1.3 var(--font-display); letter-spacing: 0.15em; text-transform: uppercase; color: #fff; }
-  .next-btn { display: inline-flex; align-items: center; gap: 1rem; padding: 1.1rem 2.5rem; border-radius: 999px; background: var(--p-accent); color: #000; font: 700 clamp(1.4rem, 3vw, 2rem)/1 var(--font-display); letter-spacing: 0.06em; text-transform: uppercase; box-shadow: 0 0 0 0 var(--p-accent); }
-  .next-btn span { }
-  .next-btn:hover, .next-btn:focus-visible { scale: 1.05; box-shadow: 0 0 0 8px rgb(255 255 255 / 0.15); }
-  .next-btn:hover span { translate: 0.5rem 0; }
+  /* Bloc de fin de page : carte encadrée, ligne de vol en pointillés et bouton */
+  .next { position: relative; z-index: 1; padding-top: 8rem; }
+  .next-card { display: grid; justify-items: center; gap: 1.1rem; text-align: center; padding: clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 3rem); border: 2px solid var(--p-accent); border-radius: 1.25rem; background: rgb(255 255 255 / 0.04); }
+  .next-tag { padding: 0.3rem 1rem; border-radius: 999px; background: var(--p-accent); color: #000; font: 600 1.0625rem/1.2 var(--font-display); letter-spacing: 0.2em; text-transform: uppercase; }
+  .next-title { max-width: 22ch; font: 700 clamp(2.25rem, 6vw, 4rem)/1.05 var(--font-display); letter-spacing: 0.02em; text-transform: uppercase; color: #fff; }
+  .next-text { max-width: 36rem; font-size: 1.1875rem; line-height: 1.6; color: var(--p-text); }
+  .next-route { display: flex; align-items: center; gap: 1rem; width: min(100%, 26rem); color: var(--p-accent); margin: 0.4rem 0; }
+  .next-route i { flex: 1; border-top: 3px dotted currentColor; }
+  .next-route svg { width: 2rem; height: 2rem; rotate: 90deg; }
+  .next-btn { display: inline-flex; align-items: center; gap: 1rem; padding: 1.1rem 2.6rem; border-radius: 999px; background: var(--p-accent); color: #000; font: 700 clamp(1.4rem, 3vw, 2rem)/1 var(--font-display); letter-spacing: 0.06em; text-transform: uppercase; }
+  .next-btn:hover, .next-btn:focus-visible { background: #fff; }
 
   @media (min-width: 768px) {
     .research { grid-template-columns: 1.15fr 0.85fr; gap: 5rem; }
