@@ -18,6 +18,8 @@ interface Props {
   footer?: boolean;
   /** Classe de fond de remplacement (par défaut `bg-base`). */
   background?: string;
+  /** Défilement fluide (Lenis). `false` pour une page qui gère elle-même le défilement (ex. Me découvrir). */
+  smoothScroll?: boolean;
 }
 const {
   title = site.title,
@@ -26,6 +28,7 @@ const {
   crt = false,
   footer = true,
   background = 'bg-base',
+  smoothScroll = true,
 } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 ---
@@ -82,5 +85,12 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <script>
       import '@/scripts/page-transition';
     </script>
+    {
+      smoothScroll && (
+        <script>
+          import '@/scripts/smooth-scroll';
+        </script>
+      )
+    }
   </body>
 </html>

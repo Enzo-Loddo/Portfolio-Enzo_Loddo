@@ -57,7 +57,6 @@
     background-color: var(--color-base);
     color: var(--color-fg);
     font-family: var(--font-sans);
-    scroll-behavior: smooth;
   }
 
   body {

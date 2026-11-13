@@ -1,0 +1,14 @@
+PAGE « MES PROJETS » : dépose ici un fichier par projet (PNG ou JPG, export en 1x, visuel entier, format portrait si possible)
+
+Nomme chaque fichier avec son numéro, par exemple :
+  projet-001.png, projet-002.png, projet-003.png, projet-004.png, projet-005.png, projet-006.png ...
+
+Pour les projets qui ont déjà leur page (La Cité de Dieu, Tokyo - RWB, Compton - Dre), pas besoin de fichier :
+j'utilise leur affiche finale.
+
+Pour chaque projet, il me faut aussi (dans ton message, ou dans un fichier texte ici) :
+  - Item ID (ex. #001)        - Sujet (ex. Post Instagram, Story Instagram, Affiche concept, Poster)
+  - Catégorie (ex. Design)    - Titre court (ex. Charme)
+  - Une page dédiée existe déjà ? (oui : laquelle / non : « dossier en cours »)
+
+Je récupère moi-même dans ta maquette Figma : le fond d'archives, les sachets plastique et les étiquettes kraft.

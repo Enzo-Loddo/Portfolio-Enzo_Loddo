@@ -1,0 +1,162 @@
+---
+/**
+ * Vitrine « Mes projets » : un projet à la fois en grand (visuel + carte d'embarquement),
+ * la sélection sous forme de tableau des vols à côté. Ambiance aéroport, mais chaque mot reste clair :
+ * destination = le projet, vol = son numéro, porte = le type de création, statut = page prête ou non.
+ */
+import type { Project } from '@/types/project';
+
+interface Props {
+  projects: Project[];
+}
+const { projects } = Astro.props;
+const total = String(projects.length).padStart(2, '0');
+const num = (i: number) => String(i + 1).padStart(3, '0');
+---
+
+<section class="show" data-show aria-label="Mes projets">
+  <div class="bar" aria-hidden="true">
+    <span class="bar-l">Prochain vol · tous mes projets</span>
+    <span class="bar-r"><i class="led"></i>Embarquement immédiat</span>
+  </div>
+
+  <p class="count" aria-live="polite">
+    Vol <span class="fl" data-count>01</span> sur <span data-total>{total}</span>
+  </p>
+
+  <div class="grid">
+    <div class="stage">
+      {
+        projects.map((p, i) => (
+          <article class="panel" data-panel={i} hidden={i !== 0}>
+            <div class="visual">
+              {
+                p.visuel ? (
+                  <img src={p.visuel} alt={p.visuelAlt ?? p.titre} loading={i === 0 ? 'eager' : 'lazy'} />
+                ) : (
+                  <div class="soon"><span>Visuel à venir</span></div>
+                )
+              }
+            </div>
+            <div class="info">
+              <div class="pass">
+                <dl class="pass-main">
+                  <div class="wide"><dt>Destination</dt><dd class="dest">{p.destination}</dd></div>
+                  <div><dt>Vol</dt><dd>{p.vol}</dd></div>
+                  <div><dt>Porte</dt><dd>{p.sujet}</dd></div>
+                  {p.outils.length > 0 && <div><dt>Outils</dt><dd>{p.outils.join(' · ')}</dd></div>}
+                  <div>
+                    <dt>Statut</dt>
+                    <dd class={p.publie ? 'ok' : 'late'}>{p.publie ? 'À l’heure' : 'Retardé'}</dd>
+                  </div>
+                </dl>
+                <div class="stub" aria-hidden="true"><i class="bars"></i><span>{num(i)}</span></div>
+              </div>
+              {
+                p.publie ? (
+                  <a class="go" href={`/projets/${p.slug}`}>
+                    Embarquer pour ce projet <span aria-hidden="true">→</span>
+                  </a>
+                ) : (
+                  <p class="wait">Dossier en cours de préparation : décollage bientôt.</p>
+                )
+              }
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="board" role="listbox" aria-label="Choisir un projet">
+      <div class="row head" aria-hidden="true"><span>Vol</span><span>Destination</span><span>Statut</span></div>
+      {
+        projects.map((p, i) => (
+          <button type="button" class="row" role="option" data-idx={i} aria-selected={i === 0 ? 'true' : 'false'}>
+            <span class="fl">{num(i)}</span>
+            <span class="name">{p.destination}</span>
+            <span class={['st', p.publie ? 'ok' : 'late']}>{p.publie ? 'À l’heure' : 'Retardé'}</span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .show { display: grid; gap: 1.25rem; }
+  .bar { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; background: #000; border-radius: 4px; padding: 0.55rem 0.9rem; font: 500 1rem/1.3 var(--font-display); letter-spacing: 0.12em; text-transform: uppercase; }
+  .bar-l { color: var(--color-accent); }
+  .bar-r { color: var(--color-fg-muted); }
+  .led { display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--color-ok); margin-right: 0.5rem; }
+  .count { font: 500 1.125rem/1 var(--font-display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .fl { display: inline-block; background: #000; border-radius: 3px; padding: 0.15rem 0.45rem; color: var(--color-accent); font-weight: 500; letter-spacing: 0.06em; }
+
+  .grid { display: grid; gap: 2rem; align-items: start; }
+  @media (min-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr) 24rem; gap: 3rem; } }
+
+  /* --- Projet affiché --- */
+  .panel { display: grid; gap: 1.5rem; animation: show-in 0.25s ease-out; }
+  .panel[hidden] { display: none; }
+  @keyframes show-in { from { opacity: 0; } }
+  @media (min-width: 1240px) { .panel { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 2rem; align-items: center; } }
+  .visual img { width: 100%; max-width: 24rem; max-height: 70svh; object-fit: contain; object-position: left top; background: #000; }
+  .soon { width: 100%; max-width: 24rem; display: grid; place-items: center; aspect-ratio: 4 / 5; border: 2px dashed var(--color-line); color: var(--color-fg-muted); font: 500 1.25rem/1 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; }
+  .info { display: grid; gap: 1.5rem; justify-items: start; }
+
+  /* Carte d'embarquement */
+  .pass { display: grid; grid-template-columns: minmax(0, 1fr) 4.5rem; width: 100%; background: #f4f1e8; color: #111; border-radius: 0.6rem; overflow: hidden; }
+  .pass-main { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem 1rem; padding: 1.1rem 1.25rem; }
+  .pass-main .wide { grid-column: 1 / -1; }
+  .pass dt { font-size: 1rem; letter-spacing: 0.1em; text-transform: uppercase; color: #555; }
+  .pass dd { font: 500 1.25rem/1.2 var(--font-display); text-transform: uppercase; }
+  .pass dd.dest { font-size: 1.75rem; }
+  .pass dd.ok { color: #0a6b38; }
+  .pass dd.late { color: #b3261e; }
+  .stub { display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 0.75rem 0.5rem; border-left: 2px dashed #999; background: #ebe7da; font: 500 1rem/1 var(--font-display); }
+  .bars { width: 100%; flex: 1; margin-bottom: 0.5rem; background: repeating-linear-gradient(0deg, #111 0 2px, transparent 2px 4px, #111 4px 5px, transparent 5px 8px); }
+
+  .go { display: inline-flex; gap: 0.6rem; align-items: center; background: var(--color-accent); color: #000; padding: 0.8rem 1.6rem; border-radius: 999px; font: 600 1.25rem/1 var(--font-display); letter-spacing: 0.06em; text-transform: uppercase; }
+  .go:hover, .go:focus-visible { background: #fff; }
+  .wait { font-size: 1.125rem; color: var(--color-fg-muted); }
+
+  /* --- Tableau des vols (sélection) --- */
+  .board { display: grid; border-top: 2px solid var(--color-line); }
+  .row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 6.5rem; gap: 0.75rem; align-items: center; padding: 0.8rem 0.75rem; border-bottom: 1px solid var(--color-line); text-align: left; font: 500 1.125rem/1.2 var(--font-display); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg); }
+  .row.head { font-size: 1rem; letter-spacing: 0.1em; color: var(--color-fg-muted); cursor: default; }
+  button.row { cursor: pointer; }
+  button.row:hover, button.row:focus-visible { background: #26282a; }
+  button.row[aria-selected='true'] { background: #26282a; box-shadow: inset 4px 0 0 var(--color-accent); }
+  .st { font-size: 1rem; letter-spacing: 0.06em; }
+  .ok { color: var(--color-ok); }
+  .late { color: var(--color-late); }
+  .pass .ok { color: #0a6b38; }
+  .pass .late { color: #b3261e; }
+
+  @media (prefers-reduced-motion: reduce) { .panel { animation: none; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-show]').forEach((root) => {
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+    const rows = [...root.querySelectorAll<HTMLButtonElement>('button.row')];
+    const count = root.querySelector<HTMLElement>('[data-count]')!;
+
+    const select = (i: number) => {
+      panels.forEach((p, k) => (p.hidden = k !== i));
+      rows.forEach((r, k) => r.setAttribute('aria-selected', String(k === i)));
+      count.textContent = String(i + 1).padStart(2, '0');
+    };
+
+    rows.forEach((row, i) => row.addEventListener('click', () => select(i)));
+    // Flèches haut / bas dans le tableau
+    root.querySelector('.board')!.addEventListener('keydown', (e) => {
+      const key = (e as KeyboardEvent).key;
+      if (key !== 'ArrowDown' && key !== 'ArrowUp') return;
+      e.preventDefault();
+      const cur = rows.findIndex((r) => r.getAttribute('aria-selected') === 'true');
+      const next = Math.min(Math.max(cur + (key === 'ArrowDown' ? 1 : -1), 0), rows.length - 1);
+      select(next);
+      rows[next].focus();
+    });
+  });
+</script>
