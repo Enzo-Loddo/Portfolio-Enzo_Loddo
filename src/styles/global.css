@@ -57,6 +57,12 @@
     background-color: var(--color-base);
     color: var(--color-fg);
     font-family: var(--font-sans);
+    /* Barre de défilement du navigateur masquée (la page défile toujours à la molette, au doigt et au clavier) */
+    scrollbar-width: none;
+  }
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    display: none;
   }
 
   body {
