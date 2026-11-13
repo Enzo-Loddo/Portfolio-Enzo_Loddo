@@ -40,12 +40,10 @@ import { nav, site } from '@/data/site';
 </footer>
 
 <script>
-  // Remonte en haut de la page : glissement fluide (Lenis) si actif, sinon défilement natif
+  // Remonte en haut de la page
   document.querySelectorAll<HTMLElement>('[data-to-top]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const lenis = (window as any).__lenis;
-      if (lenis) lenis.scrollTo(0, { duration: 1.4 });
-      else window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      window.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     });
   });
 </script>

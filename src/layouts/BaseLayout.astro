@@ -4,7 +4,7 @@ import '@fontsource-variable/inter';
 import '@/styles/global.css';
 import Footer from '@/components/layout/Footer.astro';
 import Header from '@/components/layout/Header.astro';
-import { transition } from '@/data/discover';
+import { transition, transitionPages } from '@/data/discover';
 import { site } from '@/data/site';
 
 interface Props {
@@ -18,8 +18,6 @@ interface Props {
   footer?: boolean;
   /** Classe de fond de remplacement (par défaut `bg-base`). */
   background?: string;
-  /** Défilement fluide (Lenis). `false` pour une page qui gère elle-même le défilement (ex. Me découvrir). */
-  smoothScroll?: boolean;
 }
 const {
   title = site.title,
@@ -28,7 +26,6 @@ const {
   crt = false,
   footer = true,
   background = 'bg-base',
-  smoothScroll = true,
 } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 ---
@@ -71,7 +68,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     {footer && <Footer />}
 
     <!-- Transition de page : GIF d'un avion qui atterrit (départ) + volets noirs (arrivée) -->
-    <div class="pt" id="pt" aria-hidden="true" data-gif={transition.gif} data-duration={transition.duration}>
+    <div class="pt" id="pt" aria-hidden="true" data-gif={transition.gif} data-duration={transition.duration} data-pages={transitionPages.join(',')}>
       <div class="pt-bg"></div>
       <img class="pt-gif" alt="" decoding="async" />
       <div class="pt-caption">
@@ -85,12 +82,5 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <script>
       import '@/scripts/page-transition';
     </script>
-    {
-      smoothScroll && (
-        <script>
-          import '@/scripts/smooth-scroll';
-        </script>
-      )
-    }
   </body>
 </html>

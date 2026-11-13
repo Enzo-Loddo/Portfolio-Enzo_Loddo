@@ -1,5 +1,5 @@
 /**
- * Transition de page « atterrissage » : au clic sur un lien interne, un GIF d'avion qui atterrit en
+ * Transition de page « atterrissage » : au clic sur un lien entre l'accueil et Me découvrir / les 3 projets, un GIF d'avion qui atterrit en
  * accéléré passe en plein écran (quelques secondes) ; sur la page suivante, des volets noirs se relèvent
  * (comme les stores d'un hall d'aéroport) pour révéler le contenu.
  *
@@ -11,7 +11,12 @@ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const overlay = document.getElementById('pt');
 const gif = overlay?.querySelector<HTMLImageElement>('.pt-gif') ?? null;
 const gifUrl = overlay?.dataset.gif ?? '';
-const duration = Number(overlay?.dataset.duration ?? 2900);
+const duration = Number(overlay?.dataset.duration ?? 1500);
+/** Pages reliées à l'accueil par la transition (voir `transitionPages` dans data/discover.ts) */
+const pages = (overlay?.dataset.pages ?? '').split(',').filter(Boolean);
+const clean = (path: string) => path.replace(/\/+$/, '') || '/';
+const shouldPlay = (from: string, to: string) =>
+  (from === '/' && pages.includes(to)) || (to === '/' && pages.includes(from));
 
 /** Précharge le GIF quand le navigateur est inactif pour qu'il démarre sans attente. */
 const preload = () => {
@@ -27,7 +32,7 @@ const release = () => {
   window.setTimeout(() => {
     overlay.classList.remove('is-out');
     document.documentElement.classList.remove('pt-held');
-  }, 1400);
+  }, 900);
 };
 
 if (overlay) {
@@ -41,7 +46,7 @@ if (overlay) {
 
   if (arriving && !reduce) {
     // La page est déjà couverte (classe pt-held posée dans <head>) : on attend un instant puis on la révèle.
-    window.setTimeout(release, 250);
+    window.setTimeout(release, 150);
   } else {
     document.documentElement.classList.remove('pt-held');
   }
@@ -62,6 +67,8 @@ if (overlay) {
     if (url.origin !== location.origin) return;
     if (url.pathname === location.pathname && url.search === location.search) return; // ancre ou même page
     if (/\.(pdf|zip|png|jpe?g|webp|svg)$/i.test(url.pathname)) return;
+    // Transition réservée à l'accueil ↔ Me découvrir et aux 3 projets ; ailleurs, navigation normale
+    if (!shouldPlay(clean(location.pathname), clean(url.pathname))) return;
 
     e.preventDefault();
     try {

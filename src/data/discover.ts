@@ -261,9 +261,15 @@ export const hero = {
 /** Transition de page : GIF d'un avion qui atterrit (accéléré), durée en ms avant le changement de page. */
 export const transition = {
   gif: '/videos/avion-atterrissage.gif',
-  duration: 2900,
+  duration: 1500,
   caption: 'ATTERRISSAGE EN COURS',
 };
+
+/**
+ * La transition « atterrissage » ne se joue qu'entre l'accueil et ces pages (dans les deux sens).
+ * Partout ailleurs, la navigation est instantanée.
+ */
+export const transitionPages = ['/me-decouvrir', '/projets/compton', '/projets/tokyo-rwb', '/projets/la-cite-de-dieu'];
 
 /** Étapes affichées dans l'indicateur de droite. */
 export const steps = ['Profil', 'Outils', 'Contact', 'Fin'] as const;

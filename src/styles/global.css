@@ -420,9 +420,9 @@
 /* Départ : le GIF de l'avion qui atterrit apparaît en fondu, la barre se remplit, puis fondu vers le noir */
 .pt.is-in { visibility: visible; }
 .pt.is-in .pt-bg { opacity: 1; transition: opacity 0.3s ease; }
-.pt.is-in .pt-gif { animation: pt-gif var(--pt-duration, 2.9s) linear forwards; }
-.pt.is-in .pt-caption { animation: pt-caption var(--pt-duration, 2.9s) linear forwards; }
-.pt.is-in .pt-bar::after { animation: pt-bar var(--pt-duration, 2.9s) cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.pt.is-in .pt-gif { animation: pt-gif var(--pt-duration, 1.5s) linear forwards; }
+.pt.is-in .pt-caption { animation: pt-caption var(--pt-duration, 1.5s) linear forwards; }
+.pt.is-in .pt-bar::after { animation: pt-bar var(--pt-duration, 1.5s) cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 
 @keyframes pt-gif {
   0%   { opacity: 0; }
@@ -447,5 +447,5 @@
 .pt.is-out .pt-blinds i {
   transform: scaleY(0);
   transform-origin: bottom;
-  transition: transform 0.7s cubic-bezier(0.76, 0, 0.24, 1) calc((7 - var(--i)) * 55ms);
+  transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1) calc((7 - var(--i)) * 35ms);
 }
