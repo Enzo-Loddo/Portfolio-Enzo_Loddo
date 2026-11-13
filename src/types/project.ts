@@ -34,6 +34,8 @@ export interface Project {
   description: string[];
   visuel?: string;
   visuelAlt?: string;
+  /** Plusieurs visuels pour une série (affiché avec des vignettes). Le premier remplace `visuel`. */
+  galerie?: { src: string; alt: string }[];
   outils: string[];
   hero?: ProjectHero;
   citation?: { texte: string; auteur: string };

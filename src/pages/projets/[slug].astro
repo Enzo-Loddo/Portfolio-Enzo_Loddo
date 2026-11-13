@@ -1,13 +1,14 @@
 ---
-import ImageOrPlaceholder from '@/components/ui/ImageOrPlaceholder.astro';
+/**
+ * Page détaillée d'un projet « simple » : galerie de visuels, description et outils utilisés.
+ * Elle sert tous les projets qui n'ont pas leur propre page grand format
+ * (une page dédiée = un fichier src/pages/projets/<slug>.astro, ex. compton.astro).
+ */
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import { tools } from '@/data/discover';
 import { getPublishedProjects } from '@/lib/projects';
 import type { Project } from '@/types/project';
 
-/**
- * Gabarit de secours : sert uniquement les projets qui n'ont pas encore leur propre page
- * (une page dédiée = un fichier src/pages/projets/<slug>.astro).
- */
 export async function getStaticPaths() {
   const dedicated = Object.keys(import.meta.glob('./*.astro')).map((f) => f.replace(/^\.\/|\.astro$/g, ''));
   const projects = (await getPublishedProjects()).filter((p) => !dedicated.includes(p.slug));
@@ -18,48 +19,45 @@ interface Props {
   project: Project;
 }
 const { project } = Astro.props;
-const toolInitials = (name: string) => name.slice(0, 2);
+const images = project.galerie?.length ? project.galerie : project.visuel ? [{ src: project.visuel, alt: project.visuelAlt ?? project.titre }] : [];
+const toolFor = (name: string) => tools.find((t) => t.name.toLowerCase().startsWith(name.toLowerCase()));
 ---
 
 <BaseLayout
   title={`${project.titre} — Enzo Loddo`}
   description={project.description[0]?.slice(0, 155)}
 >
-  <div class="px-4 pt-2 md:px-8">
-    <a href="/projets" class="inline-block py-2 font-display text-nav text-fg-2">← Retour</a>
-  </div>
+  <article class="mx-auto w-full max-w-7xl px-4 pb-20 pt-4 md:px-8 md:pb-28">
+    <a href="/projets" class="inline-block py-2 font-display text-nav uppercase text-fg-2 hover:text-accent">← Retour aux projets</a>
 
-  {
-    project.hero && (
-      <section class="mt-4 flex flex-col items-center gap-2 bg-deep px-4 py-12 text-center md:py-20" aria-label="Présentation">
-        <p class="font-display text-2xl uppercase text-accent md:text-h3">{project.hero.surtitre}</p>
-        <p class="font-display text-[6rem] font-bold leading-none text-accent md:text-[10rem]">{project.hero.titre}</p>
-        <p class="font-display text-xl uppercase text-fg md:text-h3">{project.hero.lieu}</p>
-      </section>
-    )
-  }
+    <header class="mt-4 flex flex-col gap-4">
+      <h1 class="text-[2.75rem] leading-[1.05] uppercase text-accent md:text-h1">{project.titre}</h1>
+      <ul class="flex flex-wrap gap-2" aria-label="Informations du projet">
+        <li class="border-2 border-accent px-3 py-1 font-display text-label uppercase tracking-widest text-accent">{project.itemId}</li>
+        <li class="border-2 border-accent px-3 py-1 font-display text-label uppercase tracking-widest text-accent">{project.sujet}</li>
+        <li class="border-2 border-accent px-3 py-1 font-display text-label uppercase tracking-widest text-accent">{project.categorie}</li>
+      </ul>
+    </header>
 
-  <article class="flex flex-col gap-16 px-4 pb-16 pt-8 md:gap-24 md:px-8 md:pb-24 md:pt-12">
-    <header class="flex flex-col gap-10 md:flex-row md:gap-12">
-      <div class="flex flex-col items-center gap-8 md:flex-1">
-        <div class="aspect-4/5 w-full max-w-xl md:aspect-square md:max-w-none">
-          <ImageOrPlaceholder
-            src={project.visuel}
-            alt={project.visuelAlt ?? project.titre}
-            label={`VISUEL — ${project.titre}`}
-            loading="eager"
-          />
-        </div>
+    <div class="mt-10 grid gap-10 md:grid-cols-[minmax(0,28rem)_minmax(0,1fr)] md:gap-16" data-gallery>
+      <div>
+        {images.length > 0 && <img data-main src={images[0].src} alt={images[0].alt} class="w-full bg-black" fetchpriority="high" />}
         {
-          project.outils.length > 0 && (
-            <ul class="flex gap-4" aria-label="Outils utilisés">
-              {project.outils.map((tool) => (
-                <li
-                  class="flex size-18 items-center justify-center rounded-2xl bg-accent font-display text-h3 text-ink"
-                  title={tool}
-                >
-                  <span aria-hidden="true">{toolInitials(tool)}</span>
-                  <span class="sr-only">{tool}</span>
+          images.length > 1 && (
+            <ul class="mt-3 flex flex-wrap gap-3" aria-label="Visuels du projet">
+              {images.map((im, k) => (
+                <li>
+                  <button
+                    type="button"
+                    data-thumb
+                    data-src={im.src}
+                    data-alt={im.alt}
+                    aria-pressed={k === 0 ? 'true' : 'false'}
+                    aria-label={`Visuel ${k + 1} sur ${images.length}`}
+                    class="block w-20 border-2 border-line bg-black aria-pressed:border-accent hover:border-fg"
+                  >
+                    <img src={im.src} alt="" loading="lazy" class="aspect-4/5 w-full object-cover" />
+                  </button>
                 </li>
               ))}
             </ul>
@@ -67,44 +65,64 @@ const toolInitials = (name: string) => name.slice(0, 2);
         }
       </div>
 
-      <div class="flex flex-col gap-6 md:w-110 md:border-l-2 md:border-fg md:pl-8">
-        <h1 class="text-5xl uppercase text-accent md:text-h2">{project.titre}</h1>
-        <p class="font-display text-label uppercase tracking-widest text-fg-muted">
-          {project.itemId} · {project.sujet} · {project.categorie}
-        </p>
-        {project.citation && (
-          <blockquote class="relative border-l-4 border-accent bg-surface p-6">
-            <p class="text-body-l text-fg">« {project.citation.texte} »</p>
-            <footer class="mt-2 text-caption text-fg-muted">{project.citation.auteur}</footer>
-          </blockquote>
-        )}
-        {project.description.map((p) => <p class="text-body-m text-fg md:text-body-l">{p}</p>)}
+      <div class="flex flex-col gap-10">
+        <section aria-labelledby="desc-title" class="flex flex-col gap-4">
+          <h2 id="desc-title" class="text-3xl uppercase text-accent md:text-h3">Description</h2>
+          {project.description.map((p) => <p class="text-body-m text-accent md:text-body-l">{p}</p>)}
+        </section>
+
+        {
+          project.outils.length > 0 && (
+            <section aria-labelledby="tools-title" class="flex flex-col gap-4">
+              <h2 id="tools-title" class="text-3xl uppercase text-accent md:text-h3">Outils utilisés</h2>
+              <ul class="flex flex-wrap gap-5">
+                {project.outils.map((name) => {
+                  const t = toolFor(name);
+                  return (
+                    <li class="flex items-center gap-3">
+                      {t ? (
+                        <span class="relative block size-16 shrink-0 rounded-[19%] bg-accent">
+                          <img
+                            src={t.src}
+                            alt=""
+                            class="absolute"
+                            style={`left:${(t.logo.x / 123) * 100}%;top:${(t.logo.y / 123) * 100}%;width:${(t.logo.w / 123) * 100}%;height:${(t.logo.h / 123) * 100}%`}
+                          />
+                        </span>
+                      ) : (
+                        <span class="grid size-16 shrink-0 place-items-center rounded-[19%] bg-accent font-display text-2xl text-ink">{name.slice(0, 2)}</span>
+                      )}
+                      <span class="font-display text-nav uppercase text-fg">{name}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )
+        }
+
+        <a
+          href="/projets"
+          class="inline-flex w-fit items-center gap-3 rounded-full bg-accent px-8 py-3.5 font-display text-nav font-semibold uppercase tracking-wide text-ink hover:bg-fg"
+        >
+          Tous mes projets <span aria-hidden="true">→</span>
+        </a>
       </div>
-    </header>
-
-    {
-      project.sections?.map((section, i) => (
-        <section class="flex flex-col gap-8 md:flex-row md:items-start md:gap-12" aria-labelledby={`section-${i}`}>
-          <div class:list={['aspect-4/3 w-full md:w-[46%] md:shrink-0', i % 2 === 1 && 'md:order-2']}>
-            <ImageOrPlaceholder src={section.image} alt={section.imageAlt ?? section.titre} label={section.imageAlt} />
-          </div>
-          <div class="flex flex-col gap-4">
-            <h2 id={`section-${i}`} class="text-3xl uppercase text-accent md:text-h3">{section.titre}</h2>
-            <p class="max-w-prose text-body-m text-fg md:text-body-l">{section.texte}</p>
-          </div>
-        </section>
-      ))
-    }
-
-    {
-      project.video && (
-        <section class="flex flex-col gap-6" aria-labelledby="video-title">
-          <h2 id="video-title" class="text-3xl uppercase text-accent md:text-h3">LE FILM</h2>
-          <div class="aspect-video w-full">
-            <iframe src={project.video} title={`Vidéo — ${project.titre}`} class="size-full" loading="lazy" allowfullscreen />
-          </div>
-        </section>
-      )
-    }
+    </div>
   </article>
 </BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((root) => {
+    const main = root.querySelector<HTMLImageElement>('[data-main]');
+    const thumbs = [...root.querySelectorAll<HTMLButtonElement>('[data-thumb]')];
+    thumbs.forEach((thumb) =>
+      thumb.addEventListener('click', () => {
+        if (!main) return;
+        main.src = thumb.dataset.src!;
+        main.alt = thumb.dataset.alt!;
+        thumbs.forEach((t) => t.setAttribute('aria-pressed', String(t === thumb)));
+      }),
+    );
+  });
+</script>

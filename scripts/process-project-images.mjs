@@ -38,6 +38,19 @@ const PROJECTS = {
     inspiration: { width: 900, quality: 86 },
     inspiration2: { width: 900, quality: 86 },
   },
+  // Page « Mes projets » : toutes les autres créations (séries regroupées dans data/fallback-projects.ts)
+  liste: {
+    'affiche-doris-1': { out: 'doris-1', width: 900, quality: 84 },
+    'affiche-doris-2': { out: 'doris-2', width: 900, quality: 84 },
+    'affiche-doris-3': { out: 'doris-3', width: 900, quality: 84 },
+    'post-"charme"': { out: 'charme-1', width: 900, quality: 84 },
+    'afffiche-charme-2': { out: 'charme-2', width: 900, quality: 84 },
+    'affiche-charme-3': { out: 'charme-3', width: 900, quality: 84 },
+    'affiche-charme-4': { out: 'charme-4', width: 900, quality: 84 },
+    'post-datsun': { out: 'datsun', width: 900, quality: 84 },
+    'affiche-enzo': { out: 'enzo', width: 900, quality: 84 },
+    doc: { out: 'nike-maxfly', width: 900, quality: 84 },
+  },
   compton: {
     couverture: { width: 2400, quality: 82, mobile: 1100 },
     // Cadrage exact de la photo d'origine dans la couverture finale (mesuré par corrélation des deux images),

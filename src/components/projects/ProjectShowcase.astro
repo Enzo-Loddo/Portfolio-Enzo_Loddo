@@ -2,7 +2,8 @@
 /**
  * Vitrine « Mes projets » : un projet à la fois en grand (visuel + carte d'embarquement),
  * la sélection sous forme de tableau des vols à côté. Ambiance aéroport, mais chaque mot reste clair :
- * destination = le projet, vol = son numéro, porte = le type de création, statut = page prête ou non.
+ * destination = le projet, vol = son numéro, porte = le type de création, statut = page détaillée prête (à l'heure),
+ * simple visuel (embarquement) ou à venir (retardé). Une série peut avoir plusieurs visuels (vignettes).
  */
 import type { Project } from '@/types/project';
 
@@ -12,6 +13,9 @@ interface Props {
 const { projects } = Astro.props;
 const total = String(projects.length).padStart(2, '0');
 const num = (i: number) => String(i + 1).padStart(3, '0');
+const images = (p: Project) => (p.galerie?.length ? p.galerie : p.visuel ? [{ src: p.visuel, alt: p.visuelAlt ?? p.titre }] : []);
+const status = (p: Project) =>
+  p.publie ? { label: 'À l’heure', cls: 'ok' } : images(p).length ? { label: 'Embarquement', cls: 'board' } : { label: 'Retardé', cls: 'late' };
 ---
 
 <section class="show" data-show aria-label="Mes projets">
@@ -31,8 +35,21 @@ const num = (i: number) => String(i + 1).padStart(3, '0');
           <article class="panel" data-panel={i} hidden={i !== 0}>
             <div class="visual">
               {
-                p.visuel ? (
-                  <img src={p.visuel} alt={p.visuelAlt ?? p.titre} loading={i === 0 ? 'eager' : 'lazy'} />
+                images(p).length ? (
+                  <>
+                    <img data-main src={images(p)[0].src} alt={images(p)[0].alt} loading={i === 0 ? 'eager' : 'lazy'} />
+                    {images(p).length > 1 && (
+                      <ul class="thumbs" aria-label="Visuels de la série">
+                        {images(p).map((im, k) => (
+                          <li>
+                            <button type="button" data-thumb data-src={im.src} data-alt={im.alt} aria-label={`Visuel ${k + 1} sur ${images(p).length}`} aria-pressed={k === 0 ? 'true' : 'false'}>
+                              <img src={im.src} alt="" loading="lazy" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
                 ) : (
                   <div class="soon"><span>Visuel à venir</span></div>
                 )
@@ -47,7 +64,7 @@ const num = (i: number) => String(i + 1).padStart(3, '0');
                   {p.outils.length > 0 && <div><dt>Outils</dt><dd>{p.outils.join(' · ')}</dd></div>}
                   <div>
                     <dt>Statut</dt>
-                    <dd class={p.publie ? 'ok' : 'late'}>{p.publie ? 'À l’heure' : 'Retardé'}</dd>
+                    <dd class={status(p).cls}>{status(p).label}</dd>
                   </div>
                 </dl>
                 <div class="stub" aria-hidden="true"><i class="bars"></i><span>{num(i)}</span></div>
@@ -58,7 +75,9 @@ const num = (i: number) => String(i + 1).padStart(3, '0');
                     Embarquer pour ce projet <span aria-hidden="true">→</span>
                   </a>
                 ) : (
-                  <p class="wait">Dossier en cours de préparation : décollage bientôt.</p>
+                  <p class="wait">
+                    {images(p).length ? 'Pas de page détaillée : ce projet se découvre ici, en images.' : 'Dossier en cours de préparation : décollage bientôt.'}
+                  </p>
                 )
               }
             </div>
@@ -74,7 +93,7 @@ const num = (i: number) => String(i + 1).padStart(3, '0');
           <button type="button" class="row" role="option" data-idx={i} aria-selected={i === 0 ? 'true' : 'false'}>
             <span class="fl">{num(i)}</span>
             <span class="name">{p.destination}</span>
-            <span class={['st', p.publie ? 'ok' : 'late']}>{p.publie ? 'À l’heure' : 'Retardé'}</span>
+            <span class={['st', status(p).cls]}>{status(p).label}</span>
           </button>
         ))
       }
@@ -101,6 +120,11 @@ const num = (i: number) => String(i + 1).padStart(3, '0');
   @media (min-width: 1240px) { .panel { grid-template-columns: minmax(0, 20rem) minmax(0, 1fr); gap: 2rem; align-items: center; } }
   .visual img { width: 100%; max-width: 24rem; max-height: 70svh; object-fit: contain; object-position: left top; background: #000; }
   .soon { width: 100%; max-width: 24rem; display: grid; place-items: center; aspect-ratio: 4 / 5; border: 2px dashed var(--color-line); color: var(--color-fg-muted); font: 500 1.25rem/1 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; }
+  .thumbs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.75rem; }
+  .thumbs button { display: block; width: 4rem; border: 2px solid var(--color-line); background: #000; cursor: pointer; }
+  .thumbs button[aria-pressed='true'] { border-color: var(--color-accent); }
+  .thumbs button:hover, .thumbs button:focus-visible { border-color: #fff; }
+  .thumbs img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
   .info { display: grid; gap: 1.5rem; justify-items: start; }
 
   /* Carte d'embarquement */
@@ -121,7 +145,7 @@ const num = (i: number) => String(i + 1).padStart(3, '0');
 
   /* --- Tableau des vols (sélection) --- */
   .board { display: grid; border-top: 2px solid var(--color-line); }
-  .row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 6.5rem; gap: 0.75rem; align-items: center; padding: 0.8rem 0.75rem; border-bottom: 1px solid var(--color-line); text-align: left; font: 500 1.125rem/1.2 var(--font-display); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg); }
+  .row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 8.5rem; gap: 0.75rem; align-items: center; padding: 0.8rem 0.75rem; border-bottom: 1px solid var(--color-line); text-align: left; font: 500 1.125rem/1.2 var(--font-display); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg); }
   .row.head { font-size: 1rem; letter-spacing: 0.1em; color: var(--color-fg-muted); cursor: default; }
   button.row { cursor: pointer; }
   button.row:hover, button.row:focus-visible { background: #26282a; }
@@ -129,6 +153,8 @@ const num = (i: number) => String(i + 1).padStart(3, '0');
   .st { font-size: 1rem; letter-spacing: 0.06em; }
   .ok { color: var(--color-ok); }
   .late { color: var(--color-late); }
+  .st.board { color: var(--color-accent); }
+  .pass dd.board { color: #7a5a00; }
   .pass .ok { color: #0a6b38; }
   .pass .late { color: #b3261e; }
 
@@ -148,6 +174,17 @@ const num = (i: number) => String(i + 1).padStart(3, '0');
     };
 
     rows.forEach((row, i) => row.addEventListener('click', () => select(i)));
+
+    // Séries : les vignettes changent le visuel affiché
+    root.querySelectorAll<HTMLButtonElement>('[data-thumb]').forEach((thumb) => {
+      thumb.addEventListener('click', () => {
+        const visual = thumb.closest('.visual')!;
+        const main = visual.querySelector<HTMLImageElement>('[data-main]')!;
+        main.src = thumb.dataset.src!;
+        main.alt = thumb.dataset.alt!;
+        visual.querySelectorAll('[data-thumb]').forEach((t) => t.setAttribute('aria-pressed', String(t === thumb)));
+      });
+    });
     // Flèches haut / bas dans le tableau
     root.querySelector('.board')!.addEventListener('keydown', (e) => {
       const key = (e as KeyboardEvent).key;
