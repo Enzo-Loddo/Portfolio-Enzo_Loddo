@@ -11,7 +11,7 @@ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const overlay = document.getElementById('pt');
 const gif = overlay?.querySelector<HTMLImageElement>('.pt-gif') ?? null;
 const gifUrl = overlay?.dataset.gif ?? '';
-const duration = Number(overlay?.dataset.duration ?? 1500);
+const duration = Number(overlay?.dataset.duration ?? 2900);
 /** Pages reliées à l'accueil par la transition (voir `transitionPages` dans data/discover.ts) */
 const pages = (overlay?.dataset.pages ?? '').split(',').filter(Boolean);
 const clean = (path: string) => path.replace(/\/+$/, '') || '/';
@@ -32,7 +32,7 @@ const release = () => {
   window.setTimeout(() => {
     overlay.classList.remove('is-out');
     document.documentElement.classList.remove('pt-held');
-  }, 900);
+  }, 1400);
 };
 
 if (overlay) {
@@ -46,7 +46,7 @@ if (overlay) {
 
   if (arriving && !reduce) {
     // La page est déjà couverte (classe pt-held posée dans <head>) : on attend un instant puis on la révèle.
-    window.setTimeout(release, 150);
+    window.setTimeout(release, 250);
   } else {
     document.documentElement.classList.remove('pt-held');
   }

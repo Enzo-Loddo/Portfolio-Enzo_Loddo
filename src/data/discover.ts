@@ -261,7 +261,7 @@ export const hero = {
 /** Transition de page : GIF d'un avion qui atterrit (accéléré), durée en ms avant le changement de page. */
 export const transition = {
   gif: '/videos/avion-atterrissage.gif',
-  duration: 1500,
+  duration: 2900,
   caption: 'ATTERRISSAGE EN COURS',
 };
 
