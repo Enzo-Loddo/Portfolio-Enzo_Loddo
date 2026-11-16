@@ -1,0 +1,288 @@
+---
+/**
+ * Page de présentation d'un projet : galerie de visuels (plein écran au clic), description, outils et infos, en blocs.
+ * Utilisée pour tous les projets ; `fullHref` ajoute un bouton vers la page grand format quand il y en a une.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { tools } from '@/data/discover';
+import { projectHref } from '@/lib/project-links';
+import type { Project } from '@/types/project';
+
+interface Props {
+  project: Project;
+  prev?: Project;
+  next?: Project;
+  /** Page grand format du projet (facultatif) */
+  fullHref?: string;
+}
+const { project, prev, next, fullHref } = Astro.props;
+const images = project.galerie?.length ? project.galerie : project.visuel ? [{ src: project.visuel, alt: project.visuelAlt ?? project.titre }] : [];
+const toolFor = (name: string) => tools.find((t) => t.name.toLowerCase().startsWith(name.toLowerCase()));
+const info = [
+  { k: 'Destination', v: project.destination },
+  { k: 'Vol', v: project.vol },
+  { k: 'Porte', v: project.sujet },
+  { k: 'Catégorie', v: project.categorie },
+];
+---
+
+<BaseLayout
+  title={`${project.titre} — Enzo Loddo`}
+  description={project.description[0]?.slice(0, 155)}
+>
+  <article class="page">
+    <a href="/projets" class="back">← Retour aux projets</a>
+
+    <header class="head">
+      <p class="item">{project.itemId}</p>
+      <h1 class="title">{project.titre}</h1>
+      <p class="type">{project.sujet}</p>
+    </header>
+
+    <div class="grid" data-gallery>
+      <!-- Galerie -->
+      <figure class="gallery">
+        <div class="frame">
+          <span class="tape" aria-hidden="true"></span>
+          {
+            images.length > 0 && (
+              <button type="button" class="zoom" data-zoom aria-label="Voir le visuel en plein écran">
+                <img data-main src={images[0].src} alt={images[0].alt} fetchpriority="high" />
+                <span class="zoom-hint" aria-hidden="true">Agrandir ⤢</span>
+              </button>
+            )
+          }
+        </div>
+        {
+          images.length > 1 && (
+            <ul class="thumbs" aria-label="Visuels du projet">
+              {images.map((im, k) => (
+                <li>
+                  <button type="button" data-thumb data-src={im.src} data-alt={im.alt} aria-pressed={k === 0 ? 'true' : 'false'} aria-label={`Visuel ${k + 1} sur ${images.length}`}>
+                    <img src={im.src} alt="" loading="lazy" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        {images.length > 1 && <figcaption>{images.length} visuels dans cette série</figcaption>}
+      </figure>
+
+      <!-- Blocs d'information -->
+      <div class="blocks">
+        <section class="card" aria-labelledby="desc-title">
+          <h2 id="desc-title" class="label">Description</h2>
+          {project.description.map((p) => <p class="desc">{p}</p>)}
+        </section>
+
+        <div class="duo">
+          {
+            project.outils.length > 0 && (
+              <section class="card" aria-labelledby="tools-title">
+                <h2 id="tools-title" class="label">Outils utilisés</h2>
+                <ul class="tools">
+                  {project.outils.map((name) => {
+                    const t = toolFor(name);
+                    return (
+                      <li>
+                        {t ? (
+                          <span class="tile">
+                            <img
+                              src={t.src}
+                              alt=""
+                              style={`left:${(t.logo.x / 123) * 100}%;top:${(t.logo.y / 123) * 100}%;width:${(t.logo.w / 123) * 100}%;height:${(t.logo.h / 123) * 100}%`}
+                            />
+                          </span>
+                        ) : (
+                          <span class="tile tile--text">{name.slice(0, 2)}</span>
+                        )}
+                        <span class="tool-name">{name}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            )
+          }
+
+          <section class="card" aria-labelledby="info-title">
+            <h2 id="info-title" class="label">Infos du vol</h2>
+            <dl class="info">
+              {info.map((r) => <div><dt>{r.k}</dt><dd>{r.v}</dd></div>)}
+            </dl>
+          </section>
+        </div>
+
+        {
+          fullHref && (
+            <a class="full" href={fullHref}>
+              Voir le projet en détail <span aria-hidden="true">→</span>
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    <!-- Projet précédent / suivant -->
+    <nav class="pager" aria-label="Autres projets">
+      {
+        prev ? (
+          <a href={projectHref(prev.slug)} class="pg pg--prev">
+            <span class="pg-dir">← Projet précédent</span>
+            <span class="pg-name">{prev.titre}</span>
+          </a>
+        ) : (
+          <span></span>
+        )
+      }
+      {
+        next ? (
+          <a href={projectHref(next.slug)} class="pg pg--next">
+            <span class="pg-dir">Projet suivant →</span>
+            <span class="pg-name">{next.titre}</span>
+          </a>
+        ) : (
+          <span></span>
+        )
+      }
+    </nav>
+
+    <!-- Plein écran -->
+    <dialog class="lb" data-lightbox aria-label="Visuel en plein écran">
+      <button type="button" class="lb-close" data-lb-close aria-label="Fermer">✕</button>
+      {images.length > 1 && <button type="button" class="lb-nav lb-prev" data-lb-prev aria-label="Visuel précédent">←</button>}
+      <img data-lb-img src={images[0]?.src} alt="" />
+      {images.length > 1 && <button type="button" class="lb-nav lb-next" data-lb-next aria-label="Visuel suivant">→</button>}
+      <p class="lb-count" data-lb-count aria-live="polite"></p>
+    </dialog>
+
+  </article>
+</BaseLayout>
+
+<style>
+  .page { width: min(100% - 2rem, 80rem); margin: 0 auto; padding: 0.5rem 0 6rem; }
+  .back { display: inline-block; padding: 0.5rem 0; font: 500 1.25rem/1.3 var(--font-display); text-transform: uppercase; color: var(--color-fg-2); }
+  .back:hover { color: var(--color-accent); }
+
+  .head { margin-top: 1rem; display: grid; gap: 0.35rem; }
+  .item { width: fit-content; padding: 0.2rem 0.7rem; background: var(--color-accent); color: #000; font: 600 1.125rem/1.3 var(--font-display); letter-spacing: 0.18em; text-transform: uppercase; }
+  .title { font: 700 clamp(3rem, 9vw, 6.5rem)/1 var(--font-display); text-transform: uppercase; color: var(--color-accent); }
+  .type { font: 500 1.375rem/1.3 var(--font-display); letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-fg); }
+
+  .grid { margin-top: 2.5rem; display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 900px) { .grid { grid-template-columns: minmax(0, 27rem) minmax(0, 1fr); gap: 3.5rem; } .gallery { position: sticky; top: 1.5rem; } }
+
+  /* Galerie : visuel encadré, scotch, vignettes */
+  .frame { position: relative; padding: 0.6rem; background: #fff; box-shadow: 0 1rem 2rem rgb(0 0 0 / 0.45); }
+  .frame img { display: block; width: 100%; background: #000; }
+  .zoom { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+  .zoom-hint { position: absolute; right: 0.6rem; bottom: 0.6rem; padding: 0.35rem 0.8rem; background: #000; color: var(--color-accent); font: 600 1.0625rem/1.2 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; }
+  .tape { position: absolute; z-index: 1; top: -1rem; left: 50%; width: 7rem; height: 2.4rem; translate: -50% 0; rotate: -3deg; background: url('/images/projets/commun/scotch.webp') center / contain no-repeat; }
+  .thumbs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+  .thumbs button { display: block; width: 4.25rem; padding: 0; border: 2px solid var(--color-line); background: #000; cursor: pointer; }
+  .thumbs button[aria-pressed='true'] { border-color: var(--color-accent); }
+  .thumbs button:hover, .thumbs button:focus-visible { border-color: #fff; }
+  .thumbs img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  figcaption { margin-top: 0.6rem; font-size: 1.0625rem; color: var(--color-fg-muted); }
+
+  /* Blocs */
+  .blocks { display: grid; gap: 1.5rem; }
+  .card { background: var(--color-surface); border: 2px solid var(--color-line); border-top: 5px solid var(--color-accent); padding: 1.5rem 1.75rem 1.75rem; }
+  .label { margin-bottom: 1rem; font: 600 1.5rem/1.1 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; color: #fff; }
+  .desc { font-size: 1.25rem; line-height: 1.7; color: var(--color-accent); }
+  .desc + .desc { margin-top: 1rem; }
+  .duo { display: grid; gap: 1.5rem; }
+  @media (min-width: 640px) { .duo { grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); } }
+
+  .tools { display: grid; gap: 1rem; }
+  .tools li { display: flex; align-items: center; gap: 1rem; }
+  .tile { position: relative; display: block; width: 4rem; height: 4rem; flex: none; border-radius: 19%; background: var(--color-accent); }
+  .tile img { position: absolute; }
+  .tile--text { display: grid; place-items: center; font: 700 1.5rem/1 var(--font-display); color: #000; text-transform: uppercase; }
+  .tool-name { font: 500 1.375rem/1.2 var(--font-display); letter-spacing: 0.04em; text-transform: uppercase; color: #fff; }
+
+  .info { display: grid; gap: 0.9rem; }
+  .info dt { font-size: 1.0625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .info dd { font: 500 1.375rem/1.2 var(--font-display); text-transform: uppercase; color: #fff; }
+
+  .full { justify-self: start; display: inline-flex; gap: 0.75rem; padding: 0.9rem 2.2rem; border-radius: 999px; background: var(--color-accent); color: #000; font: 700 1.5rem/1 var(--font-display); letter-spacing: 0.06em; text-transform: uppercase; }
+  .full:hover, .full:focus-visible { background: #fff; }
+
+  /* Navigation entre projets */
+  .pager { margin-top: 4rem; display: grid; gap: 1rem; }
+  @media (min-width: 640px) { .pager { grid-template-columns: 1fr 1fr; } }
+  .pg { display: grid; gap: 0.35rem; padding: 1.25rem 1.5rem; border: 2px solid var(--color-line); background: var(--color-surface); }
+  .pg:hover, .pg:focus-visible { border-color: var(--color-accent); }
+  .pg--next { text-align: right; }
+  .pg-dir { font-size: 1.0625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); }
+  .pg-name { font: 700 1.75rem/1.1 var(--font-display); text-transform: uppercase; color: var(--color-accent); }
+
+  /* Plein écran */
+  .lb { width: 100vw; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 0; border: 0; background: rgb(0 0 0 / 0.96); }
+  .lb:not([open]) { display: none; }
+  .lb[open] { display: grid; place-items: center; }
+  /* Boîte de taille fixe + object-fit : l'image remplit l'écran quelle que soit sa taille d'origine (même sur Safari) */
+  .lb img { width: 94vw; height: 92vh; height: 92dvh; object-fit: contain; }
+  .lb-close, .lb-nav { position: absolute; display: grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--color-accent); color: #000; font: 700 1.5rem/1 var(--font-display); cursor: pointer; }
+  .lb-close { top: 1rem; right: 1rem; }
+  .lb-nav { top: 50%; translate: 0 -50%; }
+  .lb-prev { left: 1rem; }
+  .lb-next { right: 1rem; }
+  .lb-close:hover, .lb-nav:hover, .lb-close:focus-visible, .lb-nav:focus-visible { background: #fff; }
+  .lb-count { position: absolute; bottom: 1rem; left: 50%; translate: -50% 0; padding: 0.3rem 0.9rem; background: #000; color: #fff; font: 500 1.125rem/1.2 var(--font-display); letter-spacing: 0.1em; }
+  .lb-count:empty { display: none; }
+  .lb::backdrop { background: #000; }
+  /* La page derrière ne défile pas pendant que le plein écran est ouvert */
+  :global(html:has(.lb[open])) { overflow: hidden; }
+
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((root) => {
+    const main = root.querySelector<HTMLImageElement>('[data-main]');
+    const thumbs = [...root.querySelectorAll<HTMLButtonElement>('[data-thumb]')];
+    thumbs.forEach((thumb) =>
+      thumb.addEventListener('click', () => {
+        if (!main) return;
+        main.src = thumb.dataset.src!;
+        main.alt = thumb.dataset.alt!;
+        thumbs.forEach((t) => t.setAttribute('aria-pressed', String(t === thumb)));
+      }),
+    );
+  });
+
+  // Plein écran : clic sur le visuel, flèches du clavier pour feuilleter, Échap ou clic hors de l'image pour fermer
+  const box = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const zoom = document.querySelector<HTMLElement>('[data-zoom]');
+  if (box && zoom) {
+    const img = box.querySelector<HTMLImageElement>('[data-lb-img]')!;
+    const count = box.querySelector<HTMLElement>('[data-lb-count]')!;
+    const list = [...document.querySelectorAll<HTMLButtonElement>('[data-thumb]')].map((t) => ({ src: t.dataset.src!, alt: t.dataset.alt! }));
+    const main = document.querySelector<HTMLImageElement>('[data-main]')!;
+    if (!list.length) list.push({ src: main.src, alt: main.alt });
+    let cur = 0;
+    const show = (i: number) => {
+      cur = (i + list.length) % list.length;
+      img.src = list[cur].src;
+      img.alt = list[cur].alt;
+      count.textContent = list.length > 1 ? `${cur + 1} / ${list.length}` : '';
+    };
+    const open = () => {
+      const at = list.findIndex((l) => main.src.endsWith(l.src));
+      show(at >= 0 ? at : 0);
+      box.showModal();
+    };
+    zoom.addEventListener('click', open);
+    box.querySelector('[data-lb-close]')!.addEventListener('click', () => box.close());
+    box.querySelector('[data-lb-prev]')?.addEventListener('click', () => show(cur - 1));
+    box.querySelector('[data-lb-next]')?.addEventListener('click', () => show(cur + 1));
+    box.addEventListener('click', (e) => {
+      if (e.target === box) box.close();
+    });
+    box.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(cur - 1);
+      if (e.key === 'ArrowRight') show(cur + 1);
+    });
+  }
+</script>

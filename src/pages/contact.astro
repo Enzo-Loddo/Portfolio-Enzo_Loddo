@@ -20,12 +20,23 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
       <a href={`mailto:${site.email}`} class="font-display text-3xl text-accent md:text-h3">{site.email}</a>
       <p class="text-caption text-fg-muted">* « Allons mettre la main ensemble », en créole réunionnais.</p>
     </div>
-    <!-- Décor : silhouette de La Réunion (à remplacer par /images/reunion.svg) -->
-    <div
-      class="hidden size-110 shrink-0 rounded-[50%] border border-dashed border-line bg-surface md:block"
-      role="img"
-      aria-label="Décor : silhouette de La Réunion"
-    >
-    </div>
+    <!-- Photo : cadre blanc incliné et scotch, comme les visuels des pages projet -->
+    <figure class="relative mx-auto w-full max-w-sm shrink-0 rotate-2 md:mx-0 md:max-w-md">
+      <span
+        class="absolute left-1/2 top-[-1.1rem] z-10 h-10 w-28 -translate-x-1/2 -rotate-3 bg-contain bg-center bg-no-repeat"
+        style="background-image: url('/images/projets/commun/scotch.webp')"
+        aria-hidden="true"
+      ></span>
+      <div class="bg-white p-2.5 shadow-[0_1rem_2rem_rgb(0_0_0/0.45)] md:p-3">
+        <img
+          src="/images/contact/enzo-reunion.webp"
+          alt="Enzo marchant sur des rochers volcaniques au bord de l’océan, à La Réunion, le téléphone à l’oreille"
+          width="1000"
+          height="1333"
+          class="block h-auto w-full"
+          fetchpriority="high"
+        />
+      </div>
+    </figure>
   </div>
 </BaseLayout>

@@ -1,0 +1,37 @@
+---
+/**
+ * Petite page de présentation des projets qui ont une page grand format (/projets/<slug>/apercu) :
+ * visuel, description et outils, puis un bouton vers la grande page. Le texte vient de la page grand format.
+ */
+import ProjectSimple from '@/components/projet/ProjectSimple.astro';
+import { projectPages } from '@/data/projets';
+import { getPublishedProjects } from '@/lib/projects';
+import { hasFullPage } from '@/lib/project-links';
+import type { Project } from '@/types/project';
+
+export async function getStaticPaths() {
+  const all = await getPublishedProjects();
+  return all
+    .filter((p) => hasFullPage(p.slug))
+    .map((project) => {
+      const i = all.findIndex((p) => p.slug === project.slug);
+      return { params: { slug: project.slug }, props: { project, prev: all[i - 1], next: all[i + 1] } };
+    });
+}
+
+interface Props {
+  project: Project;
+  prev?: Project;
+  next?: Project;
+}
+const { project, prev, next } = Astro.props;
+const content = projectPages[project.slug];
+const plain = (t: string) => t.replace(/\*\*([^*]+)\*\*/g, '$1').replace(/\*([^*]+)\*/g, '$1');
+const view: Project = {
+  ...project,
+  description: [content.intro.synopsis, content.intro.note].map(plain),
+  outils: content.meta.outils.length ? content.meta.outils : project.outils,
+};
+---
+
+<ProjectSimple project={view} prev={prev} next={next} fullHref={`/projets/${project.slug}`} />

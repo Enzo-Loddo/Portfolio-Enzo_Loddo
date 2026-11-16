@@ -5,6 +5,7 @@
  * destination = le projet, vol = son numéro, porte = le type de création, statut = page détaillée prête (à l'heure),
  * simple visuel (embarquement) ou à venir (retardé). Une série peut avoir plusieurs visuels (vignettes).
  */
+import { projectHref } from '@/lib/project-links';
 import type { Project } from '@/types/project';
 
 interface Props {
@@ -71,7 +72,7 @@ const status = (p: Project) =>
               </div>
               {
                 p.publie ? (
-                  <a class="go" href={`/projets/${p.slug}`}>
+                  <a class="go" href={projectHref(p.slug)}>
                     Embarquer pour ce projet <span aria-hidden="true">→</span>
                   </a>
                 ) : (

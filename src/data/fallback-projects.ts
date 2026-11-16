@@ -92,7 +92,7 @@ export const fallbackProjects: Project[] = [
     sujet: 'Affiches',
     categorie: 'Design',
     description: [
-      'Série d’affiches réalisées pour Doris : une couverture façon comics Spider-Man, une scène rouge sombre devant un château et une fiche de personnage inspirée de Darkrai. Les trois visuels piochent dans la culture pop et le manga.',
+      'Série d’affiches réalisées pour un ami à moi, pour ses réseaux : une couverture façon comics inspirée de Spider-Man, une deuxième inspirée de la cover « Recherche et Destruction » de l’artiste « Jolagreen23 », et enfin une troisième affiche qui s’inspire de l’univers de « Pokémon ». Les trois visuels puisent dans la culture pop et le manga.',
     ],
     visuel: '/images/projets/liste/doris-1.webp',
     visuelAlt: 'Couverture de comics façon Spider-Man avec Doris',
@@ -118,7 +118,6 @@ export const fallbackProjects: Project[] = [
     description: [
       'Ce projet est une création sur-mesure réalisée pour les réseaux sociaux d’un ami. L’objectif était de concevoir un visuel percutant, reprenant les codes esthétiques de la culture urbaine, du streetwear et des pochettes d’albums de rap américain.',
       'Conçue sur Affinity, l’image repose sur une esthétique sombre, texturée et expérimentale. Le logo « Jumpman » de Jordan, l’étiquette « Parental Advisory » et des motifs de flammes tribales ancrent l’œuvre dans le streetwear et le design des années 2000.',
-      'Le rouge profond et bordeaux installe la tension, un traitement grunge (grain, rayures, usure) casse l’aspect lisse du numérique, et deux encarts bleu/cyan aux textures liquides simulent un bug numérique.',
     ],
     visuel: '/images/projets/liste/charme-1.webp',
     visuelAlt: 'Post façon Chrome Hearts, texte « Born to lead, not to follow »',
@@ -143,7 +142,7 @@ export const fallbackProjects: Project[] = [
     sujet: 'Post Instagram',
     categorie: 'Design',
     description: [
-      'Post Instagram autour d’une Datsun garée devant une jante chromée en gros plan. Le cadrage vertical, les couleurs d’automne et la signature « Made by 3NZO » donnent un rendu passion automobile.',
+      'Post Instagram autour d’une Datsun garée, avec sa propre jante en arrière-plan. En intégrant la jante à l’arrière-plan de l’image, on met en valeur à la fois le sujet principal de la photo et ses détails.',
     ],
     visuel: '/images/projets/liste/datsun.webp',
     visuelAlt: 'Photo d’une Datsun devant une jante chromée',
@@ -165,7 +164,7 @@ export const fallbackProjects: Project[] = [
     sujet: 'Affiche',
     categorie: 'Design',
     description: [
-      'Affiche en rouge sombre : un personnage assis devant un château, sous un ciel orageux. L’ambiance est dramatique, presque gothique, et la signature « Made by 3NZO » clôt la composition.',
+      'Affiche réalisée pour un ami à moi, pour ses réseaux : une affiche inspirée de l’univers de « Zelda », en particulier de l’opus Majora’s Mask. Pour donner de la profondeur à l’image, j’ai placé le fameux château en fond, avec comme second sujet la lune du même jeu. L’ambiance de l’affiche repose sur le rouge et le noir, ce qui lui donne un aspect presque horrifique.',
     ],
     visuel: '/images/projets/liste/enzo.webp',
     visuelAlt: 'Affiche rouge sombre : personnage assis devant un château',
@@ -187,7 +186,7 @@ export const fallbackProjects: Project[] = [
     sujet: 'Affiche',
     categorie: 'Design',
     description: [
-      'Affiche inspirée des campagnes Nike pour la Maxfly 2 : fond rouge, grand « Just do it », texte descriptif de la chaussure et gros plan sur la pointe.',
+      'Affiche inspirée des campagnes Nike pour la paire de pointes d’athlétisme « Maxfly 2 » : fond rouge, grand « Just do it », texte descriptif de la chaussure et gros plan sur la pointe.', 'L’affiche repose sur une construction simple et très lisible : un fond rouge uni, le titre « Just do it » en grandes lettres noires en haut de la page, le nom du modèle juste en dessous, puis un bloc de texte aligné à gauche qui présente la chaussure. La pointe, en gros plan et placée en diagonale à droite, occupe le bas de la page et guide le regard du titre vers le produit, avec le logo Nike en bas à droite pour conclure. Le contraste entre le rouge, le noir et les couleurs vives de la pointe reprend l’énergie des campagnes Nike.',
     ],
     visuel: '/images/projets/liste/nike-maxfly.webp',
     visuelAlt: 'Affiche Nike Maxfly 2, « Just do it », fond rouge',
