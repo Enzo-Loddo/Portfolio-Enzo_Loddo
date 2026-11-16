@@ -1,0 +1,45 @@
+name: Déploiement du portfolio
+
+# Le site est statique : GitHub compile Astro (Node) puis envoie dist/ sur le VPS par SSH (rsync).
+# Aucun Node ni Bun n'est nécessaire sur le serveur ; Apache sert directement /var/www/portfolio.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Compiler le site
+        run: npm run build
+
+      - name: Préparer la connexion SSH
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Envoyer le site sur le VPS
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }}" \
+            dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/portfolio/"
+
+      - name: Vérifier que le site répond
+        run: curl --fail --silent --show-error --location "https://${{ vars.SITE_DOMAIN }}/" > /dev/null
