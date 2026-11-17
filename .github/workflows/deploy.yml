@@ -22,8 +22,10 @@ jobs:
           node-version: 22
           cache: npm
 
+      # `npm install` (et non `npm ci`) : le fichier verrou, généré sur macOS, ne contient pas certains
+      # paquets optionnels Linux (@emnapi/*) et `npm ci` refuse alors de continuer.
       - name: Installer les dépendances
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Compiler le site
         run: npm run build
