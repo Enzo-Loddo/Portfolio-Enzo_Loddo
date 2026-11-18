@@ -7,7 +7,6 @@ const page: ProjectPageContent = {
   slug: 'compton',
   title: 'COMPTON - DRE',
   description: 'Compton - Dre : fausse couverture du magazine XXL, hommage à la West Coast.',
-  // Gris anthracite uni, texte jaune, titres orange : contrastes très confortables.
   theme: {
     bg: '#2a2c2f',
     accent: '#ff9f1c',
@@ -52,7 +51,6 @@ const page: ProjectPageContent = {
   },
   compare: {
     title: 'AVANT / APRÈS',
-    // Les deux images ont exactement la même taille et le même cadrage (voir scripts/process-project-images.mjs)
     ratio: '1080 / 1350',
     before: { src: `${img}/avant.webp`, alt: 'Photographie d’origine : Dr. Dre en noir et blanc, appuyé contre une voiture, casquette Compton', label: 'Photo d’origine' },
     after: { src: `${img}/apres.webp`, alt: 'Fausse couverture XXL : Dr. Dre, titre DR.DRE et logo XXL rouge', label: 'Ma couverture' },

@@ -114,7 +114,6 @@ const status = (p: Project) =>
   .grid { display: grid; gap: 2rem; align-items: start; }
   @media (min-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr) 24rem; gap: 3rem; } }
 
-  /* --- Projet affiché --- */
   .panel { display: grid; gap: 1.5rem; animation: show-in 0.25s ease-out; }
   .panel[hidden] { display: none; }
   @keyframes show-in { from { opacity: 0; } }
@@ -128,7 +127,6 @@ const status = (p: Project) =>
   .thumbs img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
   .info { display: grid; gap: 1.5rem; justify-items: start; }
 
-  /* Carte d'embarquement */
   .pass { display: grid; grid-template-columns: minmax(0, 1fr) 4.5rem; width: 100%; background: #f4f1e8; color: #111; border-radius: 0.6rem; overflow: hidden; }
   .pass-main { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.9rem 1rem; padding: 1.1rem 1.25rem; }
   .pass-main .wide { grid-column: 1 / -1; }
@@ -144,7 +142,6 @@ const status = (p: Project) =>
   .go:hover, .go:focus-visible { background: #fff; }
   .wait { font-size: 1.125rem; color: var(--color-fg-muted); }
 
-  /* --- Tableau des vols (sélection) --- */
   .board { display: grid; border-top: 2px solid var(--color-line); }
   .row { display: grid; grid-template-columns: 4.5rem minmax(0, 1fr) 8.5rem; gap: 0.75rem; align-items: center; padding: 0.8rem 0.75rem; border-bottom: 1px solid var(--color-line); text-align: left; font: 500 1.125rem/1.2 var(--font-display); text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-fg); }
   .row.head { font-size: 1rem; letter-spacing: 0.1em; color: var(--color-fg-muted); cursor: default; }

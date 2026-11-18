@@ -40,7 +40,6 @@ const info = [
     </header>
 
     <div class="grid" data-gallery>
-      <!-- Galerie -->
       <figure class="gallery">
         <div class="frame">
           <span class="tape" aria-hidden="true"></span>
@@ -69,7 +68,6 @@ const info = [
         {images.length > 1 && <figcaption>{images.length} visuels dans cette série</figcaption>}
       </figure>
 
-      <!-- Blocs d'information -->
       <div class="blocks">
         <section class="card" aria-labelledby="desc-title">
           <h2 id="desc-title" class="label">Description</h2>
@@ -124,7 +122,6 @@ const info = [
       </div>
     </div>
 
-    <!-- Projet précédent / suivant -->
     <nav class="pager" aria-label="Autres projets">
       {
         prev ? (
@@ -148,7 +145,6 @@ const info = [
       }
     </nav>
 
-    <!-- Plein écran -->
     <dialog class="lb" data-lightbox aria-label="Visuel en plein écran">
       <button type="button" class="lb-close" data-lb-close aria-label="Fermer">✕</button>
       {images.length > 1 && <button type="button" class="lb-nav lb-prev" data-lb-prev aria-label="Visuel précédent">←</button>}
@@ -173,7 +169,6 @@ const info = [
   .grid { margin-top: 2.5rem; display: grid; gap: 2.5rem; align-items: start; }
   @media (min-width: 900px) { .grid { grid-template-columns: minmax(0, 27rem) minmax(0, 1fr); gap: 3.5rem; } .gallery { position: sticky; top: 1.5rem; } }
 
-  /* Galerie : visuel encadré, scotch, vignettes */
   .frame { position: relative; padding: 0.6rem; background: #fff; box-shadow: 0 1rem 2rem rgb(0 0 0 / 0.45); }
   .frame img { display: block; width: 100%; background: #000; }
   .zoom { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
@@ -186,7 +181,6 @@ const info = [
   .thumbs img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
   figcaption { margin-top: 0.6rem; font-size: 1.0625rem; color: var(--color-fg-muted); }
 
-  /* Blocs */
   .blocks { display: grid; gap: 1.5rem; }
   .card { background: var(--color-surface); border: 2px solid var(--color-line); border-top: 5px solid var(--color-accent); padding: 1.5rem 1.75rem 1.75rem; }
   .label { margin-bottom: 1rem; font: 600 1.5rem/1.1 var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; color: #fff; }
@@ -209,7 +203,6 @@ const info = [
   .full { justify-self: start; display: inline-flex; gap: 0.75rem; padding: 0.9rem 2.2rem; border-radius: 999px; background: var(--color-accent); color: #000; font: 700 1.5rem/1 var(--font-display); letter-spacing: 0.06em; text-transform: uppercase; }
   .full:hover, .full:focus-visible { background: #fff; }
 
-  /* Navigation entre projets */
   .pager { margin-top: 4rem; display: grid; gap: 1rem; }
   @media (min-width: 640px) { .pager { grid-template-columns: 1fr 1fr; } }
   .pg { display: grid; gap: 0.35rem; padding: 1.25rem 1.5rem; border: 2px solid var(--color-line); background: var(--color-surface); }
@@ -218,11 +211,9 @@ const info = [
   .pg-dir { font-size: 1.0625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-fg-muted); }
   .pg-name { font: 700 1.75rem/1.1 var(--font-display); text-transform: uppercase; color: var(--color-accent); }
 
-  /* Plein écran */
   .lb { width: 100vw; max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 0; border: 0; background: rgb(0 0 0 / 0.96); }
   .lb:not([open]) { display: none; }
   .lb[open] { display: grid; place-items: center; }
-  /* Boîte de taille fixe + object-fit : l'image remplit l'écran quelle que soit sa taille d'origine (même sur Safari) */
   .lb img { width: 94vw; height: 92vh; height: 92dvh; object-fit: contain; }
   .lb-close, .lb-nav { position: absolute; display: grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--color-accent); color: #000; font: 700 1.5rem/1 var(--font-display); cursor: pointer; }
   .lb-close { top: 1rem; right: 1rem; }
@@ -233,9 +224,7 @@ const info = [
   .lb-count { position: absolute; bottom: 1rem; left: 50%; translate: -50% 0; padding: 0.3rem 0.9rem; background: #000; color: #fff; font: 500 1.125rem/1.2 var(--font-display); letter-spacing: 0.1em; }
   .lb-count:empty { display: none; }
   .lb::backdrop { background: #000; }
-  /* La page derrière ne défile pas pendant que le plein écran est ouvert */
   :global(html:has(.lb[open])) { overflow: hidden; }
-
 </style>
 
 <script>

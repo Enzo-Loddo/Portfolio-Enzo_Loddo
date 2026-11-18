@@ -7,8 +7,6 @@ const page: ProjectPageContent = {
   slug: 'tokyo-rwb',
   title: 'TOKYO - RWB',
   description: 'Tokyo - RWB : affiche concept inspirée des rues de Tokyo et des Porsche RWB.',
-  // Tokyo la nuit, scènes de rue clandestines des années 90-2000, vu sur une cassette VHS :
-  // bleu nuit presque noir, orange sodium des lampadaires, lignes de balayage.
   theme: {
     bg: '#070b14',
     accent: '#e8962e',
@@ -53,7 +51,6 @@ const page: ProjectPageContent = {
   },
   compare: {
     title: 'AVANT / APRÈS',
-    // Les deux images ont exactement la même taille et le même cadrage (voir scripts/process-project-images.mjs)
     ratio: '1400 / 1980',
     before: { src: `${img}/avant.webp`, alt: 'Photographie d’origine : Porsche 911 RWB sur un passage piéton à Tokyo', label: 'Photo d’origine' },
     after: { src: `${img}/apres.webp`, alt: 'Affiche concept finale : la 911 RWB, textes japonais et étoile jaune', label: 'Affiche finale' },

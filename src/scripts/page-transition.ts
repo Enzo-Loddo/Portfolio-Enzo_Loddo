@@ -41,7 +41,6 @@ if (overlay) {
     arriving = sessionStorage.getItem(KEY) === '1';
     sessionStorage.removeItem(KEY);
   } catch {
-    /* stockage indisponible : pas de transition d'arrivée */
   }
 
   if (arriving && !reduce) {
@@ -74,7 +73,6 @@ if (overlay) {
     try {
       sessionStorage.setItem(KEY, '1');
     } catch {
-      /* ignore */
     }
     // Redémarre le GIF depuis sa première image à chaque transition
     if (gif) gif.src = `${gifUrl}?t=${Date.now()}`;

@@ -1,11 +1,6 @@
 @import "tailwindcss";
 
-/*
- * Design tokens issus de la maquette Figma v2 (collection « Couleurs » et styles de texte).
- * Ne pas coder de valeur en dur dans les composants : utiliser ces tokens.
- */
 @theme {
-  /* Couleurs */
   --color-base: #2c2c2c;
   --color-deep: #0b0b0b;
   --color-surface: #1a1a1a;
@@ -19,11 +14,9 @@
   --color-line: #555555;
   --color-stage: #191b1c;
 
-  /* Polices : 2 maximum (retour du jury) */
   --font-display: "Oswald Variable", "Arial Narrow", sans-serif;
   --font-sans: "Inter Variable", system-ui, sans-serif;
 
-  /* Échelle typographique (desktop). Le mobile utilise les classes de base de Tailwind. */
   --text-h1: 5rem;
   --text-h1--line-height: 1.05;
   --text-h2: 3.5rem;
@@ -47,7 +40,6 @@
   --text-caption: 1rem;
   --text-caption--line-height: 1.5;
 
-  /* Espacements (grille de 8px) */
   --spacing-gutter: 2rem;
   --breakpoint-3xl: 100rem;
 }
@@ -57,7 +49,6 @@
     background-color: var(--color-base);
     color: var(--color-fg);
     font-family: var(--font-sans);
-    /* Barre de défilement du navigateur masquée (la page défile toujours à la molette, au doigt et au clavier) */
     scrollbar-width: none;
   }
   html::-webkit-scrollbar,
@@ -71,7 +62,6 @@
     line-height: 1.55;
   }
 
-  /* Aucun titre souligné (retour du jury) */
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     font-weight: 500;
@@ -85,28 +75,20 @@
 }
 
 @layer components {
-  /* Effet « panneau LED » : lueur jaune sur les heures */
   .led {
     text-shadow: 0 0 6px rgb(255 239 108 / 0.55);
     font-variant-numeric: tabular-nums;
   }
 
-  /* Lueur phosphore : la couleur de la lueur suit la couleur du texte */
   .glow {
     text-shadow: 0 0 5px color-mix(in srgb, currentColor 65%, transparent);
   }
 
-  /*
-   * Survol d'une ligne de vol (maquette Figma « Component 9 ») :
-   * chaque texte « respire » dans sa propre couleur en alternant normal / gras.
-   * Cycle lent de 2,4 s avec accélération douce (ease-in-out) pour un rendu fluide.
-   */
   .flight-row:hover .blink-text,
   .flight-row:focus-visible .blink-text {
     animation: blink-bold 2.4s ease-in-out infinite;
   }
 
-  /* --- Ligne de vol : repère de porte, balayage lumineux, flèche --- */
   .flight-row {
     position: relative;
     overflow: hidden;
@@ -116,7 +98,6 @@
   .flight-row:focus-visible {
     background-color: rgb(246 221 11 / 0.05);
   }
-  /* Repère jaune à gauche (comme le curseur d'un panneau d'affichage) */
   .flight-row::before {
     content: '';
     position: absolute;
@@ -133,7 +114,6 @@
   .flight-row:focus-visible::before {
     transform: scaleY(1);
   }
-  /* Faisceau lumineux qui traverse la ligne */
   .flight-row::after {
     content: '';
     position: absolute;
@@ -151,7 +131,6 @@
     animation: arrow-nudge 1.6s ease-in-out infinite;
   }
 
-  /* --- Statuts : pastille qui pulse, retard qui clignote --- */
   .status-dot {
     display: inline-block;
     animation: dot-pulse 2.4s ease-in-out infinite;
@@ -160,18 +139,15 @@
     animation: dot-blink 1.4s steps(1) infinite;
   }
 
-  /* --- Bandeau d'annonces défilant --- */
   .ticker {
     animation: ticker-scroll 60s linear infinite;
     will-change: transform;
   }
-  /* Pause au survol de la barre entière : le défilement reprend exactement où il s'est arrêté. */
   .ticker-bar:hover .ticker {
     animation-play-state: paused;
   }
 }
 
-/* État « gras » : graisse 700, léger contour et halo dans la couleur du texte. */
 @keyframes blink-bold {
   0%, 100% { font-weight: 500; -webkit-text-stroke: 0 currentColor; text-shadow: 0 0 0 transparent; }
   35%, 60% { font-weight: 700; -webkit-text-stroke: 1px currentColor; text-shadow: 0 0 14px currentColor; }
@@ -202,11 +178,6 @@
   to   { transform: translate3d(-50%, 0, 0); }
 }
 
-/*
- * Écran cathodique (CRT) : fond d'affiche d'écran ancien.
- * Activé par la classe `crt` sur <body> (prop `crt` de BaseLayout).
- * Couches : lueur du tube, lignes de balayage, vignettage, grain, barre de rafraîchissement.
- */
 .crt {
   background: radial-gradient(ellipse 80% 60% at 50% 35%, #3b3b3b 0%, #262626 45%, #121212 80%, #070707 100%) fixed;
   position: relative;
@@ -221,7 +192,6 @@
   z-index: 50;
 }
 
-/* Lignes de balayage + vignettage + léger scintillement */
 .crt::before {
   background:
     radial-gradient(ellipse 120% 100% at 50% 50%, transparent 55%, rgb(0 0 0 / 0.55) 100%),
@@ -229,7 +199,6 @@
   animation: crt-flicker 6s steps(1) infinite;
 }
 
-/* Grain du tube + barre de rafraîchissement qui descend */
 .crt::after {
   background:
     linear-gradient(to bottom, transparent 0%, rgb(255 255 255 / 0.5) 50%, transparent 100%) 0 -30% / 100% 30% no-repeat,
@@ -271,7 +240,6 @@
   }
 }
 
-/* --- Logo ARRIVALS (maquette Figma : Default ⇄ Variant2 au survol) --- */
 .arrivals-logo {
   display: block;
   overflow: visible;
@@ -311,7 +279,6 @@
   .group:focus-visible .arrivals-plane { stroke-width: 3; }
 }
 
-/* --- Indice « retour à l'accueil » au survol du logo ARRIVALS (toutes les pages) --- */
 .home-link { position: relative; }
 .home-link .arrivals-logo { transition: scale 0.35s cubic-bezier(0.2, 0.7, 0.2, 1); }
 .home-hint {
@@ -346,7 +313,6 @@
   .home-link:focus-visible .home-hint { opacity: 1; translate: 0 -50%; }
 }
 
-/* --- Transition de page « atterrissage » : GIF d'avion (départ) puis volets noirs (arrivée) --- */
 .pt {
   position: fixed;
   inset: 0;
@@ -417,7 +383,6 @@
   margin-inline: -0.5px;
 }
 
-/* Départ : le GIF de l'avion qui atterrit apparaît en fondu, la barre se remplit, puis fondu vers le noir */
 .pt.is-in { visibility: visible; }
 .pt.is-in .pt-bg { opacity: 1; transition: opacity 0.3s ease; }
 .pt.is-in .pt-gif { animation: pt-gif var(--pt-duration, 2.9s) linear forwards; }
@@ -438,7 +403,6 @@
 }
 @keyframes pt-bar { to { transform: scaleX(1); } }
 
-/* Arrivée : la page est déjà couverte (classe posée dans <head>), puis les volets se relèvent */
 .pt-held .pt { visibility: visible; }
 .pt-held .pt .pt-blinds { visibility: visible; }
 .pt-held .pt .pt-blinds i { transform: scaleY(1); transition: none; }

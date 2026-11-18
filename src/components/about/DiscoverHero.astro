@@ -56,7 +56,6 @@ let k = 0;
     background: #0b0b0b;
     color: #fff;
     cursor: pointer;
-    /* Se lève comme un rideau quand on quitte l'état 0 */
     transition: transform 1.5s cubic-bezier(0.77, 0, 0.18, 1);
   }
   :global([data-state]:not([data-state='0'])) .hero {
@@ -80,7 +79,6 @@ let k = 0;
     to   { scale: 1.12; }
   }
 
-  /* Dégradés : assombrit le bas pour la lisibilité et fond la photo dans la couleur de la page */
   .hero-shade {
     position: absolute;
     inset: 0;
@@ -88,7 +86,6 @@ let k = 0;
       linear-gradient(to top, #191b1c 0%, rgb(25 27 28 / 0.8) 14%, rgb(0 0 0 / 0.18) 50%, rgb(0 0 0 / 0.08) 100%),
       radial-gradient(ellipse 90% 80% at 50% 45%, transparent 50%, rgb(0 0 0 / 0.4) 100%);
   }
-  /* Reflet du soleil : lueur chaude qui respire */
   .hero-sun {
     position: absolute;
     left: 15%;
@@ -116,7 +113,6 @@ let k = 0;
     gap: clamp(10px, 1.6vh, 20px);
   }
 
-  /* Billet d'embarquement */
   .ticket {
     display: flex;
     gap: 0;

@@ -7,7 +7,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { getProjects } from '@/lib/projects';
 
 const projects = await getProjects();
-// Les dossiers publiés d'abord, puis les autres, 3 lignes au maximum.
 const boardProjects = [...projects.filter((p) => p.publie), ...projects.filter((p) => !p.publie)].slice(0, 3);
 ---
 

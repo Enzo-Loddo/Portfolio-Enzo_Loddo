@@ -18,7 +18,6 @@ export type Anchor = 'l' | 'c' | 'r';
 
 const r2 = (n: number) => Math.round(n * 100) / 100;
 
-/* ---------- Bloc Polaroïd : transformation depuis la maquette ---------- */
 /** Échelle du bloc Polaroïd. */
 export const S = 0.85;
 /** Position de l'appareil dans la maquette (référence) et sur la nouvelle scène. */
@@ -102,7 +101,6 @@ export const layers: SceneLayer[] = [
     enter: 0.8,
   },
   {
-    // L'image exportée est rognée par le haut de la frame Figma : on la cale en haut.
     id: 'fern-right',
     label: 'Végétation tropicale',
     src: `${dir}/fougere-droite.webp`,
@@ -129,7 +127,6 @@ export const layers: SceneLayer[] = [
     enter: 0.7,
   },
   {
-    // Rognée à droite par la frame Figma : cale sur le bord gauche.
     id: 'map',
     label: 'Mon île : La Réunion (974)',
     src: `${dir}/carte-reunion.webp`,
@@ -195,7 +192,6 @@ export const camera = {
   src: `${dir}/appareil-polaroid.webp`,
   w: sc(436),
   h: sc(287),
-  // À l'état 4 l'appareil sort entièrement de l'écran par le haut
   pos: (() => {
     const p = lcAll([[21, 557], [21, 557], [21, 557], [21, 557]]);
     p[3] = [p[3][0], -sc(287) - 60];

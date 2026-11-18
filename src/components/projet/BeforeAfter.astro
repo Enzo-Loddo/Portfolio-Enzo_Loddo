@@ -97,7 +97,6 @@ const [rw, rh] = ratio.split('/').map((n) => Number(n.trim()));
   }
   .ba-tag--l { left: 1rem; }
   .ba-tag--r { right: 1rem; }
-  /* Le champ range couvre toute la zone : il gère le glisser et le clavier, sans être visible */
   .ba-range {
     position: absolute;
     inset: 0;
@@ -119,7 +118,6 @@ const [rw, rh] = ratio.split('/').map((n) => Number(n.trim()));
     const set = () => box.style.setProperty('--pos', `${range.value}%`);
     range.addEventListener('input', set);
     set();
-
 
   });
 </script>
