@@ -1,0 +1,72 @@
+---
+import { site } from '@/data/site';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const sections = [
+  {
+    title: 'Éditeur du site',
+    body: [
+      `${site.name}, étudiant en BUT MMI (Métiers du Multimédia et de l’Internet), IUT « Marie et Louis Pasteur », Montbéliard.`,
+      'Site personnel à but non commercial, réalisé dans le cadre d’un projet individuel de formation.',
+      `Contact : ${site.email}`,
+      'Directeur de la publication : Enzo Loddo.',
+    ],
+  },
+  {
+    title: 'Hébergement',
+    body: [
+      'Le site est hébergé sur un serveur virtuel mis à disposition dans le cadre de la formation BUT MMI (IUT « Marie et Louis Pasteur », Montbéliard).',
+      'Le nom de domaine est enregistré chez Infomaniak Network SA, Rue Eugène-Marziano 25, 1227 Genève (Suisse).',
+    ],
+  },
+  {
+    title: 'Propriété intellectuelle',
+    body: [
+      'Les créations présentées sur ce site (affiches, visuels, posts, photographies, textes, maquettes) sont l’œuvre d’Enzo Loddo, sauf mention contraire. Toute reproduction ou réutilisation sans autorisation écrite est interdite.',
+      'Certains projets reprennent des œuvres, marques ou extraits vidéo appartenant à leurs auteurs (bande-annonce de « La Cité de Dieu », extraits sur Compton et Tokyo, marque Nike, etc.). Ils sont présentés à titre d’illustration de mon travail, avec leurs crédits. Les droits restent à leurs propriétaires respectifs.',
+      'Un auteur ou un ayant droit qui souhaite le retrait d’un contenu peut écrire à l’adresse ci-dessus : il sera retiré rapidement.',
+    ],
+  },
+  {
+    title: 'Crédits des médias',
+    body: [
+      '« Aerial views of Réunion », JSery Films, licence CC BY 3.0, via Wikimedia Commons (vidéo de la page Me découvrir, recadrée).',
+      '« Airplane Landing Timelapse », Kingofthedead, domaine public, via Wikimedia Commons (animation de transition).',
+      'Polices : Oswald et Inter, sous licence SIL Open Font License.',
+    ],
+  },
+  {
+    title: 'Données personnelles et cookies',
+    body: [
+      'Ce site ne comporte ni formulaire, ni compte, ni outil de mesure d’audience, ni publicité. Aucun cookie de suivi n’est déposé.',
+      'Il utilise uniquement le stockage temporaire de votre navigateur (sessionStorage) pour gérer l’animation de transition entre deux pages. Cette information reste sur votre appareil et disparaît à la fermeture de l’onglet.',
+      `Si vous m’écrivez, votre adresse e-mail et votre message ne sont utilisés que pour vous répondre. Conformément au RGPD, vous pouvez demander l’accès, la rectification ou la suppression de ces données en écrivant à ${site.email}.`,
+    ],
+  },
+  {
+    title: 'Liens externes',
+    body: [
+      'Le site contient des liens vers Instagram, LinkedIn et d’autres sites. Je ne maîtrise pas leur contenu et décline toute responsabilité à leur sujet.',
+    ],
+  },
+];
+---
+
+<BaseLayout title="Mentions légales — Enzo Loddo" description="Mentions légales du portfolio d’Enzo Loddo : éditeur, hébergement, propriété intellectuelle et données personnelles.">
+  <div class="flex flex-col gap-10 px-4 pb-16 pt-6 md:px-8 md:pb-24 md:pt-12">
+    <h1 class="text-[2.75rem] leading-[1.1] uppercase text-accent md:text-h1">MENTIONS LÉGALES</h1>
+    <div class="flex max-w-3xl flex-col gap-10">
+      {
+        sections.map((s) => (
+          <section class="flex flex-col gap-3">
+            <h2 class="font-display text-h3 uppercase text-fg">{s.title}</h2>
+            {s.body.map((p) => (
+              <p class="text-body-m text-fg-2 md:text-body-l">{p}</p>
+            ))}
+          </section>
+        ))
+      }
+      <a href="/" class="font-display text-nav uppercase text-accent hover:underline">← Retour à l’accueil</a>
+    </div>
+  </div>
+</BaseLayout>
